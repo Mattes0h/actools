@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Srs_IpLabel" xml:space="preserve">
-    <value>IP:</value>
-  </data>
   <data name="App_AppUpdated" xml:space="preserve">
     <value>Content Manager aktualisiert</value>
   </data>
@@ -166,9 +163,6 @@
     <value>Name: [b]{0}[/b]
 {1}: [b]{2}[/b]
 Autor: [b]{3}[/b]</value>
-  </data>
-  <data name="Arguments_SharedMessage_Id" xml:space="preserve">
-    <value>ID</value>
   </data>
   <data name="Arguments_SharedMessage_For" xml:space="preserve">
     <value>Für</value>
@@ -278,9 +272,6 @@ Autor: [b]{3}[/b]</value>
   <data name="Main_Settings" xml:space="preserve">
     <value>Einstellungen</value>
   </data>
-  <data name="Main_Server" xml:space="preserve">
-    <value>Server</value>
-  </data>
   <data name="Main_Drive" xml:space="preserve">
     <value>Fahren</value>
   </data>
@@ -299,12 +290,6 @@ Autor: [b]{3}[/b]</value>
   <data name="Main_ImportantTips" xml:space="preserve">
     <value>Wichtige Hinweise</value>
   </data>
-  <data name="Main_ContentManager" xml:space="preserve">
-    <value>Content Manager</value>
-  </data>
-  <data name="Main_AssettoCorsa" xml:space="preserve">
-    <value>Assetto Corsa</value>
-  </data>
   <data name="Main_Fonts" xml:space="preserve">
     <value>Schriftarten</value>
   <alternative>Schriftart</alternative></data>
@@ -313,12 +298,6 @@ Autor: [b]{3}[/b]</value>
   <alternative>PP Filter (Nachbearbeitung)</alternative></data>
   <data name="Main_Weather" xml:space="preserve">
     <value>Wetter</value>
-  </data>
-  <data name="Main_Rsr" xml:space="preserve">
-    <value>RSR</value>
-  </data>
-  <data name="Main_Srs" xml:space="preserve">
-    <value>SRS</value>
   </data>
   <data name="Main_Career" xml:space="preserve">
     <value>Karriere</value>
@@ -329,18 +308,9 @@ Autor: [b]{3}[/b]</value>
   <data name="Main_Single" xml:space="preserve">
     <value>Einzel</value>
   </data>
-  <data name="Main_Live" xml:space="preserve">
-    <value>Live</value>
-  </data>
   <data name="Main_Language" xml:space="preserve">
     <value>Sprache</value>
   </data>
-  <data name="Main_Online" xml:space="preserve">
-    <value>Online</value>
-  </data>
-  <data name="Main_Lan" xml:space="preserve">
-    <value>LAN</value>
-  <alternative>Lan</alternative></data>
   <data name="Main_Screenshots" xml:space="preserve">
     <value>Bildschirmfotos</value>
   <alternative>Bildschirmfoto</alternative></data>
@@ -353,9 +323,6 @@ Autor: [b]{3}[/b]</value>
   <data name="Main_Tracks" xml:space="preserve">
     <value>Strecken</value>
   </data>
-  <data name="Main_Showrooms" xml:space="preserve">
-    <value>Ausstellungsräume</value>
-  <alternative>Ausstellungsraum</alternative></data>
   <data name="Main_Miscellaneous" xml:space="preserve">
     <value>Verschiedenes</value>
   </data>
@@ -399,8 +366,8 @@ Autor: [b]{3}[/b]</value>
     <value>Fahrzeuge:</value>
   <alternative>Autos:</alternative></data>
   <data name="Settings_Content_ShowroomsHeader" xml:space="preserve">
-    <value>Ausstellungsräume:</value>
-  </data>
+    <value>Showrooms::</value>
+  <alternative>Ausstellungsräume:</alternative></data>
   <data name="Settings_Content_FontsHeader" xml:space="preserve">
     <value>Schriftarten:</value>
   <alternative>Schriftarten</alternative></data>
@@ -443,9 +410,6 @@ Autor: [b]{3}[/b]</value>
   <data name="Settings_Drive_PlayerNameHeader" xml:space="preserve">
     <value>Spielername:</value>
   </data>
-  <data name="Settings_Drive_NameLabel" xml:space="preserve">
-    <value>Name:</value>
-  </data>
   <data name="Settings_Drive_NationalityLabel" xml:space="preserve">
     <value>Nationalität:</value>
   </data>
@@ -486,8 +450,8 @@ Autor: [b]{3}[/b]</value>
     <value>Zeitmultiplikator</value>
   </data>
   <data name="Drive_TyreBlankets" xml:space="preserve">
-    <value>Reifenheizdecken</value>
-  <alternative>Reifenheizdecke</alternative></data>
+    <value>Reifen-Heizdecken</value>
+  <alternative>Reifenheizdecke</alternative><alternative>Reifenheizdecken</alternative></data>
   <data name="Drive_Penalties" xml:space="preserve">
     <value>Strafen</value>
   </data>
@@ -557,9 +521,6 @@ Autor: [b]{3}[/b]</value>
   <data name="Rsr_SessionName" xml:space="preserve">
     <value>RSR Hotlap</value>
   <alternative>RSR Zeitangriff</alternative></data>
-  <data name="Srs_PortLabel" xml:space="preserve">
-    <value>Port:</value>
-  </data>
   <data name="Srs_StartAtLabel" xml:space="preserve">
     <value>Start bei:</value>
   </data>
@@ -731,8 +692,8 @@ Autor: [b]{3}[/b]</value>
     <value>Getriebeverluste</value>
   </data>
   <data name="CarPreviews_Title" xml:space="preserve">
-    <value>Vorschau aktualisieren</value>
-  </data>
+    <value>Vorschauen aktualisieren</value>
+  <alternative>Vorschau aktualisieren</alternative></data>
   <data name="CarPreviews_CameraPositionLabel" xml:space="preserve">
     <value>Kameraposition:</value>
   </data>
@@ -770,16 +731,13 @@ Autor: [b]{3}[/b]</value>
     <value>Showroom “{0}” nicht installierbar</value>
   <alternative>Ausstellungsraum “{0}” nicht installierbar</alternative></data>
   <data name="CarPreviews_CannotSave" xml:space="preserve">
-    <value>Vorschau kann nicht gespeichert werden</value>
-  </data>
+    <value>Vorschauen können nicht gespeichert werden</value>
+  <alternative>Vorschau kann nicht gespeichert werden</alternative></data>
   <data name="CarPreviews_Manual" xml:space="preserve">
     <value>Manuell</value>
   </data>
   <data name="LiveryIcon_Shape_Flat" xml:space="preserve">
     <value>Flach</value>
-  </data>
-  <data name="LiveryIcon_Shape_Diagonal" xml:space="preserve">
-    <value>Diagonal</value>
   </data>
   <data name="LiveryIcon_Shape_Stripes" xml:space="preserve">
     <value>Streifen</value>
@@ -850,14 +808,8 @@ Autor: [b]{3}[/b]</value>
   <data name="Controls_BrakeBalance" xml:space="preserve">
     <value>Bremsbalance:</value>
   </data>
-  <data name="Controls_Turbo" xml:space="preserve">
-    <value>Turbo:</value>
-  </data>
   <data name="Controls_TractionControl" xml:space="preserve">
     <value>Traktionskontrolle:</value>
-  </data>
-  <data name="Controls_Abs" xml:space="preserve">
-    <value>ABS:</value>
   </data>
   <data name="Controls_EngineBrake" xml:space="preserve">
     <value>Motorbremse:</value>
@@ -886,26 +838,14 @@ Autor: [b]{3}[/b]</value>
   <data name="AcSettings_ReplaysHeader" xml:space="preserve">
     <value>Wiederholung:</value>
   </data>
-  <data name="AcSettings_Apps" xml:space="preserve">
-    <value>Apps</value>
-  </data>
-  <data name="AcSettings_Video" xml:space="preserve">
-    <value>Video</value>
-  </data>
   <data name="AcSettings_ViewAndUi" xml:space="preserve">
     <value>Ansicht und Nutzerschnittstelle</value>
-  </data>
-  <data name="AcSettings_Audio" xml:space="preserve">
-    <value>Audio</value>
   </data>
   <data name="AcSettings_Controls" xml:space="preserve">
     <value>Steuerung</value>
   </data>
   <data name="AcSettings_Miscellaneous" xml:space="preserve">
     <value>Verschiedenes</value>
-  </data>
-  <data name="AcSettings_System" xml:space="preserve">
-    <value>System</value>
   </data>
   <data name="AcSettings_Apps_ActivatedLabel" xml:space="preserve">
     <value>Aktivierte Apps:</value>
@@ -1051,9 +991,6 @@ Autor: [b]{3}[/b]</value>
   <data name="AcSettings_Video_CrepuscularRays" xml:space="preserve">
     <value>Sonnenstrahlen</value>
   </data>
-  <data name="AcSettings_Video_Fxaa" xml:space="preserve">
-    <value>FXAA</value>
-  </data>
   <data name="AcSettings_Video_ReflectionsHeader" xml:space="preserve">
     <value>Reflektionen:</value>
   </data>
@@ -1075,14 +1012,8 @@ Autor: [b]{3}[/b]</value>
   <data name="AcSettings_Video_HighQuality" xml:space="preserve">
     <value>Hohe Qualität</value>
   </data>
-  <data name="AcSettings_Video_OculusHeader" xml:space="preserve">
-    <value>Oculus:</value>
-  </data>
   <data name="AcSettings_Video_PixelsPerDisplay" xml:space="preserve">
     <value>Pixel pro Anzeige</value>
-  </data>
-  <data name="AcSettings_Video_SystemHeader" xml:space="preserve">
-    <value>System:</value>
   </data>
   <data name="AcSettings_Video_AllowDirectX10" xml:space="preserve">
     <value>Nicht unterstütztes DirectX 10 erlauben (auf eigene Gefahr, funktioniert evtl. nicht)</value>
@@ -1141,9 +1072,6 @@ Autor: [b]{3}[/b]</value>
   <data name="About_MarkAllAsRead" xml:space="preserve">
     <value>Als gelesen markieren</value>
   </data>
-  <data name="About_VersionFormat" xml:space="preserve">
-    <value>Version: {0}</value>
-  </data>
   <data name="About_NewTooltip" xml:space="preserve">
     <value>Neu!</value>
   </data>
@@ -1183,18 +1111,12 @@ Autor: [b]{3}[/b]</value>
   <data name="Settings_Locale_RestartMessage" xml:space="preserve">
     <value>Neustart nach Änderungen nicht vergessen</value>
   </data>
-  <data name="AcSettings_Video_Benchmark" xml:space="preserve">
-    <value>Benchmark</value>
-  </data>
   <data name="AcSettings_Video_Benchmark_Tooltip" xml:space="preserve">
     <value>Benchmark starten (Strg+G)</value>
   </data>
   <data name="AcRoot_SteamId_Prompt" xml:space="preserve">
     <value>Deine Steam-ID für Online:</value>
   <alternative>Ihre Steam-ID für Online:</alternative></data>
-  <data name="Settings_Plugins" xml:space="preserve">
-    <value>Plugins</value>
-  </data>
   <data name="Drive_AiLevelInDriverName" xml:space="preserve">
     <value>KI-Stärke im Fahrernamen anzeigen</value>
   </data>
@@ -1342,9 +1264,6 @@ Autor: [b]{3}[/b]</value>
   <data name="Main_CannotProcessArgument" xml:space="preserve">
     <value>Kann Eintrag nicht verarbeiten</value>
   </data>
-  <data name="Main_Apps" xml:space="preserve">
-    <value>Apps</value>
-  </data>
   <data name="Settings_Appearance_ThemeLabel" xml:space="preserve">
     <value>Thema:</value>
   </data>
@@ -1364,8 +1283,8 @@ Autor: [b]{3}[/b]</value>
     <value>Wikipedia als Standard nutzen</value>
   </data>
   <data name="Settings_Content_DownloadPreviews" xml:space="preserve">
-    <value>Vorschau von üblichen Ausstellungsräumen herunterladen</value>
-  <alternative>Vorschau von üblichen Ausstellungsräumen runterladen</alternative></data>
+    <value>Vorschauen von üblichen Showrooms herunterladen</value>
+  <alternative>Vorschau von üblichen Ausstellungsräumen runterladen</alternative><alternative>Vorschau von üblichen Ausstellungsräumen herunterladen</alternative></data>
   <data name="Settings_CustomShowroom_Bloom" xml:space="preserve">
     <value>Überstrahlung nutzen</value>
   </data>
@@ -1414,9 +1333,6 @@ Autor: [b]{3}[/b]</value>
   <data name="Settings_General_CheckForUpdatesLabel" xml:space="preserve">
     <value>Auf Updates prüfen:</value>
   <alternative>Nach Aktualisierung suche:</alternative><alternative>Nach Aktualisierung suchen:</alternative></data>
-  <data name="Common_MillisecondsFormat" xml:space="preserve">
-    <value>{0:F2} ms</value>
-  </data>
   <data name="Settings_General_TestingAccessHeader" xml:space="preserve">
     <value>Testzugang:</value>
   </data>
@@ -1424,8 +1340,8 @@ Autor: [b]{3}[/b]</value>
     <value>Nicht geteste Updates erlauben</value>
   <alternative>Nicht geteste Aktualisierungen erlauben</alternative></data>
   <data name="Settings_General_ValuesNumber" xml:space="preserve">
-    <value>{0} Einträge</value>
-  <alternative>{0} Eintrag</alternative></data>
+    <value>{0} Eintrag</value>
+  <alternative>{0} Einträge</alternative></data>
   <data name="Settings_General_ChangeAcRoot_Message" xml:space="preserve">
     <value>Soll der Pfad geändert werden? Programm wird neugestartet.</value>
   </data>
@@ -1456,17 +1372,11 @@ Autor: [b]{3}[/b]</value>
   <data name="Settings_Online_ConnectionHeader" xml:space="preserve">
     <value>Verbindung:</value>
   </data>
-  <data name="Settings_Online_ServerLabel" xml:space="preserve">
-    <value>Server:</value>
-  </data>
   <data name="Settings_Online_LoadInformationDirectly" xml:space="preserve">
     <value>Server-Information direkt laden</value>
   </data>
   <data name="Settings_Online_PingingHeader" xml:space="preserve">
     <value>Anpingen:</value>
-  </data>
-  <data name="Settings_Online_LanHeader" xml:space="preserve">
-    <value>LAN:</value>
   </data>
   <data name="Settings_General" xml:space="preserve">
     <value>Allgemein</value>
@@ -1564,9 +1474,6 @@ Autor: [b]{3}[/b]</value>
   <data name="AdditionalContent_NothingFound" xml:space="preserve">
     <value>Nichts gefunden</value>
   </data>
-  <data name="AdditionalContent_IdFormat" xml:space="preserve">
-    <value>ID: {0}</value>
-  </data>
   <data name="AdditionalContent_PathFormat" xml:space="preserve">
     <value>Pfad: {0}</value>
   </data>
@@ -1630,12 +1537,6 @@ Autor: [b]{3}[/b]</value>
   <data name="LiveryIcon_Style_Gloss" xml:space="preserve">
     <value>Glänzend</value>
   </data>
-  <data name="LiveryIcon_Style_Miura" xml:space="preserve">
-    <value>Miura</value>
-  </data>
-  <data name="LiveryIcon_Style_Tesla" xml:space="preserve">
-    <value>Tesla</value>
-  </data>
   <data name="Select_Brands" xml:space="preserve">
     <value>Marken</value>
   </data>
@@ -1651,12 +1552,6 @@ Autor: [b]{3}[/b]</value>
   <data name="CreateShowroom_Title" xml:space="preserve">
     <value>Neuen Showroom erstellen</value>
   <alternative>Neuen Ausstellungsraum erstellen</alternative></data>
-  <data name="CreateShowroom_NameLabel" xml:space="preserve">
-    <value>Name:</value>
-  </data>
-  <data name="CreateShowroom_PanoramaLabel" xml:space="preserve">
-    <value>Panorama:</value>
-  </data>
   <data name="CreateShowroom_InShadow" xml:space="preserve">
     <value>Im Schatten</value>
   </data>
@@ -1668,9 +1563,6 @@ Autor: [b]{3}[/b]</value>
   <alternative>Kann neuen Ausstellungsraum nicht erstellen</alternative></data>
   <data name="UpgradeIcon_Title" xml:space="preserve">
     <value>Upgrade-Symbol</value>
-  </data>
-  <data name="UpgradeIcon_Editor" xml:space="preserve">
-    <value>Editor</value>
   </data>
   <data name="UpgradeIcon_Library" xml:space="preserve">
     <value>Bibliothek</value>
@@ -1698,9 +1590,6 @@ Autor: [b]{3}[/b]</value>
   </data>
   <data name="AcSettings_Audio_Surface" xml:space="preserve">
     <value>Oberfläche</value>
-  </data>
-  <data name="AcSettings_Audio_Wind" xml:space="preserve">
-    <value>Wind</value>
   </data>
   <data name="AcSettings_Audio_Opponents" xml:space="preserve">
     <value>Gegner</value>
@@ -1751,9 +1640,9 @@ Autor: [b]{3}[/b]</value>
     <value>Aktiviere deaktivierte Lackierung</value>
   </data>
   <data name="Settings_Appearance_TransitionAnimationLabel" xml:space="preserve">
-    <value>Übergangsanimation
-</value>
-  </data>
+    <value>Übergangsanimation</value>
+  <alternative>Übergangsanimation
+</alternative></data>
   <data name="Settings_Drive_ChangeCarSkin" xml:space="preserve">
     <value>Erlaube die Lackierung zu ändern</value>
   <alternative>Erlaube die Fahrzeuglackierung zu ändern</alternative></data>
@@ -1788,9 +1677,9 @@ Autor: [b]{3}[/b]</value>
     <value>Nach ähnlicher Leistung filtern</value>
   </data>
   <data name="Filter_ByTorque" xml:space="preserve">
-    <value>Nach ähnlichem Drehmoment filtern
-</value>
-  </data>
+    <value>Nach ähnlichem Drehmoment filtern</value>
+  <alternative>Nach ähnlichem Drehmoment filtern
+</alternative></data>
   <data name="Filter_ByWeight" xml:space="preserve">
     <value>Nach ähnlichem Gewicht filtern</value>
   </data>
@@ -1801,9 +1690,9 @@ Autor: [b]{3}[/b]</value>
     <value>Nach ähnlicher Höchstgeschwindigkeit filtern</value>
   </data>
   <data name="Filter_ByAcceleration" xml:space="preserve">
-    <value>Nach ähnlicher Beschleunigung filtern
-</value>
-  </data>
+    <value>Nach ähnlicher Beschleunigung filtern</value>
+  <alternative>Nach ähnlicher Beschleunigung filtern
+</alternative></data>
   <data name="Filter_ByAge" xml:space="preserve">
     <value>Nach Alter filtern</value>
   </data>
@@ -1832,9 +1721,9 @@ Autor: [b]{3}[/b]</value>
     <value>Löschen</value>
   </data>
   <data name="Toolbar_FindInformation" xml:space="preserve">
-    <value>Informationen suchen
-</value>
+    <value>Informationen suchen</value>
   <alternative>Informationen finden
+</alternative><alternative>Informationen suchen
 </alternative></data>
   <data name="Toolbar_PackData" xml:space="preserve">
     <value>Daten packen</value>
@@ -1889,18 +1778,12 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Lizenz[/url].</alternative
   <data name="AcObject_FontLastScannedNever" xml:space="preserve">
     <value>Zuletzt gescannt: nie</value>
   </data>
-  <data name="AcObject_FontTestLabel" xml:space="preserve">
-    <value>Test:</value>
-  </data>
   <data name="AcObject_FontUsedInLabel" xml:space="preserve">
     <value>Benutzt in:</value>
   </data>
   <data name="AcObject_GeoTagsLabel" xml:space="preserve">
     <value>Geo-Tags:</value>
   <alternative>Geo Tags:</alternative></data>
-  <data name="AcObject_IdLabel" xml:space="preserve">
-    <value>ID:</value>
-  </data>
   <data name="AcObject_NumberLabel" xml:space="preserve">
     <value>Nummer:</value>
   </data>
@@ -1909,9 +1792,6 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Lizenz[/url].</alternative
   </data>
   <data name="AcObject_SizeLabel" xml:space="preserve">
     <value>Größe:</value>
-  </data>
-  <data name="AcObject_TeamLabel" xml:space="preserve">
-    <value>Team:</value>
   </data>
   <data name="AcObject_TrackLabel" xml:space="preserve">
     <value>Strecke:</value>
@@ -1946,9 +1826,6 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Lizenz[/url].</alternative
   <data name="AcSettings_Audio_TyresOffset" xml:space="preserve">
     <value>Reifenausgleich</value>
   </data>
-  <data name="AcSettings_Audio_Ui" xml:space="preserve">
-    <value>UI</value>
-  </data>
   <data name="AcSettings_GhostCar_MaxOpacityAt" xml:space="preserve">
     <value>Maximale Durchsichtigkeit bei</value>
   </data>
@@ -1979,9 +1856,6 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Lizenz[/url].</alternative
   <data name="App_LocaleUpdated" xml:space="preserve">
     <value>Sprache aktualisiert</value>
   <alternative>Lokal aktualisiert</alternative></data>
-  <data name="Arguments_SharedMessage_EmptyValue" xml:space="preserve">
-    <value>[/b][i]?[/i][b]</value>
-  </data>
   <data name="Arguments_SharedUnsupported" xml:space="preserve">
     <value>Noch nicht unterstützter Typ: “{0}”</value>
   </data>
@@ -2039,12 +1913,9 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Lizenz[/url].</alternative
   <data name="Common_HowTo_Title" xml:space="preserve">
     <value>Kurzanleitung</value>
   </data>
-  <data name="Common_IdFormat" xml:space="preserve">
-    <value>ID: {0}</value>
-  </data>
   <data name="Common_Share" xml:space="preserve">
-    <value>Teilen</value>
-  <alternative>Teile</alternative></data>
+    <value>Link Teilen</value>
+  <alternative>Teile</alternative><alternative>Teilen</alternative></data>
   <data name="Common_Share_SettingsTooltip" xml:space="preserve">
     <value>Aktuelle Einstellungen teilen (Strg+Bild Auf)</value>
   </data>
@@ -2056,9 +1927,6 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Lizenz[/url].</alternative
   </data>
   <data name="Common_SignOut" xml:space="preserve">
     <value>Ausloggen</value>
-  </data>
-  <data name="Common_Test" xml:space="preserve">
-    <value>Test</value>
   </data>
   <data name="Common_Update" xml:space="preserve">
     <value>Aktualisieren</value>
@@ -2172,32 +2040,32 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Lizenz[/url].</alternative
     <value>Wetter:</value>
   </data>
   <data name="List_Apps" xml:space="preserve">
-    <value>{0} App(s)</value>
-  <alternative>{0} App</alternative></data>
+    <value>{0} App</value>
+  <alternative>{0} App(s)</alternative></data>
   <data name="List_Cars" xml:space="preserve">
     <value>{0} Fahrzeuge</value>
   <alternative>{0} Fahrzeug</alternative></data>
   <data name="List_Fonts" xml:space="preserve">
-    <value>{0} Schriftart(en)</value>
-  <alternative>{0} Schrift</alternative></data>
+    <value>{0} Schriftart</value>
+  <alternative>{0} Schrift</alternative><alternative>{0} Schriftart(en)</alternative></data>
   <data name="List_PpFilters" xml:space="preserve">
     <value>{0} Filter</value>
   </data>
   <data name="List_Replays" xml:space="preserve">
-    <value>{0} Wiederholung(en)</value>
-  <alternative>{0} Wiederholung</alternative></data>
+    <value>{0} Wiederholung</value>
+  <alternative>{0} Wiederholung(en)</alternative></data>
   <data name="List_Setups" xml:space="preserve">
     <value>{0} Setup</value>
   </data>
   <data name="List_Showrooms" xml:space="preserve">
-    <value>{0} Ausstellungsräume</value>
-  <alternative>{0} Showroom</alternative></data>
+    <value>{0} Showroom</value>
+  <alternative>{0} Ausstellungsräume</alternative></data>
   <data name="List_Skins" xml:space="preserve">
-    <value>{0} Lackierung(en)</value>
-  <alternative>{0} Fahrzeuglackierung</alternative><alternative>{0} Fahrzeuglackierung(en)</alternative></data>
+    <value>{0} Lackierung</value>
+  <alternative>{0} Fahrzeuglackierung</alternative><alternative>{0} Fahrzeuglackierung(en)</alternative><alternative>{0} Lackierung(en)</alternative></data>
   <data name="List_Tracks" xml:space="preserve">
-    <value>{0} Strecke(n)</value>
-  <alternative>{0} Strecke</alternative></data>
+    <value>{0} Strecke</value>
+  <alternative>{0} Strecke(n)</alternative></data>
   <data name="List_Weather" xml:space="preserve">
     <value>{0} Wetter</value>
   </data>
@@ -2232,11 +2100,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Lizenz[/url].</alternative
     <value>Schnell</value>
   </data>
   <data name="Main_RecentLapTimes" xml:space="preserve">
-    <value>Letzte Rundenzeiten</value>
-  <alternative>Kürzliche Rundenzeiten</alternative></data>
-  <data name="Main_Setups" xml:space="preserve">
-    <value>Setups</value>
-  </data>
+    <value>Letzte</value>
+  <alternative>Kürzliche Rundenzeiten</alternative><alternative>Letzte Rundenzeiten</alternative></data>
   <data name="Main_Skins" xml:space="preserve">
     <value>Lackierungen</value>
   <alternative>Fahrzeuglackierungen</alternative></data>
@@ -2275,9 +2140,6 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Lizenz[/url].</alternative
   <alternative>Klienten:</alternative></data>
   <data name="Online_DriversOnlineLabel" xml:space="preserve">
     <value>Fahrer Online:</value>
-  </data>
-  <data name="Online_FilterBooking_Short" xml:space="preserve">
-    <value>Booking</value>
   </data>
   <data name="Online_FilterEmpty" xml:space="preserve">
     <value>Leere Server anzeigen</value>
@@ -2321,9 +2183,6 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Lizenz[/url].</alternative
   <data name="Online_ServersFormat" xml:space="preserve">
     <value>{0} Server</value>
   </data>
-  <data name="Online_SessionsLabel" xml:space="preserve">
-    <value>Sessions:</value>
-  </data>
   <data name="Online_SkinIsMissing" xml:space="preserve">
     <value>Lackierung fehlt</value>
   <alternative>Fahrzeuglackierung fehlt</alternative></data>
@@ -2354,12 +2213,6 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Lizenz[/url].</alternative
   <data name="Online_Sorting_Drivers" xml:space="preserve">
     <value>Anzahl der Fahrer</value>
   <alternative>Fahrer</alternative></data>
-  <data name="Online_Sorting_Name" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="Online_Sorting_Ping" xml:space="preserve">
-    <value>Ping</value>
-  </data>
   <data name="Online_TimeLabel" xml:space="preserve">
     <value>Zeit:</value>
   </data>
@@ -2581,9 +2434,6 @@ Wenn du noch andere Worte benötigst, bitte kontaktiere uns und wir werden sie h
   <data name="Settings_Sharing_HistoryTableType" xml:space="preserve">
     <value>Typ</value>
   </data>
-  <data name="Settings_Sharing_HistoryTableUrl" xml:space="preserve">
-    <value>URL</value>
-  </data>
   <data name="Settings_Sharing_NameLabel" xml:space="preserve">
     <value>Nickname teilen:</value>
   </data>
@@ -2655,9 +2505,6 @@ Wenn du noch andere Worte benötigst, bitte kontaktiere uns und wir werden sie h
   </data>
   <data name="Toolbar_Analyze" xml:space="preserve">
     <value>Analysieren</value>
-  </data>
-  <data name="Toolbar_CarSetups" xml:space="preserve">
-    <value>Setups</value>
   </data>
   <data name="Toolbar_CarSetups_Tooltip" xml:space="preserve">
     <value>Setups verwalten (Strg+U)</value>
@@ -2851,15 +2698,12 @@ Wenn du noch andere Worte benötigst, bitte kontaktiere uns und wir werden sie h
   <data name="Toolbar_Share_SetupTooltip" xml:space="preserve">
     <value>Setup teilen (Strg+BildAuf)</value>
   </data>
-  <data name="Toolbar_Showroom" xml:space="preserve">
-    <value>Showroom</value>
-  <alternative>Ausstellungsraum</alternative></data>
   <data name="Toolbar_Showroom_Tooltip" xml:space="preserve">
     <value>Fahrzeug im Showroom betrachten (Strg+H)</value>
   <alternative>Fahrzeug im Ausstellungsraum betrachten (Strg+H)</alternative></data>
   <data name="Toolbar_Test_FilterTooltip" xml:space="preserve">
-    <value>Filter im Austellungsraum testen (Strg+G)</value>
-  <alternative>Filter im Showroom testen (Strg+G)</alternative></data>
+    <value>Filter im Showroom testen (Strg+G)</value>
+  <alternative>Filter im Austellungsraum testen (Strg+G)</alternative></data>
   <data name="Toolbar_Test_SetupTooltip" xml:space="preserve">
     <value>Test Setup (Strg+G)</value>
   </data>
@@ -2897,8 +2741,8 @@ Wenn du noch andere Worte benötigst, bitte kontaktiere uns und wir werden sie h
     <value>Wettervorschau aktualisieren (Strg+P)</value>
   </data>
   <data name="Toolbar_UpdatePreviews" xml:space="preserve">
-    <value>Vorschau aktualisieren</value>
-  </data>
+    <value>Vorschauen aktualisieren</value>
+  <alternative>Vorschau aktualisieren</alternative></data>
   <data name="Toolbar_UpdatePreviews_Tooltip" xml:space="preserve">
     <value>Alle Vorschauen aktualisieren (Strg+P)</value>
   </data>
@@ -2981,8 +2825,8 @@ Wenn du noch andere Worte benötigst, bitte kontaktiere uns und wir werden sie h
     <value>[url="{0}"]{1}[/url] ist nicht installiert. Jetzt installieren?</value>
   </data>
   <data name="List_ServerPresets" xml:space="preserve">
-    <value>{0} Vorlage(en)</value>
-  <alternative>{0} Voreinstellung(en)</alternative></data>
+    <value>{0} Vorlage</value>
+  <alternative>{0} Voreinstellung(en)</alternative><alternative>{0} Vorlage(en)</alternative></data>
   <data name="Common_ShootingCancelled" xml:space="preserve">
     <value>Abgebrochen</value>
   </data>
@@ -3189,9 +3033,6 @@ Wenn du keine 200 MB verschwenden möchest: TIFF-Format, 96 bit per pixel, ZIP</
   <data name="Settings_Online_PingConcurrency" xml:space="preserve">
     <value>Gleichzeitige Ping Anforderungen</value>
   </data>
-  <data name="LiveryIcon_Style_Gradient" xml:space="preserve">
-    <value>Gradient</value>
-  </data>
   <data name="Settings_Drive_ExpandBounds" xml:space="preserve">
     <value>Beschränkungen aufheben</value>
   </data>
@@ -3260,9 +3101,6 @@ Wenn du keine 200 MB verschwenden möchest: TIFF-Format, 96 bit per pixel, ZIP</
   </data>
   <data name="Toolbar_RescanUsings" xml:space="preserve">
     <value>Nach genutzten Schriftarten suchen</value>
-  </data>
-  <data name="Settings_Sharing_HistoryTableName" xml:space="preserve">
-    <value>Name</value>
   </data>
   <data name="Solution_SetupLivery" xml:space="preserve">
     <value>Neue Lackierung erstellen</value>
@@ -3357,10 +3195,6 @@ Wenn du keine 200 MB verschwenden möchest: TIFF-Format, 96 bit per pixel, ZIP</
   <data name="Settings_Locale_SetLocaleById" xml:space="preserve">
     <value>Sprache nach ID festlegen</value>
   </data>
-  <data name="AcError_StackTrace" xml:space="preserve">
-    <value>Stack trace:
-[mono]{0}[/mono]</value>
-  </data>
   <data name="Settings_Drive_OverridePpFilterOculusFix" xml:space="preserve">
     <value>Standard-Nachbearbeitungsfilter im Oculus Rift Modus überschreiben</value>
   </data>
@@ -3439,8 +3273,8 @@ Wenn du keine 200 MB verschwenden möchest: TIFF-Format, 96 bit per pixel, ZIP</
     <value>Wähle Aufsteigend, wenn du die schlaueste KI hinten starten lassen willst.</value>
   </data>
   <data name="Toolbar_ShowroomOptions_Tooltip" xml:space="preserve">
-    <value>Wähle Ausstellungsräume, Filter, etc.</value>
-  </data>
+    <value>Wähle Showrooms, Filter, etc.</value>
+  <alternative>Wähle Ausstellungsräume, Filter, etc.</alternative></data>
   <data name="Solution_SetupLivery_Details" xml:space="preserve">
     <value>Wähle eine neues Lackierungs-Symbol mit dem Symbol-Editor</value>
   </data>
@@ -3482,9 +3316,6 @@ Die Gleichung lautet:
 
 Ändere die 1 im Bereich (((-10*1)*x)+10*1) um das Ergebnis im Graph zu sehen.
 Gültige Werte liegen zwischen -1 und 1.</alternative></data>
-  <data name="Solution_MakeEmptyModel_Details" xml:space="preserve">
-    <value>With nothing, only emptyness</value>
-  </data>
   <data name="Settings_Drive_CustomClouds" xml:space="preserve">
     <value>Wolken mit denen des Wetters ersetzen, soweit vorhanden</value>
   <alternative>Wolken mit Wolken des Wetters ersetzen, soweit vorhanden</alternative></data>
@@ -3577,5 +3408,11 @@ Gültige Werte liegen zwischen -1 und 1.</alternative></data>
   </data>
   <data name="WeatherEdit_CutOff" xml:space="preserve">
     <value>Begrenzung</value>
+  </data>
+  <data name="CarSpecs_PowerAtWheels_FormatTooltip" xml:space="preserve">
+    <value>... Leistung an den Reifen</value>
+  </data>
+  <data name="Solution_MakeEmptyModel_Details" xml:space="preserve">
+    <value>With nothing, only emptyness</value>
   </data>
 </root>

@@ -132,9 +132,8 @@ namespace AcManager.Tools {
                             ).WhenAll()).Where(x => x.Item2 != null).ToList();
                     if (contentToInstall.Any()) {
                         list = list.ApartFrom(contentToInstall.Select(x => x.Item1)).ToList();
-                        if ((await contentToInstall.Select(x => ContentInstallationManager.Instance.InstallAsync(x.Item2, new ContentInstallationParams {
-                            AllowExecutables = true
-                        })).WhenAll()).All(x => !x)) {
+                        if ((await contentToInstall.Select(x => ContentInstallationManager.Instance.InstallAsync(x.Item2,
+                                new ContentInstallationParams(true))).WhenAll()).All(x => !x)) {
                             // TODO
                             await Task.Delay(2000);
                         }
@@ -237,7 +236,7 @@ namespace AcManager.Tools {
         /// <param name="argument">Remote source.</param>
         /// <param name="destination">Destination.</param>
         /// <exception cref="Exception">Thrown if failed or cancelled.</exception>
-        private static async Task LoadRemoveFileToNew(string argument, string destination) {
+        private static async Task LoadRemoteFileToNew(string argument, string destination) {
             using (var waiting = new WaitingDialog(ControlsStrings.Common_Loading)) {
                 await FlexibleLoader.LoadAsyncTo(argument, (url, information) => new FlexibleLoaderDestination(destination, false), null, information => {
                     if (information.FileName != null) {

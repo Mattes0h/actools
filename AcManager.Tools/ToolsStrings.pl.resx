@@ -127,8 +127,8 @@
     <value>Proszę, przywróć oryginalny launcher i spróbuj ponownie (lub zmień launcher).</value>
   </data>
   <data name="OfficialStarter_RestoreLauncherManually" xml:space="preserve">
-    <value>Nie można przywrócić nie poprawnej wersji oryginalnego launchera. Proszę przywrócić go ręcznie: trzeba wymienić “AssettoCorsa.exe” z “AssettoCorsa_backup_sp.exe”.</value>
-  </data>
+    <value>Nie można przywrócić niepoprawnej wersji oryginalnego launchera. Proszę przywrócić go ręcznie: trzeba wymienić “AssettoCorsa.exe” z “AssettoCorsa_backup_sp.exe”.</value>
+  <alternative>Nie można przywrócić nie poprawnej wersji oryginalnego launchera. Proszę przywrócić go ręcznie: trzeba wymienić “AssettoCorsa.exe” z “AssettoCorsa_backup_sp.exe”.</alternative></data>
   <data name="OfficialStarter_CannotRun" xml:space="preserve">
     <value>Nie można uruchomić.</value>
   </data>
@@ -493,26 +493,26 @@
     <value>Przepraszamy, ale szyfrowanie {0} nie jest obsługiwane</value>
   </data>
   <data name="Installator_UpdateEverything" xml:space="preserve">
-    <value>Aktualizacja wszystkiego</value>
-  </data>
+    <value>Zaktualizuj wszystko</value>
+  <alternative>Aktualizacja wszystkiego</alternative></data>
   <data name="Installator_RemoveExistingFirst" xml:space="preserve">
-    <value>Usunąć istniejące pierwsze</value>
-  </data>
+    <value>Usuń istniejące</value>
+  <alternative>Usunąć istniejące pierwsze</alternative></data>
   <data name="ContentInstallation_KeepUiInformation" xml:space="preserve">
-    <value>Utrzymuj informacji UI</value>
-  <alternative>Przechowywanie informacji UI</alternative></data>
+    <value>Zaktualizuj istniejące pliki, zachowaj informacje o interfejsie użytkownika</value>
+  <alternative>Przechowywanie informacji UI</alternative><alternative>Utrzymuj informacji UI</alternative></data>
   <data name="ContentInstallation_KeepSkinsPreviews" xml:space="preserve">
-    <value>Utrzymuj podgląd skórek</value>
-  <alternative>Przechowywanie podglądu malowań</alternative></data>
+    <value>Zaktualizuj istniejące pliki, zachowaj podgląd skórek</value>
+  <alternative>Przechowywanie podglądu malowań</alternative><alternative>Utrzymuj podgląd skórek</alternative></data>
   <data name="ContentInstallation_KeepUiInformationAndSkinsPreviews" xml:space="preserve">
-    <value>Utrzymuj informację UI &amp; podglądu skórek</value>
-  <alternative>Przechowywanie informacji UI &amp; podglądu malowań</alternative></data>
+    <value>Zaktualizuj istniejące pliki, zachowaj informacji o interfejsie i podgląd skórek</value>
+  <alternative>Przechowywanie informacji UI &amp; podglądu malowań</alternative><alternative>Utrzymuj informację UI &amp; podglądu skórek</alternative></data>
   <data name="Installator_KeepSkinPreview" xml:space="preserve">
-    <value>Utrzymuj podgląd skórek</value>
-  <alternative>Przechowywanie podglądu malowania</alternative></data>
+    <value>Zaktualizuj istniejące pliki, zachowaj podgląd skórek</value>
+  <alternative>Przechowywanie podglądu malowania</alternative><alternative>Utrzymuj podgląd skórek</alternative></data>
   <data name="Installator_KeepUiInformationAndSkinPreview" xml:space="preserve">
-    <value>Utrzymuj informację UI &amp; podglądu skórek</value>
-  <alternative>Przechowywanie informacji UI &amp; podglądu malowania</alternative></data>
+    <value>Zaktualizuj istniejące pliki, zachowaj informacji o interfejsie i podgląd skórek</value>
+  <alternative>Przechowywanie informacji UI &amp; podglądu malowania</alternative><alternative>Utrzymuj informację UI &amp; podglądu skórek</alternative></data>
   <data name="Input_Axle" xml:space="preserve">
     <value>Oś {0}</value>
   </data>
@@ -690,29 +690,17 @@
   <data name="AcSettings_Quality_High" xml:space="preserve">
     <value>Wysokie</value>
   </data>
-  <data name="AcSettings_Quality_Ultra" xml:space="preserve">
-    <value>Ultra</value>
-  </data>
-  <data name="AcSettings_ScreenshotFormat_Jpeg" xml:space="preserve">
-    <value>JPEG</value>
-  </data>
   <data name="AcSettings_ScreenshotFormat_Bmp" xml:space="preserve">
     <value>Bitmapa (bez kompresji)</value>
   </data>
   <data name="AcSettings_CustomResolution" xml:space="preserve">
     <value>Dostosuj</value>
   </data>
-  <data name="AcSettings_ResolutionFormat" xml:space="preserve">
-    <value>{0}×{1}, {2} Hz</value>
-  </data>
   <data name="AcSettings_CameraMode_SingleScreen" xml:space="preserve">
     <value>Pojedynczy ekran</value>
   </data>
   <data name="AcSettings_CameraMode_TripleScreen" xml:space="preserve">
     <value>Potrójny ekran</value>
-  </data>
-  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
-    <value>Oculus Rift</value>
   </data>
   <data name="AcSettings_ExperimentalValue" xml:space="preserve">
     <value>{0} (eksperymentalne)</value>
@@ -744,32 +732,14 @@
   <data name="AcSettings_Cubemap_SixFaces" xml:space="preserve">
     <value>Sześć powierzchni na klatkę</value>
   <alternative>Six faces per frame</alternative></data>
-  <data name="Windows_Kn5Commentary" xml:space="preserve">
-    <value>KN5 model</value>
-  </data>
   <data name="Common_AcReplay" xml:space="preserve">
     <value>Powtórka AC</value>
   </data>
   <data name="Common_Disabled" xml:space="preserve">
     <value>Wyłączone</value>
   </data>
-  <data name="Settings_DefaultPlayerName" xml:space="preserve">
-    <value>Player</value>
-  </data>
   <data name="Settings_Starter_Official" xml:space="preserve">
     <value>Oficjalny</value>
-  </data>
-  <data name="Settings_Starter_Tricky" xml:space="preserve">
-    <value>Tricky</value>
-  </data>
-  <data name="Settings_Starter_StarterPlus" xml:space="preserve">
-    <value>Starter+</value>
-  </data>
-  <data name="Settings_Starter_Sse" xml:space="preserve">
-    <value>SSE</value>
-  </data>
-  <data name="Settings_Starter_Naive" xml:space="preserve">
-    <value>Naive</value>
   </data>
   <data name="Common_Recommended" xml:space="preserve">
     <value>{0} (Zalecane)</value>
@@ -789,27 +759,6 @@
   <data name="Period_Month" xml:space="preserve">
     <value>Co miesiąc</value>
   </data>
-  <data name="SearchEngine_DuckDuckGo" xml:space="preserve">
-    <value>DuckDuckGo</value>
-  </data>
-  <data name="SearchEngine_Bing" xml:space="preserve">
-    <value>Bing</value>
-  </data>
-  <data name="SearchEngine_Google" xml:space="preserve">
-    <value>Google</value>
-  </data>
-  <data name="SearchEngine_Yandex" xml:space="preserve">
-    <value>Yandex</value>
-  </data>
-  <data name="SearchEngine_Baidu" xml:space="preserve">
-    <value>Baidu</value>
-  </data>
-  <data name="CustomShowroom_Fancy" xml:space="preserve">
-    <value>Fancy</value>
-  </data>
-  <data name="CustomShowroom_Lite" xml:space="preserve">
-    <value>Lite</value>
-  </data>
   <data name="GameCommand_UnknownProblem" xml:space="preserve">
     <value>Nieznany problem (Proces=Zero)</value>
   <alternative>Nieznany problem (Process=Null)</alternative></data>
@@ -824,9 +773,6 @@
   </data>
   <data name="Session_Drag" xml:space="preserve">
     <value>Wyścigi równoległe</value>
-  </data>
-  <data name="Session_Drift" xml:space="preserve">
-    <value>Drift</value>
   </data>
   <data name="Session_Booking" xml:space="preserve">
     <value>Rezerwacja</value>
@@ -939,9 +885,6 @@
   <data name="Weather_Squalls" xml:space="preserve">
     <value>Silne porywy wiatru</value>
   </data>
-  <data name="Weather_Tornado" xml:space="preserve">
-    <value>Tornado</value>
-  </data>
   <data name="Weather_Hurricane" xml:space="preserve">
     <value>Huragan</value>
   </data>
@@ -996,9 +939,6 @@
   <data name="Solving_CreateNewFile_Commentary" xml:space="preserve">
     <value>Nowy plik zostanie utworzony zawierając w nazwie ID</value>
   </data>
-  <data name="Uploader_GoogleDrive" xml:space="preserve">
-    <value>Google Drive</value>
-  </data>
   <data name="Uploader_EnterGoogleDriveAuthenticationCode" xml:space="preserve">
     <value>Wprowadź kod uwierzytelniający Dysk Google:</value>
   </data>
@@ -1010,9 +950,6 @@
   </data>
   <data name="Uploader_RequestFailed" xml:space="preserve">
     <value>GET żądanie nie powiodło się</value>
-  </data>
-  <data name="Uploader_RootDirectory" xml:space="preserve">
-    <value>Root</value>
   </data>
   <data name="Uploader_CannotUploadToGoogleDrive" xml:space="preserve">
     <value>Nie można przesłać pliku do Dysku Google</value>
@@ -1143,9 +1080,6 @@
   <data name="Units_BHP" xml:space="preserve">
     <value>KM</value>
   </data>
-  <data name="Units_Nm" xml:space="preserve">
-    <value>Nm</value>
-  </data>
   <data name="Common_Power" xml:space="preserve">
     <value>Moc</value>
   </data>
@@ -1160,9 +1094,6 @@
   </data>
   <data name="Common_Length" xml:space="preserve">
     <value>Długość</value>
-  </data>
-  <data name="Common_KN5" xml:space="preserve">
-    <value>KN5</value>
   </data>
   <data name="Common_Exporting" xml:space="preserve">
     <value>Eksportuję...</value>
@@ -1184,9 +1115,6 @@
   </data>
   <data name="AcSettings_Quality_Normal" xml:space="preserve">
     <value>Normalna</value>
-  </data>
-  <data name="AcSettings_Quality_Subpixel" xml:space="preserve">
-    <value>Subpixel</value>
   </data>
   <data name="AcSettings_Quality_Ideal" xml:space="preserve">
     <value>Ideał</value>
@@ -1223,9 +1151,6 @@
   </data>
   <data name="AcSettings_Quality_VeryLow" xml:space="preserve">
     <value>Bardzo niskie</value>
-  </data>
-  <data name="Common_Weekend" xml:space="preserve">
-    <value>Weekend</value>
   </data>
   <data name="Common_UndefinedError" xml:space="preserve">
     <value>Niezdefiniowany błąd</value>
@@ -1371,9 +1296,6 @@
   <data name="Common_InvalidFormat" xml:space="preserve">
     <value>Niepoprawny format</value>
   </data>
-  <data name="Assists_AbsLabel" xml:space="preserve">
-    <value>ABS:</value>
-  </data>
   <data name="Assists_AbsLabel_Tooltip" xml:space="preserve">
     <value>System anty-blokowania kół</value>
   </data>
@@ -1454,9 +1376,6 @@
   </data>
   <data name="KunosCareer_Start" xml:space="preserve">
     <value>Inicjacja</value>
-  </data>
-  <data name="Drive_Grid_Manual" xml:space="preserve">
-    <value>Manual</value>
   </data>
   <data name="Drive_Grid_FilteredBy" xml:space="preserve">
     <value>Filtruj przez...</value>
@@ -1539,9 +1458,6 @@
   <data name="Settings_Starter_Naive_Description" xml:space="preserve">
     <value>Właśnie próbuje uruchomić acs.exe bezpośrednio; w większości przypadków nie uda się</value>
   </data>
-  <data name="Units_RPM" xml:space="preserve">
-    <value>RPM</value>
-  </data>
   <data name="MagickNet_CannotLoad" xml:space="preserve">
     <value>Nie można załadować obrazu za pomocą Magick.NET</value>
   </data>
@@ -1610,9 +1526,6 @@
   </data>
   <data name="DifficultyLevel_Hard" xml:space="preserve">
     <value>Trudny</value>
-  </data>
-  <data name="DifficultyLevel_Alien" xml:space="preserve">
-    <value>Alien</value>
   </data>
   <data name="SpecialEvent_Description" xml:space="preserve">
     <value>{0} na {1}.</value>
@@ -1697,11 +1610,11 @@ Chciałbyś spakować to przed uruchomieniem serwera? Jeśli tak, nie zapomnij u
     <value>Preset stanu toru</value>
   </data>
   <data name="Online_Server_CarSkinIsMissing" xml:space="preserve">
-    <value>Brakuje skórki {0} samochodu.</value>
-  </data>
+    <value>Brakuje skórki samochodu{0}.</value>
+  <alternative>Brakuje skórki {0} samochodu.</alternative></data>
   <data name="Online_Server_CarSkinsAreMissing" xml:space="preserve">
-    <value>Brakuje skórek {0} samochodów.</value>
-  </data>
+    <value>Brakuje skórek samochodów {0}.</value>
+  <alternative>Brakuje skórek {0} samochodów.</alternative></data>
   <data name="Online_Server_WeatherIsMissing" xml:space="preserve">
     <value>Brakuje pogody {0}.</value>
   </data>
@@ -1722,5 +1635,41 @@ Chciałbyś spakować to przed uruchomieniem serwera? Jeśli tak, nie zapomnij u
   </data>
   <data name="Shared_RhmPreset" xml:space="preserve">
     <value>Ustawienie Real Head Motion</value>
+  </data>
+  <data name="Controls_Gas" xml:space="preserve">
+    <value>Gaz</value>
+  </data>
+  <data name="Controls_Brake" xml:space="preserve">
+    <value>Hamulec</value>
+  </data>
+  <data name="Controls_Steer" xml:space="preserve">
+    <value>Kierownica</value>
+  </data>
+  <data name="BestLapsControl_BestLaps" xml:space="preserve">
+    <value>Najlepsze okrążenia</value>
+  </data>
+  <data name="BestLapsControl_BestLap" xml:space="preserve">
+    <value>Najlepsze okrążenie</value>
+  </data>
+  <data name="Common_Ballast" xml:space="preserve">
+    <value>Balast</value>
+  </data>
+  <data name="Common_Restrictor" xml:space="preserve">
+    <value>Ograniczenia</value>
+  </data>
+  <data name="Race_ArrangeAIStrengthBasedOnPWRatio" xml:space="preserve">
+    <value>Rozmieść siłę AI na podstawie stosunku mocy/wagi</value>
+  </data>
+  <data name="Race_RandomizationTitle" xml:space="preserve">
+    <value>Losowość</value>
+  </data>
+  <data name="Race_ShowRelativeRange" xml:space="preserve">
+    <value>Pokaż zakres względny</value>
+  </data>
+  <data name="Race_ShowAIAggression" xml:space="preserve">
+    <value>Pokaż poziom agresji w nazwie AI</value>
+  </data>
+  <data name="Race_OpponentsAggression" xml:space="preserve">
+    <value>Agresja przeciwników</value>
   </data>
 </root>

@@ -17,8 +17,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private static readonly Dictionary<string, FileSystemWatcher> Watchers = new Dictionary<string, FileSystemWatcher>();
 
         private static FileSystemWatcher GetWatcher(string directory) {
-            FileSystemWatcher result;
-            if (Watchers.TryGetValue(directory, out result)) return result;
+            if (Watchers.TryGetValue(directory, out var result)) return result;
 
             Directory.CreateDirectory(directory);
             result = new FileSystemWatcher {
@@ -136,8 +135,22 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
+        private bool _canSave = true, _hasToSave = false;
+
+        protected void SetCanSave(bool value) {
+            if (_canSave == value) return;
+            _canSave = value;
+            if (_canSave && _hasToSave) {
+                Save();
+            }
+        }
+
         protected virtual async void Save() {
             if (IsSaving || IsLoading || Ini == null) return;
+            if (!_canSave) {
+                _hasToSave = true;
+                return;
+            }
 
             IsSaving = true;
             await Task.Delay(500);
@@ -152,10 +165,16 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 NonfatalError.Notify(ToolsStrings.AcSettings_CannotSave, ToolsStrings.AcSettings_CannotSave_Commentary, e);
             } finally {
                 IsSaving = false;
+                _hasToSave = false;
             }
         }
 
         public void SaveImmediately() {
+            if (!_canSave) {
+                _hasToSave = true;
+                return;
+            }
+
             try {
                 SetToIni();
                 IgnoreChangesForAWhile();
@@ -164,9 +183,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 NonfatalError.Notify(ToolsStrings.AcSettings_CannotSave, ToolsStrings.AcSettings_CannotSave_Commentary, e);
             } finally {
                 IsSaving = false;
+                _hasToSave = false;
             }
-
-            IsSaving = false;
         }
 
         protected void ForceSave() {

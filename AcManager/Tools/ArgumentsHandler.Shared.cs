@@ -18,6 +18,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
+using SharpCompress.Common;
 using SharpCompress.Readers;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
@@ -82,6 +83,9 @@ namespace AcManager.Tools {
 
                 case SharedEntryType.CustomPreviewsPreset:
                     return ProcessSharedCustomPreviewsPreset(shared, data);
+
+                case SharedEntryType.CspSettings:
+                    return ProcessSharedCspSettings(shared, data);
 
                 case SharedEntryType.Replay:
                     throw new NotSupportedException();
@@ -200,6 +204,31 @@ namespace AcManager.Tools {
                     return ArgumentHandleResult.SuccessfulShow;
                 default:
                     return ArgumentHandleResult.Failed;
+            }
+        }
+
+        private static ArgumentHandleResult ProcessSharedCspSettings(SharedEntry shared, byte[] data) {
+            var result = ShowDialog(shared);
+            using (var model = PatchSettingsModel.Create()) {
+                switch (result) {
+                    case Choise.Save:
+                    case Choise.ApplyAndSave:
+                        var filename = FileUtils.EnsureUnique(Path.Combine(
+                                PresetsManager.Instance.GetDirectory(model.PresetableCategory), @"Loaded", shared.GetFileName()));
+                        Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
+                        File.WriteAllBytes(filename, data);
+                        if (result == Choise.ApplyAndSave) {
+                            model.ImportFromPresetData(data.ToUtf8String());
+                            UserPresetsControl.SetCurrentFilename(model.PresetableKey, filename);
+                        }
+                        return ArgumentHandleResult.SuccessfulShow;
+                    case Choise.Apply:
+                        model.ImportFromPresetData(data.ToUtf8String());
+                        UserPresetsControl.SetCurrentFilename(model.PresetableKey, null);
+                        return ArgumentHandleResult.SuccessfulShow;
+                    default:
+                        return ArgumentHandleResult.Failed;
+                }
             }
         }
 

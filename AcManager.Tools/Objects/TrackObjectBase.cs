@@ -160,6 +160,21 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        private double _layoutPriority;
+
+        public double LayoutPriority {
+            get => _layoutPriority;
+            set {
+                if (value == _layoutPriority) return;
+                _layoutPriority = value;
+
+                if (Loaded) {
+                    OnPropertyChanged(nameof(LayoutPriority));
+                    Changed = true;
+                }
+            }
+        }
+
         private string _specsLength;
         private string _specsLengthDisplay;
 
@@ -342,8 +357,8 @@ namespace AcManager.Tools.Objects {
         #endregion
 
         public TimeSpan GuessApproximateLapDuration(CarObject car = null) {
-            var averageSpeed = ((FlexibleParser.TryParseDouble(car?.SpecsTopSpeed) ?? 200d) * 0.3).Clamp(20d, 200d);
-            return TimeSpan.FromHours(SpecsLengthValue / 1e3 / averageSpeed).Clamp(TimeSpan.FromSeconds(30), TimeSpan.FromHours(2));
+            var averageSpeed = ((FlexibleParser.TryParseDouble(car?.SpecsTopSpeed) ?? 200d) * 0.5).Clamp(20d, 200d);
+            return TimeSpan.FromHours(SpecsLengthValue / 1e3 / averageSpeed).Clamp(TimeSpan.FromSeconds(90), TimeSpan.FromHours(2));
         }
 
         protected override AutocompleteValuesList GetTagsList() {
@@ -362,6 +377,14 @@ namespace AcManager.Tools.Objects {
 
             City = json.GetStringValueOnly("city");
             GeoTags = json.GetGeoTagsValueOnly("geotags");
+            LayoutPriority = json.GetDoubleValueOnly("priority") ?? 0d;
+
+            if (GeoTags?.IsEmptyOrInvalid != false) {
+                var data = DataProvider.Instance.TrackParams[MainTrackObject.Id];
+                if (data.ContainsKey(@"LATITUDE") && data.ContainsKey(@"LONGITUDE")) {
+                    GeoTags = new GeoTagsEntry(data.GetDouble("LATITUDE", 0d), data.GetDouble("LONGITUDE", 0d));
+                }
+            }
 
             if (Country == null) {
                 foreach (var country in Tags.Select(AcStringValues.CountryFromTag).Where(x => x != null)) {
@@ -401,6 +424,12 @@ namespace AcManager.Tools.Objects {
                 json[@"geotags"] = GeoTags.ToJObject();
             } else {
                 json.Remove(@"geotags");
+            }
+
+            if (LayoutPriority != 0d) {
+                json[@"priority"] = LayoutPriority;
+            } else {
+                json.Remove(@"priority");
             }
 
             json[@"length"] = SpecsLength;

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using AcManager.Tools.ContentInstallation.Entries;
 using AcManager.Tools.ContentInstallation.Installators;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -49,10 +50,10 @@ namespace AcManager.Tools.ContentInstallation {
             public string Key { get; }
 
             [CanBeNull]
-            public string Name { get; }
+            public string Name { get; private set; }
 
             [Localizable(false), CanBeNull]
-            public string NameLowerCase { get; }
+            public string NameLowerCase { get; private set; }
 
             public long Size { get; protected set; }
 
@@ -69,6 +70,11 @@ namespace AcManager.Tools.ContentInstallation {
 
                 NameLowerCase = Name?.ToLowerInvariant();
                 Parent = parent;
+            }
+
+            public void ForceName([CanBeNull] string name) {
+                Name = name;
+                NameLowerCase = Name?.ToLowerInvariant();
             }
 
             public string Id => NameLowerCase;
@@ -292,7 +298,7 @@ namespace AcManager.Tools.ContentInstallation {
                             return false;
                         }
 
-                        if (double.TryParse(n, NumberStyles.Any, CultureInfo.InvariantCulture, out double v)) {
+                        if (double.TryParse(n, NumberStyles.Any, CultureInfo.InvariantCulture, out _)) {
                             // Numbers: 0.kn5, 10.kn5, …
                             // Kunos name their extra files like that.
                             return false;
@@ -319,7 +325,7 @@ namespace AcManager.Tools.ContentInstallation {
                     }
                 } else {
                     trackId = directory.Files.Where(x => x.NameLowerCase.EndsWith(".kn5")).OrderByDescending(x => x.Size)
-                                       .FirstOrDefault()?.NameLowerCase.ApartFromLast(".kn5");
+                            .FirstOrDefault()?.NameLowerCase.ApartFromLast(".kn5");
                     if (trackId == null) {
                         Logging.Write("Can’t determine ID");
                         return null;
@@ -486,7 +492,7 @@ namespace AcManager.Tools.ContentInstallation {
                     var parsed = JsonExtension.Parse(data.ToUtf8String());
                     var carId = directory.Name ??
                             directory.GetSubDirectory("sfx")?.Files.Select(x => x.NameLowerCase)
-                                     .FirstOrDefault(x => x.EndsWith(@".bank") && x.Count('.') == 1 && x != @"common.bank")?.ApartFromLast(@".bank");
+                                    .FirstOrDefault(x => x.EndsWith(@".bank") && x.Count('.') == 1 && x != @"common.bank")?.ApartFromLast(@".bank");
 
                     if (carId != null) {
                         return new CarContentEntry(directory.Key ?? "", carId, parsed.GetStringValueOnly("parent") != null,
@@ -510,7 +516,7 @@ namespace AcManager.Tools.ContentInstallation {
                     var parsed = JsonExtension.Parse(data.ToUtf8String());
                     var showroomId = directory.Name ??
                             directory.Files.Where(x => x.NameLowerCase.EndsWith(@".kn5")).OrderByDescending(x => x.Info.Size)
-                                     .FirstOrDefault()?.NameLowerCase.ApartFromLast(@".kn5");
+                                    .FirstOrDefault()?.NameLowerCase.ApartFromLast(@".kn5");
                     if (showroomId != null) {
                         return new ShowroomContentEntry(directory.Key ?? "", showroomId,
                                 parsed.GetStringValueOnly("name"), parsed.GetStringValueOnly("version"), icon);
@@ -646,9 +652,91 @@ namespace AcManager.Tools.ContentInstallation {
                 return new TexturesConfigEntry(directory.Key ?? "", directory.Name ?? @"people");
             }
 
+            if (directory.HasSubFile("module.ini") && directory.HasSubFile(directory.Name + ".html")) {
+                var iconFile = await (directory.GetSubDirectory("graphics")?.Files.FirstOrDefault(
+                        x => x.NameLowerCase.Contains("icon"))?.Info.ReadAsync() ?? Task.FromResult((byte[])null));
+                var data = await directory.GetSubFile("module.ini").Info.ReadAsync() ?? throw new MissingContentException();
+                var manifest = IniFile.Parse(data.ToUtf8String())["MODULE"];
+                cancellation.ThrowIfCancellationRequested();
+                return new OriginalLauncherModuleEntry(directory.Key ?? "", directory.Name, manifest.GetNonEmpty("NAME"),
+                        manifest.GetNonEmpty("VERSION"), iconFile, manifest.GetNonEmpty("DESCRIPTION"));
+            }
+
+            if (directory.HasSubFile(PatchHelper.MainFileName) && directory.HasSubDirectory("extension")) {
+                var dwrite = directory.GetSubFile(PatchHelper.MainFileName);
+                var extension = directory.GetSubDirectory("extension");
+                var manifest = directory.GetSubDirectory("extension")?.GetSubDirectory("config")?.GetSubFile("data_manifest.ini");
+                string version;
+                if (manifest != null) {
+                    var data = await manifest.Info.ReadAsync() ?? throw new MissingContentException();
+                    cancellation.ThrowIfCancellationRequested();
+                    version = IniFile.Parse(data.ToUtf8String())["VERSION"].GetNonEmpty("SHADERS_PATCH");
+                } else {
+                    var description = directory.GetSubFile("description.jsgme");
+                    if (description != null) {
+                        var data = await description.Info.ReadAsync() ?? throw new MissingContentException();
+                        cancellation.ThrowIfCancellationRequested();
+                        version = Regex.Match(data.ToUtf8String(), @"(?<=v)\d.*").Value?.TrimEnd('.').Or(null);
+                    } else {
+                        var parent = directory;
+                        while (parent.Parent?.Name != null) parent = parent.Parent;
+                        version = parent.Name != null ? Regex.Match(parent.Name, @"(?<=v)\d.*").Value?.TrimEnd('.').Or(null) : null;
+                    }
+                }
+
+                return new ShadersPatchEntry(directory.Key ?? "", new[] { dwrite.Key, extension.Key }, version);
+            }
+
+            if (directory.NameLowerCase == "__gbwsuite") {
+                return new CustomFolderEntry(directory.Key ?? "", new[] { directory.Key }, "GBW scripts", "__gbwSuite");
+            }
+
+            if (directory.Name == "cars" && directory.Parent?.Name == "config" && directory.Parent?.Parent?.Name == "extension") {
+                return new CustomFolderEntry(directory.Key ?? "", new[] { directory.Key }, "Cars configs", "extension/config/cars", onlyUpdating: true);
+            }
+
+            if (directory.Name == "tracks" && directory.Parent?.Name == "config" && directory.Parent?.Parent?.Name == "extension") {
+                return new CustomFolderEntry(directory.Key ?? "", new[] { directory.Key }, "Track configs", "extension/config/tracks", onlyUpdating: true);
+            }
+
+            PatchPluginEntry ret;
+            if ((ret = await CheckPatchPlugin("weather.lua", "CSP Weather FX script", @"weather")) != null) {
+                return ret;
+            }
+            if ((ret = await CheckPatchPlugin("controller.lua", "CSP Weather FX controller", @"weather-controllers")) != null) {
+                return ret;
+            }
+            if ((ret = await CheckPatchPlugin("camera.lua", "CSP camera script", @"lua\chaser-camera")) != null) {
+                return ret;
+            }
+            if ((ret = await CheckPatchPlugin("fireworks.lua", "CSP fireworks script", @"lua\fireworks")) != null) {
+                return ret;
+            }
+
+            async Task<PatchPluginEntry> CheckPatchPlugin(string fileName, string displayName, string relativePath) {
+                var directoryName = directory?.Name;
+                if (directoryName != null && directory.HasSubFile(fileName) && directory.Parent?.NameLowerCase == Path.GetFileName(relativePath)) {
+                    var manifestInfo = directory.GetSubFile("manifest.ini");
+                    var name = AcStringValues.NameFromId(directoryName);
+                    string version = null;
+                    string description = null;
+                    if (manifestInfo != null) {
+                        var data = IniFile.Parse((await manifestInfo.Info.ReadAsync() ?? throw new MissingContentException()).ToUtf8String())["ABOUT"];
+                        cancellation.ThrowIfCancellationRequested();
+                        name = data.GetNonEmpty("NAME") ?? name;
+                        version = data.GetNonEmpty("VERSION");
+                        description = data.GetNonEmpty("DESCRIPTION");
+                    }
+                    return new PatchPluginEntry(directory.Key ?? "", new[] { directory.Key }, $"{displayName} “{name}”",
+                            Path.Combine(AcRootDirectory.Instance.RequireValue, "extension", relativePath ?? "", directoryName), 1e5,
+                            version, description);
+                }
+                return null;
+            }
+
             // Mod
             if (directory.Parent?.NameLowerCase == "mods"
-                    && (directory.HasAnySubDirectory("content", "apps", "system", "launcher", "extension") || directory.HasSubFile("dwrite.dll"))) {
+                    && (directory.HasAnySubDirectory("content", "apps", "system", "launcher", "extension") || directory.HasSubFile(PatchHelper.MainFileName))) {
                 var name = directory.Name;
                 if (name != null && directory.GetSubDirectory("content")?.GetSubDirectory("tracks")?.Directories.Any(
                         x => x.GetSubDirectory("skins")?.GetSubDirectory("default")?.GetSubFile("ui_track_skin.json") != null) != true) {
@@ -761,8 +849,8 @@ namespace AcManager.Tools.ContentInstallation {
                     if (presets == null || presets.Count == 0) return null;
 
                     var resources = ini.GetNonEmpty("EffectSearchPaths")?.Split(',')
-                                       .Concat(ini.GetNonEmpty("TextureSearchPaths")?.Split(',') ?? new string[0])
-                                       .Select(ToRelativePath).NonNull().ToList() ?? new List<string>();
+                            .Concat(ini.GetNonEmpty("TextureSearchPaths")?.Split(',') ?? new string[0])
+                            .Select(ToRelativePath).NonNull().ToList() ?? new List<string>();
 
                     return new ReshadeSetupEntry(file.Key, presets.JoinToReadableString(), presets.Concat(resources));
 
@@ -787,7 +875,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         private class MissingContentException : Exception { }
 
-        public async Task<Scanned> GetEntriesAsync([NotNull] List<IFileInfo> list, string baseId,
+        public async Task<Scanned> GetEntriesAsync([NotNull] List<IFileInfo> list, string baseId, string baseName,
                 [CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Scanning…"));
 
@@ -797,6 +885,8 @@ namespace AcManager.Tools.ContentInstallation {
 
             var s = Stopwatch.StartNew();
             var root = new DirectoryNode(_installationParams.FallbackId ?? baseId, null);
+            root.ForceName(baseName);
+
             foreach (var info in list) {
                 root.Add(info);
             }

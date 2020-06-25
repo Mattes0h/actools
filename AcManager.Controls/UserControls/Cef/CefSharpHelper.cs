@@ -5,6 +5,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers.Plugins;
 using CefSharp;
+using CefSharp.Wpf;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Controls.UserControls.Cef {
@@ -31,6 +32,7 @@ namespace AcManager.Controls.UserControls.Cef {
 
                 // TODO: Try the new way?
                 CefSharpSettings.LegacyJavascriptBindingEnabled = true;
+                CefSharpSettings.WcfEnabled = true;
                 CefSharp.Cef.EnableHighDPISupport();
 
                 var path = PluginsManager.Instance.GetPluginDirectory(KnownPlugins.CefSharp);
@@ -60,7 +62,7 @@ namespace AcManager.Controls.UserControls.Cef {
                     IsCSPBypassing = true,
                     IsDisplayIsolated = false,
                     IsLocal = false,
-                    IsSecure = false,
+                    IsSecure = true,
                     IsStandard = false,
                     SchemeHandlerFactory = AcApiHandler
                 });
@@ -83,6 +85,7 @@ namespace AcManager.Controls.UserControls.Cef {
                     }
                 };
 
+                CefSharp.Cef.AddCrossOriginWhitelistEntry(@"https://www.simracingsystem.com", @"ac", string.Empty, true);
                 CefSharp.Cef.Initialize(settings, false,
                         wpfMode && !OptionMultiThreadedMessageLoop ? new WpfBrowserProcessHandler(Application.Current.Dispatcher) : new BrowserProcessHandler());
                 Logging.Write("CEF is initialized");

@@ -18,7 +18,8 @@ using SharpCompress.Readers;
 
 namespace AcManager.Tools.ContentInstallation.Implementations {
     internal class SharpCompressContentInstallator : ContentInstallatorBase {
-        public static async Task<IAdditionalContentInstallator> Create(string filename, ContentInstallationParams installationParams, CancellationToken cancellation) {
+        public static async Task<IAdditionalContentInstallator> Create([NotNull] string filename, [NotNull] ContentInstallationParams installationParams,
+                CancellationToken cancellation) {
             var result = new SharpCompressContentInstallator(filename, installationParams);
             await result.CreateExtractorAsync();
             return result;
@@ -29,7 +30,7 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
 
         public string Filename { get; }
 
-        private SharpCompressContentInstallator(string filename, ContentInstallationParams installationParams) : base(installationParams) {
+        private SharpCompressContentInstallator([NotNull] string filename, [NotNull] ContentInstallationParams installationParams) : base(installationParams) {
             Filename = filename;
         }
 
@@ -52,6 +53,10 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
         protected override string GetBaseId() {
             var id = Path.GetFileNameWithoutExtension(Filename)?.ToLower();
             return AcStringValues.IsAppropriateId(id) ? id : null;
+        }
+
+        protected override string GetBaseName() {
+            return Path.GetFileNameWithoutExtension(Filename);
         }
 
         private class SimpleDirectoryInfo : IDirectoryInfo {

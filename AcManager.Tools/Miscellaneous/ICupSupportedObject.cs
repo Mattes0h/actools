@@ -1,12 +1,13 @@
-﻿using JetBrains.Annotations;
+﻿using System.ComponentModel;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Miscellaneous {
-    public interface ICupSupportedObject {
+    public interface ICupSupportedObject : INotifyPropertyChanged {
         [NotNull]
         string Id { get; }
 
         [CanBeNull]
-        string InstalledVersion { get; }
+        string Version { get; }
 
         CupContentType CupContentType { get; }
 
@@ -16,6 +17,7 @@ namespace AcManager.Tools.Miscellaneous {
         bool IsCupUpdateAvailable { get; }
 
         void OnCupUpdateAvailableChanged();
+
         void SetValues(string author, string informationUrl, string version);
     }
 }

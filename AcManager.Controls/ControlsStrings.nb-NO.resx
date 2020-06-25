@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AcObject_AuthorLabel" xml:space="preserve">
+    <value>Forfatter:</value>
+  </data>
+  <data name="AcObject_CarBrandLabel" xml:space="preserve">
+    <value>Merke:</value>
+  </data>
+  <data name="AcObject_CarClassLabel" xml:space="preserve">
+    <value>Klasse:</value>
+  </data>
+  <data name="AcObject_CarParentLabel" xml:space="preserve">
+    <value>Forelder:</value>
+  </data>
+  <data name="AcObject_CityLabel" xml:space="preserve">
+    <value>By:</value>
+  </data>
+  <data name="AcObject_ContryLabel" xml:space="preserve">
+    <value>Land:</value>
+  </data>
+  <data name="AcObject_SpecsLabel" xml:space="preserve">
+    <value>Spesifikasjoner:</value>
+  </data>
+  <data name="AcObject_TyresLabel" xml:space="preserve">
+    <value>Dekk:</value>
+  </data>
+  <data name="AcObject_VersionLabel" xml:space="preserve">
+    <value>Versjon:</value>
+  </data>
+  <data name="AcObject_YearLabel" xml:space="preserve">
+    <value>År:</value>
+  </data>
+  <data name="AcObject_YearLabel_CarTooltip" xml:space="preserve">
+    <value>Produksjonsår:</value>
+  </data>
+  <data name="Animation_Down" xml:space="preserve">
+    <value>Ned</value>
+  </data>
+  <data name="Animation_Modern" xml:space="preserve">
+    <value>Nytt</value>
+  </data>
+  <data name="Animation_Up" xml:space="preserve">
+    <value>Opp</value>
+  </data>
+  <data name="Assists_StabilityControlLabel" xml:space="preserve">
+    <value>Stabilitetskontroll:</value>
+  </data>
+  <data name="Common_Cancelled" xml:space="preserve">
+    <value>Avbrutt</value>
+  </data>
+  <data name="Common_Error" xml:space="preserve">
+    <value>Feil</value>
+  </data>
+  <data name="Common_GoodNews" xml:space="preserve">
+    <value>Gode nyheter!</value>
+  </data>
+  <data name="Common_Loading" xml:space="preserve">
+    <value>Lasting</value>
+  </data>
+  <data name="Common_MetersPostfix" xml:space="preserve">
+    <value>m</value>
+  </data>
+  <data name="Common_MinutePostfix" xml:space="preserve">
+    <value>minutt</value>
+  </data>
+  <data name="Common_MinutesPostfix" xml:space="preserve">
+    <value>min</value>
+  </data>
+  <data name="Common_Options" xml:space="preserve">
+    <value>Opsjoner</value>
+  </data>
+  <data name="Common_SecondsPostfix" xml:space="preserve">
+    <value>sek</value>
+  </data>
+  <data name="Common_Settings" xml:space="preserve">
+    <value>Innstillinger</value>
+  </data>
+  <data name="Common_TryAgain" xml:space="preserve">
+    <value>Prøv igjen</value>
+  </data>
+  <data name="Controls_EffectsHeader" xml:space="preserve">
+    <value>Effekter:</value>
+  </data>
+  <data name="Controls_MiscellaneousHeader" xml:space="preserve">
+    <value>Diverse:</value>
+  </data>
+  <data name="Controls_RangeFromAxis" xml:space="preserve">
+    <value>Fra</value>
+  </data>
+  <data name="Controls_RangeToAxis" xml:space="preserve">
+    <value>Til</value>
+  </data>
+  <data name="Controls_RoadEffect" xml:space="preserve">
+    <value>Vei effekt</value>
+  </data>
+  <data name="Controls_SteeringWheelButton" xml:space="preserve">
+    <value>Rattknapp</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Brightness" xml:space="preserve">
+    <value>Lysstyrke</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_HideWheels" xml:space="preserve">
+    <value>Skjul hjulene</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Save" xml:space="preserve">
+    <value>Lagre</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSizeHeader" xml:space="preserve">
+    <value>Størrelse</value>
+  </data>
+  <data name="CustomShowroom_Control_Lights" xml:space="preserve">
+    <value>Lys</value>
+  </data>
+  <data name="CustomShowroom_ControlHeader" xml:space="preserve">
+    <value>Kontroll</value>
+  </data>
+  <data name="CustomShowroom_Export" xml:space="preserve">
+    <value>Eksport</value>
+  </data>
+  <data name="CustomShowroom_Loading" xml:space="preserve">
+    <value>Laster modell…</value>
+  </data>
+  <data name="CustomShowroom_Selected_NameLabel" xml:space="preserve">
+    <value>Navn:</value>
+  </data>
+  <data name="CustomShowroom_TextureDimensionsLabel" xml:space="preserve">
+    <value>Dimensjoner:</value>
+  </data>
+  <data name="CustomShowroom_TextureSizeLabel" xml:space="preserve">
+    <value>Størrelse:</value>
+  </data>
+  <data name="CustomShowroom_Tools_Title" xml:space="preserve">
+    <value>Verktøy</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_1024" xml:space="preserve">
+    <value>Se i 1024x1024</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_2048" xml:space="preserve">
+    <value>Se i 2048x2048</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_4096" xml:space="preserve">
+    <value>Se i 4096x4096</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_512" xml:space="preserve">
+    <value>Se i 512x512</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_Prompt" xml:space="preserve">
+    <value>Dimensjoner ([Bredde]x[Høyde]):</value>
+  </data>
+  <data name="ImageViewer_CannotSave" xml:space="preserve">
+    <value>Kan ikke lagre bilde</value>
+  </data>
+  <data name="ImageViewer_DefaultName" xml:space="preserve">
+    <value>Bilde</value>
+  </data>
+  <data name="KunosCareer_Error" xml:space="preserve">
+    <value>{0} feil</value>
+  </data>
+  <data name="Online_CarIsMissingLabel" xml:space="preserve">
+    <value>Bil mangler:</value>
+  </data>
+  <data name="QuickSwitches_Exposure_Tooltip" xml:space="preserve">
+    <value>Lysstryke</value>
+  </data>
+  <data name="QuickSwitches_Fullscreen" xml:space="preserve">
+    <value>Fullskjerm</value>
+  </data>
+  <data name="QuickSwitches_Fullscreen_Tooltip" xml:space="preserve">
+    <value>Fullskjerm-modus (for eksempel, virker ikke ShadowPlay uten det)</value>
+  </data>
+  <data name="QuickSwitches_HideWheel" xml:space="preserve">
+    <value>Skjul Ratt</value>
+  </data>
+  <data name="QuickSwitches_HideWheel_Tooltip" xml:space="preserve">
+    <value>Skjul Ratt</value>
+  </data>
+  <data name="QuickSwitches_Mirror" xml:space="preserve">
+    <value>Speil</value>
+  </data>
+  <data name="QuickSwitches_Names" xml:space="preserve">
+    <value>Navnene</value>
+  </data>
+  <data name="QuickSwitches_Nearest" xml:space="preserve">
+    <value>Nærmeste</value>
+  </data>
+  <data name="QuickSwitches_OnlineName" xml:space="preserve">
+    <value>Navn på nett</value>
+  </data>
+  <data name="Share_CannotShare" xml:space="preserve">
+    <value>Kan ikke dele {0}</value>
+  </data>
+  <data name="Share_EnterNameHeader" xml:space="preserve">
+    <value>Dele som</value>
+  </data>
+  <data name="Share_InProgress" xml:space="preserve">
+    <value>Deling…</value>
+  </data>
+  <data name="Showroom_DisableSweetFx" xml:space="preserve">
+    <value>Deaktivere SweetFX</value>
+  </data>
+  <data name="Theme_Black" xml:space="preserve">
+    <value>Svart</value>
+  </data>
+  <data name="Theme_Dark" xml:space="preserve">
+    <value>Mørk</value>
+  </data>
+  <data name="Theme_Light" xml:space="preserve">
+    <value>Lys</value>
+  </data>
+  <data name="Video_CannotPlay" xml:space="preserve">
+    <value>Kan ikke spille videoen</value>
+  </data>
+  <data name="VideoViewer_CannotPlay" xml:space="preserve">
+    <value>Kan ikke spille videoen</value>
+  </data>
+  <data name="TableHeader_Name" xml:space="preserve">
+    <value>Navn</value>
+  </data>
+  <data name="TableHeader_Car" xml:space="preserve">
+    <value>Bil</value>
+  </data>
+  <data name="TableHeader_Date" xml:space="preserve">
+    <value>Dato</value>
+  </data>
+  <data name="TableHeader_Nationality" xml:space="preserve">
+    <value>Nasjonalitet</value>
+  </data>
+</root>

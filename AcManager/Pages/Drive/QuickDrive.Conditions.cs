@@ -365,7 +365,9 @@ namespace AcManager.Pages.Drive {
 
             private Diapason<int> GetBasicTimeDiapason() {
                 var result = Diapason.CreateTime(string.Empty);
-                result.Pieces.Add(new Diapason<int>.Piece(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum));
+                result.Pieces.Add(PatchHelper.IsFeatureSupported(PatchHelper.FeatureFullDay)
+                        ? new Diapason<int>.Piece(0, CommonAcConsts.TimeAbsoluteMaximum)
+                        : new Diapason<int>.Piece(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum));
                 return result;
             }
 
@@ -452,7 +454,7 @@ namespace AcManager.Pages.Drive {
             }
 
             private bool IsTimeUnusual(int time) {
-                return time < CommonAcConsts.TimeMinimum || time > CommonAcConsts.TimeMaximum;
+                return PatchHelper.ClampTime(time) != time;
             }
 
             private bool IsTimeUnusual() {
@@ -471,14 +473,15 @@ namespace AcManager.Pages.Drive {
 
             public bool UseSpecificDate {
                 get => _useSpecificDate;
-                set => Apply(value, ref _useSpecificDate);
+                set => Apply(value, ref _useSpecificDate, SaveLater);
             }
 
             private DateTime _specificDateValue;
 
             public DateTime SpecificDateValue {
                 get => _specificDateValue;
-                set => Apply(value, ref _specificDateValue);
+                set => Apply(value.ToUnixTimestamp() < TimeSpan.FromHours(12).TotalSeconds ? DateTime.Now :  value,
+                ref _specificDateValue, SaveLater);
             }
 
             private bool _randomTime;
@@ -643,7 +646,7 @@ namespace AcManager.Pages.Drive {
                                         TryToSetWeather();
 
                                         if (!RealConditionsManualWind) {
-                                            WindDirection = weather.WindDirection.RoundToInt();
+                                            WindDirection = ((weather.WindDirection + 180) % 360).RoundToInt();
                                             WindSpeedMin = weather.WindSpeed * 3.6;
                                             WindSpeedMax = weather.WindSpeed * 3.6;
                                         }

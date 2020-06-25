@@ -218,6 +218,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public static CameraManagerSettings CameraManager => _cameraManager ?? (_cameraManager = new CameraManagerSettings());
 
 
+        private static CameraOrbitSettings _cameraOrbit;
+        public static CameraOrbitSettings CameraOrbit => _cameraOrbit ?? (_cameraOrbit = new CameraOrbitSettings());
+
+
+        private static FanatecSettings _fanatec;
+        public static FanatecSettings Fanatec => _fanatec ?? (_fanatec = new FanatecSettings());
+
+
         private static ControlsSettings _controls;
         public static ControlsSettings Controls {
             get {
@@ -270,6 +278,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         private static SystemSettings _system;
         public static SystemSettings System => _system ?? (_system = new SystemSettings());
+
+
+        private static PitMenuSettings _pitMenu;
+        public static PitMenuSettings PitMenu => _pitMenu ?? (_pitMenu = new PitMenuSettings());
 
 
         private static FfPostProcessSettings _ffPostProcess;

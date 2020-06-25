@@ -116,8 +116,25 @@ namespace AcManager.Pages.Drive {
                     if (Equals(value, _lapsNumber)) return;
                     _lapsNumber = value.Clamp(1, LapsNumberMaximum);
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(RaceDurationEstimate));
                     SaveLater();
                     CheckIfTrackFits(RaceGridViewModel.PlayerTrack);
+                }
+            }
+
+            public string RaceDurationEstimate {
+                get {
+                    var car = RaceGridViewModel.PlayerCar;
+                    var track = RaceGridViewModel.PlayerTrack;
+                    if (car == null || track == null) return null;
+
+                    var bestLapTime = LapTimesManager.Instance.Entries
+                            .FirstOrDefault(x => x.CarId == car.Id && x.TrackAcId == track.KunosIdWithLayout)?.LapTime.TotalSeconds;
+                    var lapDuration = bestLapTime * 1.1 ?? track.GuessApproximateLapDuration(car).TotalSeconds;
+                    var totalLength = track.SpecsLengthValue / 1e3 * LapsNumber;
+                    var approximateDuration = TimeSpan.FromSeconds(lapDuration * LapsNumber).ToReadableTime();
+                    var distanceFormatted = string.Format(SettingsHolder.CommonSettings.DistanceFormat, totalLength * SettingsHolder.CommonSettings.DistanceMultiplier);
+                    return $"Total length: {distanceFormatted}\n{approximateDuration}";
                 }
             }
             #endregion
@@ -141,6 +158,7 @@ namespace AcManager.Pages.Drive {
                     return !serialized.Contains(@"""Version"":");
                 }
             }
+
             // ReSharper restore UnassignedField.Global
 
             [Localizable(false)]
@@ -201,6 +219,7 @@ namespace AcManager.Pages.Drive {
                     }
 
                     RaceGridViewModel.ShuffleCandidates = true;
+                    RaceGridViewModel.AvoidCarsWithoutNumbers = false;
                     RaceGridViewModel.AiLevelArrangeRandom = o.AiLevelArrangeRandomly.HasValue ? (o.AiLevelArrangeRandomly.Value ? 1d : 0d) : 0.2;
                     RaceGridViewModel.AiLevelArrangeReverse = o.AiLevelArrangeReverse ?? true;
                     RaceGridViewModel.AiLevel = o.AiLevel ?? 92;
@@ -275,8 +294,7 @@ namespace AcManager.Pages.Drive {
                 SaveLater();
             }
 
-            public void Load() {
-            }
+            public void Load() { }
 
             public void Unload() {
                 RaceGridViewModel.Dispose();
@@ -353,6 +371,7 @@ namespace AcManager.Pages.Drive {
                 base.OnSelectedUpdated(selectedCar, selectedTrack);
                 RaceGridViewModel.PlayerCar = selectedCar;
                 RaceGridViewModel.PlayerTrack = selectedTrack;
+                OnPropertyChanged(nameof(RaceDurationEstimate));
             }
 
             public object GetPreview(object item) {
@@ -402,9 +421,12 @@ namespace AcManager.Pages.Drive {
 
             public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
                 var s = value?.ToString();
-                return new object[] { string.Equals(s, AppStrings.Drive_Ordinal_Random, StringComparison.OrdinalIgnoreCase)
-                        ? 0 : string.Equals(s, AppStrings.Drive_Ordinal_Last, StringComparison.OrdinalIgnoreCase)
-                                ? 99999 : FlexibleParser.TryParseInt(s) ?? 0, 0 };
+                return new object[] {
+                    string.Equals(s, AppStrings.Drive_Ordinal_Random, StringComparison.OrdinalIgnoreCase)
+                            ? 0 : string.Equals(s, AppStrings.Drive_Ordinal_Last, StringComparison.OrdinalIgnoreCase)
+                                    ? 99999 : FlexibleParser.TryParseInt(s) ?? 0,
+                    0
+                };
             }
         }
 

@@ -115,7 +115,7 @@ namespace AcManager.Tools.Managers.Online {
                 }
 
                 if (DetailsPort == null && detailsId != null) {
-                    Logging.Write($"Details for {displayName}: {detailsId}");
+                    // Logging.Write($"Details for {displayName}: {detailsId}");
                     DetailsId = detailsId;
                 } else {
                     DetailsId = null;
@@ -177,7 +177,7 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             var seconds = (int)Game.ConditionProperties.GetSeconds(information.Time);
-            Time = $@"{seconds / 60 / 60:D2}:{seconds / 60 % 60:D2}";
+            Time = seconds.ToDisplayTime();
             SessionEnd = DateTime.Now + TimeSpan.FromSeconds(information.TimeLeft - Math.Round(information.Timestamp / 1000d));
             RaceMode = information.Timed ? information.Extra ? RaceMode.TimedExtra : RaceMode.Timed : RaceMode.Laps;
 

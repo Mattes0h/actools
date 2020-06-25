@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers.Api;
 using AcTools.Utils;
@@ -18,7 +19,7 @@ using JetBrains.Annotations;
 namespace AcManager.Tools.Helpers {
     public class CookieAwareWebClient : WebClient {
         public CookieAwareWebClient() {
-            Headers[HttpRequestHeader.UserAgent] = CmApiProvider.UserAgent;
+            Headers[HttpRequestHeader.UserAgent] = CmApiProvider.CommonUserAgent;
             Encoding = Encoding.UTF8;
         }
 
@@ -45,15 +46,19 @@ namespace AcManager.Tools.Helpers {
 
             private readonly Dictionary<string, CookieHolder> _cookies;
 
+            private string GetKey(Uri url) {
+                return Regex.Match(url.Host, @"[^.]+\.[^.]+$").Value.Or(url.Host);
+            }
+
             public string this[Uri url] {
-                get => _cookies.TryGetValue(url.Host, out var cookie) ? cookie.Value : null;
+                get => _cookies.TryGetValue(GetKey(url), out var cookie) ? cookie.Value : null;
                 set {
                     var s = value.Split(new[] { '=' }, 2);
                     if (s.Length != 2) return;
 
                     var v = s[1].Split(new[] { ';' }, 2)[0];
-                    if (!_cookies.TryGetValue(url.Host, out var cookie)) {
-                        cookie = _cookies[url.Host] = new CookieHolder();
+                    if (!_cookies.TryGetValue(GetKey(url), out var cookie)) {
+                        cookie = _cookies[GetKey(url)] = new CookieHolder();
                     }
 
                     cookie[s[0]] = v;
@@ -231,6 +236,7 @@ namespace AcManager.Tools.Helpers {
             }
 
             ResponseUri = response?.ResponseUri;
+            ResponseLocation = response?.Headers?.GetValues("Location")?.FirstOrDefault();
 
             var cookies = response?.Headers?.GetValues("Set-Cookie");
             if (cookies != null) {
@@ -245,6 +251,8 @@ namespace AcManager.Tools.Helpers {
         [CanBeNull]
         public Uri ResponseUri { get; private set; }
 
+        public string ResponseLocation { get; private set; }
+
         protected override WebResponse GetWebResponse(WebRequest request) {
             var response = base.GetWebResponse(request);
 
@@ -258,6 +266,7 @@ namespace AcManager.Tools.Helpers {
             }
 
             ResponseUri = response?.ResponseUri;
+            ResponseLocation = response?.Headers?.GetValues("Location")?.FirstOrDefault();
 
             var cookies = response?.Headers?.GetValues("Set-Cookie");
             if (cookies != null) {
@@ -313,11 +322,12 @@ namespace AcManager.Tools.Helpers {
 
         public async Task<string> GetFinalRedirectAsync(string url, int maxRedirectCount = 8) {
             using (SetAutoRedirect(false))
-            using (SetMethod("HEAD")) {
+            using (SetMethod(@"GET")) {
                 var newUrl = url;
                 do {
                     try {
-                        await DownloadStringTaskAsync(newUrl).ConfigureAwait(false);
+                        (await OpenReadTaskAsync(newUrl).ConfigureAwait(false)).Dispose();
+                        // await DownloadStringTaskAsync(newUrl).ConfigureAwait(false);
                         switch (StatusCode) {
                             case HttpStatusCode.OK:
                                 return newUrl;
@@ -326,7 +336,7 @@ namespace AcManager.Tools.Helpers {
                             case HttpStatusCode.RedirectKeepVerb:
                             case HttpStatusCode.RedirectMethod:
                                 if (ResponseHeaders == null) return newUrl;
-                                newUrl = ResponseHeaders["Location"];
+                                newUrl = ResponseHeaders[@"Location"];
                                 if (newUrl == null) return url;
                                 if (newUrl.IndexOf(@"://", StringComparison.Ordinal) == -1) {
                                     // Doesn't have a URL Schema, meaning it's a relative or absolute URL
@@ -343,7 +353,7 @@ namespace AcManager.Tools.Helpers {
                         Logging.Warning(ex);
                         return null;
                     }
-                } while (maxRedirectCount-- > 0);
+                } while (--maxRedirectCount > 0);
                 return newUrl;
             }
         }

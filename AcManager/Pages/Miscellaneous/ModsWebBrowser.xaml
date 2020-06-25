@@ -29,8 +29,8 @@
             <Button Command="{Binding InstallCommand}" Content="Install" FontSize="{DynamicResource SmallFontSize}" Padding="8 1 8 2" />
           </Border>
           <Border x:Name="SharePiece" Background="{DynamicResource Accent}">
-            <Button Command="{Binding ShareLinkCommand}" Content="Share a link" FontSize="{DynamicResource SmallFontSize}"
-                Padding="8 1 8 2" ToolTip="Copy a link to this webpage for CM to install" />
+            <Button Command="{Binding ShareLinkCommand}" Content="Share a link" FontSize="{DynamicResource SmallFontSize}" Padding="8 1 8 2"
+                ToolTip="Copy a link to this webpage for CM to install" />
           </Border>
         </mui:SpacingUniformGrid>
         <DataTemplate.Triggers>
@@ -47,6 +47,26 @@
 
       <DataTemplate DataType="{x:Type l:ModsWebBrowser+ViewModel}">
         <DockPanel Margin="0 4 0 0">
+          <mui:BooleanSwitch
+              Value="{Binding IsReady, Converter={StaticResource InvertBooleanConverter}, Source={x:Static l:ModsWebBrowser+ListViewModel.Requirement}}"
+              DockPanel.Dock="Top" CollapseOnFalse="True" Margin="0 0 0 20">
+            <mui:Switch Value="{Binding ListView.Count}" DataContext="{Binding Source={x:Static l:ModsWebBrowser+ListViewModel.Requirement}}"
+                Margin="20 0 20 0">
+              <DockPanel mui:Switch.When="0">
+                <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" Margin="0 0 8 0" />
+                <TextBlock Text="CefSharp plugin is required for downloads to work." TextWrapping="Wrap" />
+              </DockPanel>
+              <mui:SpacingStackPanel Spacing="4">
+                <DockPanel mui:Switch.When="0">
+                  <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" Margin="0 0 8 0" />
+                  <TextBlock Text="Plugin is required for downloads to work (don’t forget to restart CM after installing it if you’re already here):"
+                      TextWrapping="Wrap" />
+                </DockPanel>
+                <ItemsControl ItemsSource="{Binding ListView}" ItemTemplate="{StaticResource PluginItemTemplate.NoOptions}" Margin="0 8 0 -12" />
+              </mui:SpacingStackPanel>
+            </mui:Switch>
+          </mui:BooleanSwitch>
+
           <c:WebBlock IsAddressBarVisible="True" NewWindowsBehavior="MultiTab" UserAgent="{Binding Source.UserAgent}" StartPage="{Binding Source.Url}"
               Loaded="OnWebBlockLoaded" CurrentTabChanged="OnCurrentTabChanged" PageLoading="OnPageLoading" PageLoaded="OnPageLoaded"
               SaveKey="{Binding Source.Id, StringFormat='{}ModsWebBrowser.Location:{0}'}"
@@ -56,7 +76,7 @@
 
       <DataTemplate DataType="{x:Type l:ModsWebBrowser+ListViewModel}">
         <mui:Switch Value="{Binding WebSources.Count}" Margin="{StaticResource ContentMargin}">
-          <DockPanel mui:Switch.When="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+          <!--<DockPanel mui:Switch.When="0" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock Text="No sources found" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
             <Button Margin="0 8 0 0" Command="{Binding AddNewSourceCommand}">
               <DockPanel IsHitTestVisible="False">
@@ -66,7 +86,83 @@
                 <TextBlock Text="Add new source" />
               </DockPanel>
             </Button>
-          </DockPanel>
+          </DockPanel>-->
+
+          <mui:Cell mui:Switch.When="0">
+
+            <DockPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 20" MaxWidth="480">
+              <TextBlock Text="Welcome to CM online browser!" Style="{StaticResource Heading1}" DockPanel.Dock="Top" Margin="0 0 0 20" />
+
+              <mui:BooleanSwitch Value="{Binding IsReady, Source={x:Static l:ModsWebBrowser+ListViewModel.Requirement}}" DockPanel.Dock="Top">
+                <mui:BooleanSwitch.True>
+                  <mui:SpacingStackPanel Spacing="4">
+                    <mui:BbCodeBlock
+                        Text="Here, you can download and install mods directly. You already have CefSharp plugin installed, now you need to add some websites." />
+
+                    <mui:BbCodeBlock Margin="0 16 0 0" Style="{StaticResource Heading2}" Text="Quick start" />
+                    <mui:BbCodeBlock Text="CM can set you the list of some websites to start with, just select what websites would you prefer to see:" />
+                    <CheckBox IsChecked="{Binding AddRecommendedDrifting.Value}">
+                      <Label>Allow websites with nothing but drifting</Label>
+                    </CheckBox>
+                    <CheckBox IsChecked="{Binding AddRecommendedPorts.Value}">
+                      <Label>Allow websites with content ported from other games such as Forza</Label>
+                    </CheckBox>
+                    <!--<CheckBox IsChecked="{Binding AddRecommendedPaid.Value}">
+                    <Label>Allow websites with paid only content</Label>
+                  </CheckBox>-->
+
+                    <Button Margin="0 8 0 0" Command="{Binding AddRecommendedSourcesCommand}">
+                      <DockPanel IsHitTestVisible="False">
+                        <Path Data="{StaticResource AddMultipleIconData}" Width="10" Height="10"
+                            Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left"
+                            Margin="0 0 4 0" VerticalAlignment="Center" SnapsToDevicePixels="True" />
+                        <TextBlock Text="Quick start" />
+                      </DockPanel>
+                    </Button>
+
+                    <mui:BbCodeBlock Margin="0 16 0 0" Style="{StaticResource Heading2}" Text="Add a website by its address" />
+                    <mui:BbCodeBlock Text="Or, just add website addresses manually:" />
+                    <Button Margin="0 8 0 0" Command="{Binding AddNewSourceCommand}">
+                      <DockPanel IsHitTestVisible="False">
+                        <Path Data="{StaticResource AddIconData}" Width="10" Height="10"
+                            Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left"
+                            Margin="0 0 4 0" VerticalAlignment="Center" SnapsToDevicePixels="True" />
+                        <TextBlock Text="Add new website" />
+                      </DockPanel>
+                    </Button>
+                    <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink"
+                        CommandParameter="https://acstuff.ru/f/d/24-content-manager-rules-for-clicking-download-buttons-automatically">
+                      <DockPanel IsHitTestVisible="False">
+                        <Path Data="{StaticResource WebIconData}" Width="10" Height="10"
+                            Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left"
+                            Margin="0 0 4 0" VerticalAlignment="Center" SnapsToDevicePixels="True" />
+                        <TextBlock Text="Browse list of known websites" />
+                      </DockPanel>
+                    </Button>
+
+                  </mui:SpacingStackPanel>
+                </mui:BooleanSwitch.True>
+                <mui:BooleanSwitch.False>
+                  <mui:Switch Value="{Binding ListView.Count}" DataContext="{Binding Source={x:Static l:ModsWebBrowser+ListViewModel.Requirement}}">
+                    <DockPanel mui:Switch.When="0">
+                      <mui:BbCodeBlock
+                          Text="Here, you can download and install mods directly. For the whole thing to work, you need to have CefSharp plugin installed, you can install it in Settings/Plugins." />
+                    </DockPanel>
+                    <mui:SpacingStackPanel Spacing="4">
+                      <mui:BbCodeBlock
+                          Text="Here, you can download and install mods directly. For the whole thing to work, you need to have CefSharp plugin installed:" />
+                      <ItemsControl ItemsSource="{Binding ListView}" ItemTemplate="{StaticResource PluginItemTemplate.NoOptions}" Margin="0 8 0 -12" />
+                    </mui:SpacingStackPanel>
+                  </mui:Switch>
+                </mui:BooleanSwitch.False>
+              </mui:BooleanSwitch>
+
+            </DockPanel>
+
+            <mui:BbCodeBlock VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="20"
+                Text="If you would want to see your website on the list of quickly added, please [url=&quot;https://acstuff.ru/app/#contacts&quot;]contact me[/url]."
+                Style="{StaticResource BbCodeBlock.Small}" />
+          </mui:Cell>
 
           <Grid>
             <Grid.ColumnDefinitions>
@@ -161,7 +257,7 @@
                 <mui:ModernButton Command="{Binding AddNewSourceCommand}" DockPanel.Dock="Right" IconData="{StaticResource AddIconData}"
                     ToolTip="Add a new one (Ctrl+Shift+N)" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
                 <mui:ModernButton Click="OnScrollToSelectedButtonClick" DockPanel.Dock="Right" IconData="{StaticResource CollapsedIconData}"
-                    ToolTip="Scroll to selected (Ctrl+Shift+V)" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
+                    ToolTip="{x:Static c:ControlsStrings.Common_ScrollToSelected}" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
                 <TextBlock Text="{Binding WebSources.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} site'}"
                     Margin="{StaticResource StatusMargin}" Foreground="{DynamicResource WindowTextReadOnly}" />
               </DockPanel>

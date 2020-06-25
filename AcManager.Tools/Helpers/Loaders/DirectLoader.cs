@@ -231,7 +231,7 @@ namespace AcManager.Tools.Helpers.Loaders {
 
                 // Was the file partially loaded before?
                 var partiallyLoaded = ResumeSupported != false && resumePartiallyLoadedFilename != null
-                        ? new FileInfo(FileUtils.EnsureFilenameIsValid(resumePartiallyLoadedFilename)) : null;
+                        ? new FileInfo(FileUtils.EnsureFilenameIsValid(resumePartiallyLoadedFilename, true)) : null;
                 if (partiallyLoaded != null) {
                     Logging.Warning("Not finished: " + partiallyLoaded);
                 }
@@ -282,7 +282,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                         remoteData.Dispose();
                         remoteData = await client.OpenReadTaskAsync(Url);
                         cancellation.ThrowIfCancellationRequested();
-                        client.LogResponseHeaders();
+                        // client.LogResponseHeaders();
 
                         // It’s unknown if resume is supported or not at this point
                         if (resumeSupported == null) {

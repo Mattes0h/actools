@@ -36,7 +36,14 @@ namespace CustomTracksBakery {
                 HelpText = "Nodes to sync normals with surface below of.")]
         public string SyncNormals { get; set; }
 
-        [Option('u', "surfaces", DefaultValue = "`^[0-9](?!WALL)[A-Z]`", Required = false,
+        [Option("sync-normals-partially", DefaultValue = null, Required = false,
+                HelpText = "Nodes to sync normals with surface below of, partially.")]
+        public string SyncNormalsPartially { get; set; }
+
+        [Option("sync-normals-partially-value", DefaultValue = 0.7f, Required = false, HelpText = "Nodes to sync normals with surface below of, partially, blending value.")]
+        public float SyncNormalsPartiallyValue { get; set; }
+
+        [Option('u', "surfaces", DefaultValue = null, Required = false,
                 HelpText = "Surface meshes.")]
         public string Surfaces { get; set; }
 
@@ -118,6 +125,9 @@ namespace CustomTracksBakery {
         [Option("sample-resolution", DefaultValue = 16, Required = false, HelpText = "Sample resolution.")]
         public int SampleResolution { get; set; }
 
+        [Option("no-ground", DefaultValue = false, HelpText = "Add shadows from the ground below.")]
+        public bool NoGround { get; set; }
+
         [Option("hdr", DefaultValue = false, HelpText = "Make HDR samples.")]
         public bool HdrSamples { get; set; }
 
@@ -130,8 +140,8 @@ namespace CustomTracksBakery {
         [Option("bake-into-kn5", DefaultValue = false, HelpText = "Bake shadows into KN5 instead of creating a small patch.")]
         public bool ModifyKn5Directly { get; set; }
 
-        [Option("special-grass-ambient", DefaultValue = true, HelpText = "Copy grass ambient from the surface underneath.")]
-        public bool SpecialGrassAmbient { get; set; }
+        [Option("no-special-grass-ambient", DefaultValue = false, HelpText = "Copy grass ambient from the surface underneath.")]
+        public bool NoSpecialGrassAmbient { get; set; }
 
         [Option("debug-pos", DefaultValue = null, HelpText = "Bake shadows only around certain point, to test settings.")]
         public string DebugPos { get; set; }
@@ -147,8 +157,9 @@ namespace CustomTracksBakery {
 
         public string GetUsage() {
             var help = new HelpText {
-                Heading = new HeadingInfo("Custom Tracks Bakery", FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly().Location ?? "").FileVersion),
-                Copyright = new CopyrightInfo("AcClub", 2018),
+                Heading = new HeadingInfo("Custom Tracks Bakery",
+                        FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly()?.Location ?? "").FileVersion),
+                Copyright = new CopyrightInfo("AcClub", 2020),
                 AdditionalNewLineAfterOption = false,
                 AddDashesToOption = true
             };
@@ -217,7 +228,7 @@ namespace CustomTracksBakery {
     }
 
     internal class Program {
-        private static IEnumerable<Kn5Node> FilterNodes(Kn5 kn5, IFilter<string> filter, Kn5Node node) {
+        private static IEnumerable<Kn5Node> FilterNodes(IKn5 kn5, IFilter<string> filter, Kn5Node node) {
             if (node.NodeClass == Kn5NodeClass.Base) {
                 return node.Children.SelectMany(x => FilterNodes(kn5, filter, x));
             }
@@ -346,13 +357,16 @@ namespace CustomTracksBakery {
                     SampleResolution = options.SampleResolution,
                     ExtraPassBrightnessGain = options.ExtraPassBrightnessGain,
                     HdrSamples = options.HdrSamples,
+                    Ground = !options.NoGround,
                     SyncNormalsFilter = options.SyncNormals,
+                    SyncNormalsPartiallyFilter = options.SyncNormalsPartially,
+                    SyncNormalsPartiallyValue = options.SyncNormalsPartiallyValue,
                     ExtraPass = options.ExtraPass,
                     TreeFilter = options.TreeFilter,
                     GrassFilter = options.GrassFilter,
                     RegularObjectsFilter = options.RegularObjectsFilter,
                     SkipOccludersFilter = options.SkipOccludersFilter,
-                    SpecialGrassAmbient = options.SpecialGrassAmbient,
+                    SpecialGrassAmbient = !options.NoSpecialGrassAmbient,
                     SurfacesFilter = options.Surfaces,
                     SurfacesAoOpacity = options.SurfacesAoOpacity,
                     SetMiltiplierForSkipped = options.SetMiltiplierForSkipped,

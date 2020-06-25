@@ -81,3 +81,5 @@ AcManager/Assets/Icons/Source/*-256.png
 
 # Helper scripts
 IgnoreVersionFiles.bat
+*tmp.csproj
+.vscode/*

@@ -8,16 +8,17 @@ using AcManager.Tools.ContentInstallation.Installators;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation.Implementations {
     internal class DirectoryContentInstallator : ContentInstallatorBase {
         public string Directory { get; }
 
-        private DirectoryContentInstallator(string directory, ContentInstallationParams installationParams) : base(installationParams) {
+        private DirectoryContentInstallator([NotNull] string directory, [NotNull] ContentInstallationParams installationParams) : base(installationParams) {
             Directory = directory;
         }
 
-        public static Task<IAdditionalContentInstallator> Create(string directory, ContentInstallationParams installationParams,
+        public static Task<IAdditionalContentInstallator> Create([NotNull] string directory, [NotNull] ContentInstallationParams installationParams,
                 CancellationToken cancellation) {
             return Task.FromResult((IAdditionalContentInstallator)new DirectoryContentInstallator(directory, installationParams));
         }
@@ -25,6 +26,10 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
         protected override string GetBaseId() {
             var id = Path.GetFileName(Directory)?.ToLower();
             return AcStringValues.IsAppropriateId(id) ? id : null;
+        }
+
+        protected override string GetBaseName() {
+            return Path.GetFileName(Directory);
         }
 
         private class InnerDirectoryInfo : IDirectoryInfo {

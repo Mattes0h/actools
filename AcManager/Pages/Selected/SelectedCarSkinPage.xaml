@@ -39,7 +39,7 @@
             </MenuItem.ItemsSource>
           </MenuItem>
         </mui:ButtonWithComboBox>
-        <mui:ButtonWithComboBox Content="CM Showroom" ButtonToolTip="View car in custom CM showroom (Alt+H)" Command="{Binding OpenInCustomShowroomCommand}"
+        <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Selected_CarSkinPage_CMShowroom}" ButtonToolTip="View car in custom CM showroom (Alt+H)" Command="{Binding OpenInCustomShowroomCommand}"
             PreviewMouseDown="OnCustomShowroomButtonMouseDown" MenuItems="{Binding CustomShowroomPresets}" />
         <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Drive}" ButtonToolTip="{x:Static g:AppStrings.Toolbar_Drive_CarTooltip}"
             Command="{Binding DriveCommand}" PreviewMouseDown="OnDriveButtonMouseDown" Style="{StaticResource Go.ToolBarButtonWithComboBox}">
@@ -53,10 +53,10 @@
       <ToolBar Band="1" BandIndex="1">
         <Button Content="{x:Static g:AppStrings.Toolbar_Disable}" Command="{Binding SelectedObject.ToggleCommand}"
             ToolTip="{x:Static g:AppStrings.Toolbar_Disable_Tooltip}"
-            Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}" PreviewMouseLeftButtonUp="OnToggleClick" />
         <Button Content="{x:Static g:AppStrings.Toolbar_Enable}" Command="{Binding SelectedObject.ToggleCommand}"
             ToolTip="{x:Static g:AppStrings.Toolbar_Enable_Tooltip}"
-            Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+            Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" PreviewMouseLeftButtonUp="OnToggleClick" />
         <Button Content="{x:Static g:AppStrings.Toolbar_ChangeId}" Command="{Binding ChangeIdCommand}"
             ToolTip="{x:Static g:AppStrings.Toolbar_ChangeId_SkinTooltip}" />
         <Button Content="{x:Static g:AppStrings.Toolbar_Save}" Command="{Binding SelectedObject.SaveCommand}"

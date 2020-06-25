@@ -56,20 +56,21 @@ using QuickSwitchesBlock = AcManager.QuickSwitches.QuickSwitchesBlock;
 
 namespace AcManager.Pages.Windows {
     public partial class MainWindow : IFancyBackgroundListener, INavigateUriHandler {
-        private static readonly TitleLinkEnabledEntry DownloadsEntry = new TitleLinkEnabledEntry("downloads", "Downloads");
+        private static readonly TitleLinkEnabledEntry DownloadsEntry = new TitleLinkEnabledEntry("downloads", AppStrings.Main_Downloads);
 
         public static TitleLinkEnabledEntry[] GetTitleLinksEntries() {
             return new[] {
                 // new TitleLinkEnabledEntry("drive", AppStrings.Main_Drive),
-                new TitleLinkEnabledEntry("lapTimes", "Lap times"),
-                new TitleLinkEnabledEntry("stats", "Results"),
+                new TitleLinkEnabledEntry("lapTimes", AppStrings.Main_LapTimes),
+                new TitleLinkEnabledEntry("stats", AppStrings.Main_Results),
                 new TitleLinkEnabledEntry("media", AppStrings.Main_Media),
                 new TitleLinkEnabledEntry("content", AppStrings.Main_Content),
                 DownloadsEntry,
                 new TitleLinkEnabledEntry("server", AppStrings.Main_Server, false),
                 new TitleLinkEnabledEntry("settings", AppStrings.Main_Settings),
                 new TitleLinkEnabledEntry("about", AppStrings.Main_About),
-                new TitleLinkEnabledEntry("originalLauncher", "Original launcher (appears with Steam starter)"),
+                new TitleLinkEnabledEntry("originalLauncher", AppStrings.Windows_MainWindow_OriginalLauncherAppearsWithSteamStarter),
+                new TitleLinkEnabledEntry("settings/video", AppStrings.Windows_MainWindow_VideoSettingsFPSCounter, false),
             };
         }
 
@@ -145,20 +146,26 @@ namespace AcManager.Pages.Windows {
             }
 
             LinkNavigator.Commands.Add(new Uri("cmd://enterKey"), Model.EnterKeyCommand);
+            if (SettingsHolder.Drive.SelectedStarterType != SettingsHolder.DriveSettings.SteamStarterType) {
+                TitleLinks.Remove(OriginalLauncher);
+            } else {
+                LinkNavigator.Commands.Add(new Uri("cmd://originalLauncher"), new DelegateCommand(SteamStarter.StartOriginalLauncher));
+            }
+
             InternalUtils.Launch(this);
 
             foreach (var result in MenuLinkGroups.OfType<LinkGroupFilterable>()
-                                                 .Where(x => x.Source.OriginalString.Contains(@"/online.xaml", StringComparison.OrdinalIgnoreCase))) {
+                    .Where(x => x.Source.OriginalString.Contains(@"/online.xaml", StringComparison.OrdinalIgnoreCase))) {
                 result.LinkChanged += OnlineLinkChanged;
             }
 
             foreach (var result in MenuLinkGroups.OfType<LinkGroupFilterable>()
-                                                 .Where(x => x.Source.OriginalString.Contains(@"/laptimes_table.xaml", StringComparison.OrdinalIgnoreCase))) {
+                    .Where(x => x.Source.OriginalString.Contains(@"/laptimes_table.xaml", StringComparison.OrdinalIgnoreCase))) {
                 result.LinkChanged += LapTimesLinkChanged;
             }
 
             foreach (var result in MenuLinkGroups.OfType<LinkGroupFilterable>()
-                                                 .Where(x => x.GroupKey == "media" || x.GroupKey == "content")) {
+                    .Where(x => x.GroupKey == "media" || x.GroupKey == "content")) {
                 result.LinkChanged += ContentLinkChanged;
             }
 
@@ -178,22 +185,14 @@ namespace AcManager.Pages.Windows {
             }
 
             FileBasedOnlineSources.Instance.Update += OnOnlineSourcesUpdate;
-
+            if (CupClient.Instance != null) CupClient.Instance.NewLatestVersion += OnNewLatestVersion;
             Activated += OnActivated;
-
-            if (SettingsHolder.Drive.SelectedStarterType != SettingsHolder.DriveSettings.SteamStarterType) {
-                TitleLinks.Remove(OriginalLauncher);
-            } else {
-                LinkNavigator.Commands.Add(new Uri("cmd://originalLauncher"), new DelegateCommand(SteamStarter.StartOriginalLauncher));
-            }
 
             ContentInstallationManager.Instance.TaskAdded += OnContentInstallationTaskAdded;
             UpdateDiscordRichPresence();
 
 #if DEBUG
-            LapTimesGrid.Source = new Uri("/Pages/Miscellaneous/LapTimes_Grid.xaml", UriKind.Relative);
-#else
-        // MenuLinkGroups.Remove(BrowserLinkGroup);
+            // LapTimesGrid.Source = new Uri("/Pages/Miscellaneous/LapTimes_Grid.xaml", UriKind.Relative);
 #endif
         }
 
@@ -223,6 +222,10 @@ namespace AcManager.Pages.Windows {
                     NavigateTo(new Uri("/Pages/Miscellaneous/DownloadsList.xaml", UriKind.Relative));
                 }
             });
+
+            if (!AppAppearanceManager.Instance.DownloadsInSeparatePage) {
+                FancyHints.DownloadsList.Trigger();
+            }
         }
 
         private void OnActivated(object sender, EventArgs e) {
@@ -275,7 +278,7 @@ namespace AcManager.Pages.Windows {
             DownloadsEntry.IsAvailable = value;
             BrowserLinkGroup.GroupKey = value ? @"downloads" : @"content";
             TitleLinks.OfType<TitleLink>().Where(x => x.GroupKey != null)
-                      .ForEach(x => x.IsShown = AppAppearanceManager.Instance.IsTitleLinkVisible(x.GroupKey) != false);
+                    .ForEach(x => x.IsShown = AppAppearanceManager.Instance.IsTitleLinkVisible(x.GroupKey) != false);
             AppAppearanceManager.Instance.TitleLinkEntries.ForEach(x => x.PropertyChanged += OnTitleLinkEnabledChanged);
         }
 
@@ -327,6 +330,7 @@ namespace AcManager.Pages.Windows {
             // SrsLink.IsShown = SettingsHolder.Live.SrsEnabled;
             Srs2Link.IsShown = SettingsHolder.Live.SrsEnabled;
             LiveGroup.IsShown = LiveGroup.Links.Any(x => x.IsShown);
+            // ShortSurveyLink.IsShown = !Stored.Get<bool>("surveyHide").Value;
         }
 
         /// <summary>
@@ -436,7 +440,7 @@ namespace AcManager.Pages.Windows {
                 Logging.Debug("Changelog entries: " + changelog.Count);
                 if (changelog.Any()) {
                     ModernDialog.ShowMessage(changelog.Select(x => $@"[b]{x.Version}[/b]{Environment.NewLine}{x.Changes}")
-                                                      .JoinToString(Environment.NewLine.RepeatString(2)), AppStrings.Changelog_RecentChanges_Title,
+                            .JoinToString(Environment.NewLine.RepeatString(2)), AppStrings.Changelog_RecentChanges_Title,
                             MessageBoxButton.OK);
                 } else {
                     ModernDialog.ShowMessage(AppStrings.AdditionalContent_NothingFound.ToSentence(), AppStrings.Changelog_RecentChanges_Title,
@@ -472,6 +476,13 @@ namespace AcManager.Pages.Windows {
                 background = FileUtils.GetFullPath(background, () => FilesStorage.Instance.GetDirectory("Themes", "Backgrounds"));
                 ApplyDynamicBackground(background, AppArguments.GetDouble(AppFlag.BackgroundOpacity, 0.5));
             }
+
+            if (CupViewModel.Instance.ToUpdate.Count > 0) {
+                FancyHints.ContentUpdatesArrived.Trigger();
+            } else {
+                CupViewModel.Instance.NewUpdate += (o, args) => FancyHints.ContentUpdatesArrived.Trigger();
+            }
+            Logging.Debug("Main window is loaded and ready");
         }
 
         private DynamicBackground _dynamicBackground;
@@ -525,13 +536,13 @@ namespace AcManager.Pages.Windows {
 
         private void UpdateAboutIsNew() {
             TitleLinks.FirstOrDefault(x => x.DisplayName == AppStrings.Main_About)?
-                      .SetNew(AboutHelper.Instance.HasNewImportantTips || AboutHelper.Instance.HasNewReleaseNotes);
+                    .SetNew(AboutHelper.Instance.HasNewImportantTips || AboutHelper.Instance.HasNewReleaseNotes);
             MenuLinkGroups.SelectMany(x => x.Links)
-                          .FirstOrDefault(x => x.DisplayName == AppStrings.Main_ReleaseNotes)?
-                          .SetNew(AboutHelper.Instance.HasNewReleaseNotes);
+                    .FirstOrDefault(x => x.DisplayName == AppStrings.Main_ReleaseNotes)?
+                    .SetNew(AboutHelper.Instance.HasNewReleaseNotes);
             MenuLinkGroups.SelectMany(x => x.Links)
-                          .FirstOrDefault(x => x.DisplayName == AppStrings.Main_ImportantTips)?
-                          .SetNew(AboutHelper.Instance.HasNewImportantTips);
+                    .FirstOrDefault(x => x.DisplayName == AppStrings.Main_ImportantTips)?
+                    .SetNew(AboutHelper.Instance.HasNewImportantTips);
         }
 
         private void OnAboutPropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -824,6 +835,7 @@ namespace AcManager.Pages.Windows {
 
         // In general, that information should be provided by webpages directly, but just in case some of
         // them will fail to do that, here are some lower-priority messages.
+        [Localizable(false)]
         private void UpdateDiscordRichPresence() {
             string details;
             switch (CurrentGroupKey) {
@@ -860,7 +872,13 @@ namespace AcManager.Pages.Windows {
         }
 
         private void OnFrameNavigating(object sender, NavigatingCancelEventArgs e) {
-            if (e.Source.OriginalString.Contains(@"/Pages/About/")) {
+            if (e.Source?.OriginalString.IsWebUrl() == true) {
+                WindowsHelper.ViewInBrowser(e.Source.OriginalString);
+                e.Cancel = true;
+                return;
+            }
+
+            if (e.Source?.OriginalString.Contains(@"/Pages/About/") == true) {
                 _lastAboutSection.Value = e.Source;
             }
             MakeSureOnlineIsReady(e.Source);
@@ -886,6 +904,12 @@ namespace AcManager.Pages.Windows {
             }
 
             if (s.Contains("/Pages/Settings/PythonAppsSettings.xaml")) {
+                CurrentGroupKey = "settings";
+                NavigateTo(uri);
+                return true;
+            }
+
+            if (s.Contains("/Pages/Settings/SettingsShadersPatch.xaml")) {
                 CurrentGroupKey = "settings";
                 NavigateTo(uri);
                 return true;
@@ -990,6 +1014,29 @@ namespace AcManager.Pages.Windows {
             await Task.Yield();
             s.Stop();
             s.Begin();
+        }
+
+        private Border _cupNotificationPanel;
+
+        private void OnCupNotificationPanelLoaded(object sender, RoutedEventArgs e) {
+            _cupNotificationPanel = (Border)sender;
+            if (_cupNotificationPanel.Child == null) {
+                var child = (FrameworkElement)FindResource(@"CupNotificationBlock");
+                _cupNotificationPanel.Child = child;
+            }
+        }
+
+        private async void OnNewLatestVersion(object sender, CupEventArgs e) {
+            var manager = CupClient.Instance?.GetAssociatedManager(e.Key.Type);
+            if (manager == null) return;
+            if (await manager.GetObjectByIdAsync(e.Key.Id) is ICupSupportedObject obj && obj.IsCupUpdateAvailable) {
+                FancyHints.ContentUpdatesArrived.Trigger();
+            }
+        }
+
+        private void OnDownloadsButtonClick(object sender, MouseButtonEventArgs e) {
+            var glow = this.FindChild<FrameworkElement>("UpdateMarkGlow");
+            (glow?.Parent as Panel)?.Children.Remove(glow);
         }
     }
 }

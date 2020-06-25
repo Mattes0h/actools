@@ -21,6 +21,7 @@ using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -110,9 +111,8 @@ namespace AcManager.Tools {
                     }
 
                 case "install":
-                    return await ContentInstallationManager.Instance.InstallAsync(param, new ContentInstallationParams {
-                        AllowExecutables = true
-                    }) ? ArgumentHandleResult.Successful : ArgumentHandleResult.Failed;
+                    return await ContentInstallationManager.Instance.InstallAsync(param, new ContentInstallationParams(true))
+                            ? ArgumentHandleResult.Successful : ArgumentHandleResult.Failed;
             }
 
             return ArgumentHandleResult.Successful;
@@ -168,9 +168,8 @@ namespace AcManager.Tools {
                         }
 
                         return (await urls.Select(
-                                x => ContentInstallationManager.Instance.InstallAsync(x, new ContentInstallationParams {
-                                    CarId = custom.Params.Get(@"car"),
-                                    AllowExecutables = true
+                                x => ContentInstallationManager.Instance.InstallAsync(x, new ContentInstallationParams(true) {
+                                    CarId = custom.Params.Get(@"car")
                                 })).WhenAll()).Any() ? ArgumentHandleResult.Successful : ArgumentHandleResult.Failed;
 
                     case "importwebsite":
@@ -209,22 +208,30 @@ namespace AcManager.Tools {
 
         private static async Task<ArgumentHandleResult> ProcessGoogleSpreadsheetsLocale(string id, [CanBeNull] string locale, bool around) {
             if (string.IsNullOrWhiteSpace(id)) {
-                throw new InformativeException("ID is missing");
+                throw new InformativeException(ToolsStrings.Common_IdIsMissing);
             }
 
             var url = around
                     ? $@"{InternalUtils.MainApiDomain}/u/around?id={id}" : $@"https://docs.google.com/spreadsheets/d/{id}/export?format=xlsx&authuser=0";
-            await LoadRemoveFileToNew(url, LocaleHelper.GetGoogleSheetsFilename());
+            await Task.Run(() => {
+                if (File.Exists(LocaleHelper.GetGoogleSheetsFilename())) {
+                    FileUtils.Recycle(LocaleHelper.GetGoogleSheetsFilename());
+                    FileUtils.TryToDelete(LocaleHelper.GetGoogleSheetsFilename());
+                }
+            });
+            await LoadRemoteFileToNew(url, LocaleHelper.GetGoogleSheetsFilename());
 
             SettingsHolder.Locale.LoadUnpacked = true;
             if (locale != null) {
                 SettingsHolder.Locale.LocaleName = locale;
             }
 
-            if (ModernDialog.ShowMessage("Custom locales updated. Would you like to restart app now?", "Locales updated", MessageBoxButton.YesNo) ==
-                    MessageBoxResult.Yes) {
-                WindowsHelper.RestartCurrentApplication();
-            }
+            ActionExtension.InvokeInMainThreadAsync(() => {
+                if (ModernDialog.ShowMessage(AppStrings.CustomLocalesUpdated_Message, AppStrings.CustomLocalesUpdated_Title, MessageBoxButton.YesNo) ==
+                        MessageBoxResult.Yes) {
+                    WindowsHelper.RestartCurrentApplication();
+                }
+            });
 
             return ArgumentHandleResult.Successful;
         }

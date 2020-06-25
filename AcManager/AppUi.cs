@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Threading;
+using AcManager.Controls.Helpers;
+using AcManager.Internal;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Windows;
 using AcManager.Tools;
@@ -14,6 +16,7 @@ using AcTools.Utils.Helpers;
 using AcTools.Windows;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using Application = System.Windows.Application;
@@ -27,8 +30,10 @@ namespace AcManager {
             _application = application ?? throw new ArgumentNullException(nameof(application));
 
             // Extra close-if-nothing-shown timer just to be sure
-            _timer = new DispatcherTimer(TimeSpan.FromSeconds(2), DispatcherPriority.Background, OnTimer, _application.Dispatcher);
-            _timer.Start();
+            if (_application.Dispatcher != null) {
+                _timer = new DispatcherTimer(TimeSpan.FromSeconds(2), DispatcherPriority.Background, OnTimer, _application.Dispatcher);
+                _timer.Start();
+            }
         }
 
         private int _nothing;
@@ -112,7 +117,7 @@ namespace AcManager {
         private void ShowMainWindow() {
             if (_showMainWindow && _mainWindowTask == null && !_mainWindowShown) {
                 _mainWindowShown = true;
-                _mainWindowTask = new MainWindow().ShowAndWaitAsync();
+                _mainWindowTask = ShowMainWindowAsync();
             }
         }
 
@@ -128,7 +133,36 @@ namespace AcManager {
             return task.Task;
         }
 
-        public void Run() {
+        private static Task ShowMainWindowAsync() {
+            if (AppArguments.Has(AppFlag.ServerManagementMode) && InternalUtils.IsAllRight) {
+                return new ModernWindow {
+                    Title = "Content Manager Servers Manager",
+                    BackButtonVisibility = Visibility.Collapsed,
+                    TitleButtonsVisibility = Visibility.Collapsed,
+                    MenuTopRowVisibility = Visibility.Collapsed,
+                    MenuLinkGroups = {
+                        new LinkGroupFilterable {
+                            Source = new Uri("/Pages/Lists/ServerPresetsListPage.xaml", UriKind.Relative),
+                            GroupKey = "server",
+                            DisplayName = AppStrings.Main_ServerPresets,
+                            FilterHint = FilterHints.ServerPresets
+                        }
+                    },
+                    DefaultContentSource = new Uri("/Pages/Lists/ServerPresetsListPage.xaml", UriKind.Relative),
+                    MinHeight = 400,
+                    MinWidth = 800,
+                    MaxHeight = DpiAwareWindow.UnlimitedSize,
+                    MaxWidth = DpiAwareWindow.UnlimitedSize,
+                    Padding = new Thickness(0),
+                    SizeToContent = SizeToContent.Manual,
+                    ResizeMode = ResizeMode.CanResizeWithGrip,
+                    LocationAndSizeKey = @".ServerManagerWindow"
+                }.ShowAndWaitAsync();
+            }
+            return new MainWindow().ShowAndWaitAsync();
+        }
+
+        public void Run(Action mainWindowIsReadyCallback) {
             ((Action)(async () => {
                 EventManager.RegisterClassHandler(typeof(Window), FrameworkElement.LoadedEvent, new RoutedEventHandler(OnWindowLoaded));
                 ContentInstallationManager.Instance.TaskAdded += OnTaskAdded;
@@ -154,7 +188,8 @@ namespace AcManager {
                     if (_showMainWindow && !_mainWindowShown) {
                         Logging.Write("Main window…");
                         _mainWindowShown = true;
-                        await (_mainWindowTask ?? new MainWindow().ShowAndWaitAsync());
+                        mainWindowIsReadyCallback?.Invoke();
+                        await (_mainWindowTask ?? ShowMainWindowAsync());
                         Logging.Write("Main window closed");
                     }
 
@@ -165,7 +200,7 @@ namespace AcManager {
                     } while (await WaitForWindowToClose(_application.Windows.OfType<DpiAwareWindow>().FirstOrDefault(x => x.IsVisible)));
 
                     Logging.Write("No more windows");
-                } catch (Exception e){
+                } catch (Exception e) {
                     FatalErrorHandler.OnFatalError(e);
                     Logging.Error(e);
                 } finally {

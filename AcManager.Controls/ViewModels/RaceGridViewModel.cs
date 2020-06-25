@@ -73,6 +73,7 @@ namespace AcManager.Controls.ViewModels {
             public string FilterValue;
             public string RandomSkinsFilter;
             public bool SequentialSkins;
+            public bool AvoidCarsWithoutNumbers;
 
             [CanBeNull]
             public string[] CarIds;
@@ -104,6 +105,7 @@ namespace AcManager.Controls.ViewModels {
             public int? VarietyLimitation, OpponentsNumber, StartingPosition;
 
             public bool? AiLevelArrangeReverse;
+            public bool? AiLevelArrangePowerRatio;
 
             [UsedImplicitly]
             public bool? AiLevelArrangeRandomly /* not needed to be saved */;
@@ -126,6 +128,10 @@ namespace AcManager.Controls.ViewModels {
 
                 if (SequentialSkins) {
                     w.Write("SequentialSkins", SequentialSkins);
+                }
+
+                if (AvoidCarsWithoutNumbers) {
+                    w.Write("AvoidCarsWithoutNumbers", AvoidCarsWithoutNumbers);
                 }
 
                 w.Write("CarIds", CarIds);
@@ -153,6 +159,7 @@ namespace AcManager.Controls.ViewModels {
                 w.Write("AiLevelMin", AiLevelMin);
                 w.Write("AiLevelArrangeRandom", AiLevelArrangeRandom);
                 w.Write("AiLevelArrangeReverse", AiLevelArrangeReverse);
+                w.Write("AiLevelArrangePowerRatio", AiLevelArrangePowerRatio);
 
                 w.Write("AiAggression", AiAggression);
                 w.Write("AiAggressionMin", AiAggressionMin);
@@ -160,7 +167,6 @@ namespace AcManager.Controls.ViewModels {
                 w.Write("AiAggressionArrangeReverse", AiAggressionArrangeReverse);
 
                 w.WriteEndObject();
-
                 return s.ToString();
             }
         }
@@ -206,6 +212,7 @@ namespace AcManager.Controls.ViewModels {
                     FilterValue = FilterValue,
                     RandomSkinsFilter = RandomSkinsFilter,
                     SequentialSkins = SequentialSkins,
+                    AvoidCarsWithoutNumbers = AvoidCarsWithoutNumbers,
                     ShuffleCandidates = ShuffleCandidates,
                     VarietyLimitation = VarietyLimitation,
                     OpponentsNumber = OpponentsNumber,
@@ -214,6 +221,7 @@ namespace AcManager.Controls.ViewModels {
                     AiLevelMin = AiLevelMin,
                     AiLevelArrangeRandom = AiLevelArrangeRandom,
                     AiLevelArrangeReverse = AiLevelArrangeReverse,
+                    AiLevelArrangePowerRatio = AiLevelArrangePowerRatio,
                     AiAggression = AiAggression,
                     AiAggressionMin = AiAggressionMin,
                     AiAggressionArrangeRandom = AiAggressionArrangeRandom,
@@ -279,12 +287,14 @@ namespace AcManager.Controls.ViewModels {
 
                 RandomSkinsFilter = data.RandomSkinsFilter;
                 SequentialSkins = data.SequentialSkins;
+                AvoidCarsWithoutNumbers = data.AvoidCarsWithoutNumbers;
 
                 AiLevel = data.AiLevel;
                 AiLevelMin = data.AiLevelMin;
                 AiLevelArrangeRandom = data.AiLevelArrangeRandomly.HasValue ? (data.AiLevelArrangeRandomly.Value ? 1d : 0d) :
                         data.AiLevelArrangeRandom;
                 AiLevelArrangeReverse = data.AiLevelArrangeReverse ?? false;
+                AiLevelArrangePowerRatio = data.AiLevelArrangePowerRatio ?? false;
 
                 AiAggression = data.AiAggression;
                 AiAggressionMin = data.AiAggressionMin;
@@ -406,11 +416,13 @@ namespace AcManager.Controls.ViewModels {
 
             RandomSkinsFilter = null;
             SequentialSkins = false;
+            AvoidCarsWithoutNumbers = false;
 
             AiLevel = 95;
             AiLevelMin = 85;
             AiLevelArrangeRandom = 0.1;
             AiLevelArrangeReverse = false;
+            AiLevelArrangePowerRatio = false;
 
             AiAggression = 0;
             AiAggressionMin = 0;
@@ -920,6 +932,13 @@ namespace AcManager.Controls.ViewModels {
             get => _sequentialSkins;
             set => Apply(value, ref _sequentialSkins, SaveLater);
         }
+
+        private bool _avoidCarsWithoutNumbers;
+
+        public bool AvoidCarsWithoutNumbers {
+            get => _avoidCarsWithoutNumbers;
+            set => Apply(value, ref _avoidCarsWithoutNumbers, SaveLater);
+        }
         #endregion
 
         #region Car and track
@@ -1086,6 +1105,13 @@ namespace AcManager.Controls.ViewModels {
         public bool AiLevelArrangeReverse {
             get => _aiLevelArrangeReverse;
             set => Apply(value, ref _aiLevelArrangeReverse, SaveLater);
+        }
+
+        private bool _aiLevelArrangePowerRatio;
+
+        public bool AiLevelArrangePowerRatio {
+            get => _aiLevelArrangePowerRatio;
+            set => Apply(value, ref _aiLevelArrangePowerRatio, SaveLater);
         }
 
         public bool AiLevelInDriverName {
@@ -1342,16 +1368,16 @@ namespace AcManager.Controls.ViewModels {
             if (cancellation.IsCancellationRequested) return null;
 
             var nameNationalities = GenerateGameEntries_NameNationalities(opponentsNumber, random);
-            var aiLevels = GenerateGameEntries_AiLevels(opponentsNumber, random);
             var aiAggressions = GenerateGameEntries_AiAggressions(opponentsNumber, random);
-            var final = GenerateGameEntries_FinalStep(opponentsNumber, skinsFilter, random);
+            var final = GenerateGameEntries_FinalStep(opponentsNumber, skinsFilter, random).Take(opponentsNumber).ToList();
+            var aiLevels = GenerateGameEntries_AiLevels(opponentsNumber, final, random);
 
             if (_playerCar != null) {
                 skins.GetValueOrDefault(_playerCar.Id)?.IgnoreOnce(_playerCar.SelectedSkin);
             }
 
             var takenNames = new List<string>(opponentsNumber);
-            return final.Take(opponentsNumber).Select((entry, i) => {
+            return final.Select((entry, i) => {
                 var level = entry.AiLevel ?? aiLevels?[i] ?? AiLevel;
                 var aggression = entry.AiAggression ?? aiAggressions?[i] ?? AiAggression;
 
@@ -1393,13 +1419,13 @@ namespace AcManager.Controls.ViewModels {
                         displayName = name;
                         break;
                     case 1:
-                        displayName = $@"{name} ({level}%)";
+                        displayName = $@"{name} ({level:F0}%)";
                         break;
                     case 2:
-                        displayName = $@"{name} ({aggression}%)";
+                        displayName = $@"{name} ({aggression:F0}%)";
                         break;
                     case 3:
-                        displayName = $@"{name} ({level}%, {aggression}%)";
+                        displayName = $@"{name} ({level:F0}%, {aggression:F0}%)";
                         break;
                     default:
                         displayName = name;
@@ -1476,16 +1502,24 @@ namespace AcManager.Controls.ViewModels {
             }
 
             return DataProvider.Instance.NationalitiesAndNames.Any()
-                    ? GoodShuffle.Get(DataProvider.Instance.NationalitiesAndNamesList, random).Take(opponentsNumber).ToArray()
-                    : null;
+                    ? GoodShuffle.Get(DataProvider.Instance.NationalitiesAndNamesList, random).Take(opponentsNumber).ToArray() : null;
         }
 
         [CanBeNull]
-        private List<double> GenerateGameEntries_AiLevels(int opponentsNumber, [NotNull] Random random) {
+        private List<double> GenerateGameEntries_AiLevels(int opponentsNumber, [NotNull] IReadOnlyList<RaceGridEntry> entries, [NotNull] Random random) {
             if (AiLevelFixed) return null;
 
             var aiLevelsInner = from i in Enumerable.Range(0, opponentsNumber)
-                                select AiLevelMin + ((opponentsNumber < 2 ? 1d : 1d - i / (opponentsNumber - 1d)) * (AiLevel - AiLevelMin)).RoundToInt();
+                select AiLevelMin + ((opponentsNumber < 2 ? 1d : 1d - i / (opponentsNumber - 1d)) * (AiLevel - AiLevelMin)).RoundToInt();
+
+            var ordered = entries.OrderByDescending(x => x.Car.SpecsPwRatioValue).ToList();
+            if (AiLevelArrangePowerRatio) {
+                aiLevelsInner = Enumerable.Range(0, opponentsNumber).Select(i => {
+                    var pwIndex = i >= entries.Count ? -1 : ordered.IndexOf(entries[i]);
+                    return (pwIndex == -1 ? 0.5 : (double)pwIndex / (entries.Count - 1)).Lerp(AiLevelMin, AiLevel);
+                });
+            }
+
             if (AiLevelArrangeReverse) {
                 aiLevelsInner = aiLevelsInner.Reverse();
             }
@@ -1504,8 +1538,8 @@ namespace AcManager.Controls.ViewModels {
             if (AiAggressionFixed) return null;
 
             var aiAggressionsInner = from i in Enumerable.Range(0, opponentsNumber)
-                                     select AiAggressionMin
-                                             + ((opponentsNumber < 2 ? 1d : 1d - i / (opponentsNumber - 1d)) * (AiAggression - AiAggressionMin)).RoundToInt();
+                select AiAggressionMin
+                        + ((opponentsNumber < 2 ? 1d : 1d - i / (opponentsNumber - 1d)) * (AiAggression - AiAggressionMin)).RoundToInt();
             if (AiAggressionArrangeReverse) {
                 aiAggressionsInner = aiAggressionsInner.Reverse();
             }
@@ -1548,7 +1582,7 @@ namespace AcManager.Controls.ViewModels {
             return FixLinearSkinsIfNeeded(shuffled.Take(opponentsNumber));
 
             IEnumerable<RaceGridEntry> FixLinearSkinsIfNeeded(IEnumerable<RaceGridEntry> input) {
-                return !SequentialSkins ? input : FixLinearSkins(input);
+                return !SequentialSkins || !AvoidCarsWithoutNumbers ? input : FixLinearSkins(input);
             }
 
             IEnumerable<RaceGridEntry> FixLinearSkins(IEnumerable<RaceGridEntry> input) {

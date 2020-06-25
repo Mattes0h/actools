@@ -15,7 +15,7 @@ namespace AcManager.Tools.Helpers {
 
             public string CupRegistries {
                 get => _cupRegistries ?? (_cupRegistries =
-                        ValuesStorage.Get("Settings.ContentSettings.CupRegistries", "http://cm.custom.ru/cup/"));
+                        ValuesStorage.Get("Settings.ContentSettings.CupRegistries", "https://acstuff.ru/cup/"));
                 set {
                     value = value.Trim();
                     if (Equals(value, _cupRegistries)) return;
@@ -143,6 +143,30 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _showNotesIconInLists;
+
+            public bool ShowNotesIconInLists {
+                get => _showNotesIconInLists ?? (_showNotesIconInLists = ValuesStorage.Get("Settings.ContentSettings.ShowNotesIconInLists", true)).Value;
+                set {
+                    if (Equals(value, _showNotesIconInLists)) return;
+                    _showNotesIconInLists = value;
+                    ValuesStorage.Set("Settings.ContentSettings.ShowNotesIconInLists", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _showCarPreviewInToolTips;
+
+            public bool ShowCarPreviewInToolTips {
+                get => _showCarPreviewInToolTips ?? (_showCarPreviewInToolTips = ValuesStorage.Get("Settings.ContentSettings.ShowCarPreviewInToolTips", true)).Value;
+                set {
+                    if (Equals(value, _showCarPreviewInToolTips)) return;
+                    _showCarPreviewInToolTips = value;
+                    ValuesStorage.Set("Settings.ContentSettings.ShowCarPreviewInToolTips", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _carsYearPostfix;
 
             public bool CarsYearPostfix {
@@ -151,6 +175,19 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _carsYearPostfix)) return;
                     _carsYearPostfix = value;
                     ValuesStorage.Set("Settings.ContentSettings.CarsYearPostfix", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _carsYearPostfixAlt;
+
+            public bool CarsYearPostfixAlt {
+                get => _carsYearPostfixAlt ?? (_carsYearPostfixAlt =
+                        ValuesStorage.Get("Settings.ContentSettings.CarsYearPostfixAlt", false)).Value;
+                set {
+                    if (Equals(value, _carsYearPostfixAlt)) return;
+                    _carsYearPostfixAlt = value;
+                    ValuesStorage.Set("Settings.ContentSettings.CarsYearPostfixAlt", value);
                     OnPropertyChanged();
                 }
             }

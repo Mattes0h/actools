@@ -131,7 +131,11 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="AcTools.AcdEncryption, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\Libraries\AcTools.AcdEncryption\AcTools.AcdEncryption.dll</HintPath>
+      <HintPath>..\Libraries\AcTools\AcTools.AcdEncryption.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="AcTools.AcdEncryption, Culture=neutral">
+      <HintPath>..\Libraries\AcTools\AcTools.Kn5Tools.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.7.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a">
@@ -192,6 +196,9 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <HintPath>..\packages\Blend.Interctivity.WPF.v4.0.1.0.3\lib\net40\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -200,6 +207,9 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="TimeZoneConverter, Version=2.4.1.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\TimeZoneConverter.2.4.1\lib\net45\TimeZoneConverter.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -276,6 +286,8 @@
       <DependentUpon>TrackOutlineRendererTools.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomShowroom\TrackOutlineRendererWrapper.cs" />
+    <Compile Include="CustomShowroom\UIElementExtensions.cs" />
+    <Compile Include="CustomShowroom\WindowExtensions.cs" />
     <Compile Include="DiscordHandler.cs" />
     <Compile Include="EntryPoint.AssembliesResolved.cs" />
     <Compile Include="EntryPoint.cs" />
@@ -348,12 +360,16 @@
     <Compile Include="Pages\AcSettings\AcSettingsChaseCamera.xaml.cs">
       <DependentUpon>AcSettingsChaseCamera.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\AcSettings\AcSettingsFanatec.xaml.cs">
+      <DependentUpon>AcSettingsFanatec.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\AcSettings\AcSettingsPython.xaml.cs">
       <DependentUpon>AcSettingsPython.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\AcSettings\AcSettingsDamageDisplayer.xaml.cs">
       <DependentUpon>AcSettingsDamageDisplayer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\AcSettings\AcSettingsPython_detailed.xaml.cs" />
     <Compile Include="Pages\AcSettings\AcSettingsSystem.xaml.cs">
       <DependentUpon>AcSettingsSystem.xaml</DependentUpon>
     </Compile>
@@ -448,6 +464,9 @@
     <Compile Include="Pages\Drive\RealConditionsHelper.cs" />
     <Compile Include="Pages\Drive\Srs2.xaml.cs">
       <DependentUpon>Srs2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Drive\TempSurvey.xaml.cs">
+      <DependentUpon>TempSurvey.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Drive\UserChampionships_SelectedPage.xaml.cs">
       <DependentUpon>UserChampionships_SelectedPage.xaml</DependentUpon>
@@ -685,6 +704,33 @@
     <Compile Include="Pages\Settings\SettingsIntegrated.xaml.cs">
       <DependentUpon>SettingsIntegrated.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\ShadersPatch\ShadersCredits.xaml.cs">
+      <DependentUpon>ShadersCredits.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ShadersPatch\ShadersDataBackgrounds.xaml.cs">
+      <DependentUpon>ShadersDataBackgrounds.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ShadersPatch\ShadersDataCarsConfigs.xaml.cs">
+      <DependentUpon>ShadersDataCarsConfigs.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ShadersPatch\ShadersDataCarsTextures.xaml.cs">
+      <DependentUpon>ShadersDataCarsTextures.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ShadersPatch\ShadersDataCarsVao.xaml.cs">
+      <DependentUpon>ShadersDataCarsVao.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ShadersPatch\ShadersDataTracksConfigs.xaml.cs">
+      <DependentUpon>ShadersDataTracksConfigs.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ShadersPatch\ShadersDataTracksVao.xaml.cs">
+      <DependentUpon>ShadersDataTracksVao.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ShadersPatch\ShadersInstalledDetails.xaml.cs">
+      <DependentUpon>ShadersInstalledDetails.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ShadersPatch\ShadersMainPage.xaml.cs">
+      <DependentUpon>ShadersMainPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PaintShop\CarPaint.cs" />
     <Compile Include="PaintShop\CarPaintColor.cs" />
     <Compile Include="PaintShop\CarPaintColors.cs" />
@@ -726,6 +772,7 @@
     <Compile Include="Tools\ContentRepairUi\CarTorqueRepair.cs" />
     <Compile Include="Tools\ContentRepairUi\CarWeightRepair.cs" />
     <Compile Include="Tools\ContentRepairUi\CarWronglyTakenSoundRepair.cs" />
+    <Compile Include="Tools\ContentRepairUi\Critical\CarMissingSoundRepair.cs" />
     <Compile Include="Tools\ContextMenusProvider.cs" />
     <Compile Include="Tools\DefaultAssistsFactory.cs" />
     <Compile Include="Tools\CarSoundReplacer.cs" />
@@ -972,6 +1019,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\AcSettings\AcSettingsFanatec.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\AcSettings\AcSettingsPython.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1112,6 +1163,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Drive\TempSurvey.xaml" />
     <Page Include="Pages\Drive\UserChampionships_SelectedPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1538,6 +1590,16 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\ShadersPatch\ShadersCredits.xaml" />
+    <Page Include="Pages\ShadersPatch\ShadersDataBackgrounds.xaml" />
+    <Page Include="Pages\ShadersPatch\ShadersDataCarsConfigs.xaml" />
+    <Page Include="Pages\ShadersPatch\ShadersDataCarsTextures.xaml" />
+    <Page Include="Pages\ShadersPatch\ShadersDataCarsVao.xaml" />
+    <Page Include="Pages\ShadersPatch\ShadersDataLists.xaml" />
+    <Page Include="Pages\ShadersPatch\ShadersDataTracksConfigs.xaml" />
+    <Page Include="Pages\ShadersPatch\ShadersDataTracksVao.xaml" />
+    <Page Include="Pages\ShadersPatch\ShadersInstalledDetails.xaml" />
+    <Page Include="Pages\ShadersPatch\ShadersMainPage.xaml" />
     <Page Include="Pages\Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1762,6 +1824,7 @@
     <Content Include="About\Licenses\Meta.Vlc\LICENSE" />
     <Content Include="About\Licenses\SmartThreadPool\SmartThreadPool.txt" />
     <Content Include="About\Licenses\WpfNotifyIcon\WpfNotifyIcon.txt" />
+    <Page Include="Pages\AcSettings\AcSettingsPython_detailed.xaml" />
     <Resource Include="Assets\Img\AppOff.png" />
     <Resource Include="Assets\Img\AppOn.png" />
     <None Include="About\Filtering\More About Expressions.txt" />

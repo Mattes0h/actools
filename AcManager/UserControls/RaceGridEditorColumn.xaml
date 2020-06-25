@@ -83,14 +83,18 @@
                     LabelUnchecked="{x:Static t:ToolsStrings.Drive_GridArrangeWay_Random}" IsChecked="{Binding ShuffleCandidates}" />
               </DockPanel>
 
-              <DockPanel IsEnabled="{Binding Mode.CandidatesMode}" ToolTip="With this slider, you can limit the maximum number of various cars for AC to load">
-                <mui:ValueLabel Value="{Binding DisplayVarietyLimitation}" Content="Car variety limit" mui:BetterTextBox.Mode="IntegerOrZeroLabel" />
+              <DockPanel IsEnabled="{Binding Mode.CandidatesMode}" ToolTip="{x:Static g:AppStrings.Drive_GridCarVarietyLimit_Tooltip}">
+                <mui:ValueLabel Value="{Binding DisplayVarietyLimitation}" Content="{x:Static g:AppStrings.Drive_GridCarVarietyLimit}" mui:BetterTextBox.Mode="IntegerOrZeroLabel" />
                 <Slider Minimum="0" Maximum="25" Value="{Binding VarietyLimitation}" TickFrequency="5" TickPlacement="BottomRight" />
               </DockPanel>
 
               <CheckBox IsChecked="{Binding SequentialSkins}"
-                  ToolTip="App will try to arrange skins in ascending order, while respecting filter and keeping everything shuffled if needed">
-                <Label Content="Pick skins sequentially" />
+                  ToolTip="{x:Static g:AppStrings.Drive_PickSkinsSequentially_Tooltip}">
+                <Label Content="{x:Static g:AppStrings.Drive_PickSkinsSequentially}" />
+              </CheckBox>
+
+              <CheckBox IsChecked="{Binding AvoidCarsWithoutNumbers}" IsEnabled="{Binding SequentialSkins}" ToolTip="{x:Static g:AppStrings.Drive_AvoidCarsWithoutSkinNumbers_Tooltip}">
+                <Label Content="{x:Static g:AppStrings.Drive_AvoidCarsWithoutSkinNumbers}" />
               </CheckBox>
 
               <TextBlock Text="{x:Static t:ToolsStrings.Common_GlobalHeader}" Style="{StaticResource SettingsPanel.Heading2}" />
@@ -129,7 +133,8 @@
                 <c:CarBlock Car="{Binding SelectedCar}" ShowSkinsAndPreview="False" Width="400" MaxHeight="320" />
               </mui:BetterImage.ToolTip>
             </mui:BetterImage>
-            <TextBlock Text="{Binding SelectedCar.DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+            <mui:BbCodeBlock Mode="WithoutBbCodes" Text="{Binding SelectedCar.DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" TextWrapping="NoWrap"
+                TextTrimming="CharacterEllipsis" />
             <TextBlock Style="{StaticResource Small}" DockPanel.Dock="Top" Margin="0 0 0 4"
                 Text="{Binding SelectedCar.CarClass, StringFormat={x:Static g:AppStrings.RaceGrid_ClassFormat}}" />
             <TextBlock Text="{Binding SelectedCar.SpecsInfoDisplay}" Style="{StaticResource Small}" DockPanel.Dock="Top" Margin="0 0 0 4" TextWrapping="Wrap" />
@@ -205,10 +210,10 @@
                   <mui:BetterTextBox x:Name="PriorityTextBox" DockPanel.Dock="Right" Margin="4 0 0 0" Text="{Binding CandidatePriority}"
                       ToolTip="{x:Static g:AppStrings.RaceGrid_CandidatePriority}" Style="{StaticResource Borderless.White.Small}" VerticalAlignment="Center"
                       Width="20" Mode="Positive" />
-                  <Path Width="8" Height="8" Data="{StaticResource LockIconData}" ToolTip="AI limitations are on" DockPanel.Dock="Left" Margin="0 1 4 0"
+                  <Path Width="8" Height="8" Data="{StaticResource LockIconData}" ToolTip="{x:Static g:AppStrings.RaceGridEditor_AILimitationsAreActive_Tooltip}" DockPanel.Dock="Left" Margin="0 1 4 0"
                       VerticalAlignment="Center" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
                       Visibility="{Binding AiLimitationDetails.IsActive, Converter={StaticResource BooleanToVisibilityConverter}}" Stretch="Uniform" />
-                  <TextBlock x:Name="NameTextBlock" Text="{Binding DisplayName}" />
+                  <mui:BbCodeBlock Mode="WithoutBbCodes" x:Name="NameTextBlock" Text="{Binding DisplayName}" />
                 </DockPanel>
                 <DataTemplate.Triggers>
                   <DataTrigger Binding="{Binding IsDeleted}" Value="True">
@@ -257,10 +262,10 @@
                       </Button>
                       <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
                           Visibility="Collapsed" x:Name="ErrorIcon" Margin="2 2 4 0" VerticalAlignment="Center" />
-                      <Path Width="8" Height="8" Data="{StaticResource LockIconData}" ToolTip="AI limitations are on" DockPanel.Dock="Left" Margin="0 1 4 0"
+                      <Path Width="8" Height="8" Data="{StaticResource LockIconData}" ToolTip="{x:Static g:AppStrings.RaceGridEditor_AILimitationsAreActive_Tooltip}" DockPanel.Dock="Left" Margin="0 1 4 0"
                           VerticalAlignment="Center" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
                           Visibility="{Binding AiLimitationDetails.IsActive, Converter={StaticResource BooleanToVisibilityConverter}}" Stretch="Uniform" />
-                      <TextBlock x:Name="EntryName" Text="{Binding DisplayName}" />
+                      <mui:BbCodeBlock Mode="WithoutBbCodes" x:Name="EntryName" Text="{Binding DisplayName}" />
                     </DockPanel>
                     <DataTemplate.Triggers>
                       <DataTrigger Binding="{Binding ExceedsLimit}" Value="True">

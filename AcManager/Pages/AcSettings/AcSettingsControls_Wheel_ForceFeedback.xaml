@@ -50,7 +50,7 @@
         </DockPanel>
 
         <DockPanel>
-          <mui:ValueLabel Value="{Binding Controls.WheelFfbAbsEffect}" Postfix="%" Content="ABS effect" />
+          <mui:ValueLabel Value="{Binding Controls.WheelFfbAbsEffect}" Postfix="%" Content="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_ABSEffect}" />
           <Slider Minimum="0" Maximum="150" Value="{Binding Controls.WheelFfbAbsEffect}" TickFrequency="15" TickPlacement="BottomRight" />
         </DockPanel>
 
@@ -70,8 +70,7 @@
           <Slider Minimum="0" Maximum="5" Value="{Binding Controls.WheelFfbSkipSteps}" TickFrequency="1" TickPlacement="BottomRight" />
         </DockPanel>
 
-        <CheckBox IsChecked="{Binding Controls.HardwareLock}" mui:NewMarkService.New="True" IsEnabled="{Binding Controls.IsHardwareLockSupported}"
-            ToolTipService.ShowOnDisabled="True">
+        <CheckBox IsChecked="{Binding Controls.HardwareLock}" IsEnabled="{Binding Controls.IsHardwareLockSupported}" ToolTipService.ShowOnDisabled="True">
           <CheckBox.ToolTip>
             <mui:BbCodeBlock MaxWidth="480"
                 Text="CM will try to adjust device’s steering lock, [b]experimental[/b].[br][br]If you adjusted [mono][b]STEER/SCALE[/b][/mono] in [mono][b]config.ini[/mono][/b], you might want to change it back, especially now when CM can sync virtual and real steering wheels automatically. Be ready to fix steering lock in device’s settings in case CM will fail to revert it back.[br][br]If you want to see your device added here and ready to do some testing of various pre-release builds, please, contact me, maybe there is a way." />
@@ -79,7 +78,7 @@
           <DockPanel Style="{x:Null}">
             <TextBlock Text="{Binding Controls.DisplayHardwareLockSupported, StringFormat='{}Supported controllers: {0}'}" Style="{StaticResource Small}"
                 TextWrapping="Wrap" DockPanel.Dock="Bottom" Margin="0 2 0 0" />
-            <Label Content="Hardware lock (experimental)" />
+            <Label Content="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_HardwareLock}" />
           </DockPanel>
         </CheckBox>
 
@@ -89,7 +88,8 @@
             <ContentControl.Resources>
               <DataTemplate DataType="{x:Type w:LogitechOptions}">
                 <StackPanel Style="{StaticResource SettingsPanel}">
-                  <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Logitech hardware lock options:" />
+                  <TextBlock Style="{StaticResource SettingsPanel.Heading2}"
+                      Text="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_LogitechHardwareLockOptions}" />
 
                   <TextBlock Foreground="{DynamicResource Error}" TextWrapping="Wrap" Style="{StaticResource Small}" Margin="0 0 0 8"
                       Text="Although CM uses official Logitech SDK and calls a couple of some well-documented functions, there is a small chance it might mess your steering wheel up, and you would need to spend some time fixing it back. Please, be careful." />
@@ -144,7 +144,7 @@
                       Text="Although CM uses official Logitech SDK and calls a couple of some well-documented functions, there is a small chance it might mess your steering wheel up, and you would need to spend some time fixing it back. Please, be careful." />
 
                   <DockPanel>
-                    <Label Content="Handle mode:" Width="80" />
+                    <Label Content="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_HandleMode}" Width="80" />
                     <ComboBox ItemsSource="{Binding HandleOptions}" SelectedItem="{Binding Handle}">
                       <ComboBox.ItemTemplate>
                         <DataTemplate>
@@ -164,24 +164,26 @@
       <StackPanel set:Search.Category="{x:Static g:AppStrings.AcSettings_Controls}" Style="{StaticResource SettingsPanel}">
 
         <!-- Post-Processing -->
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Post-processing:" />
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_PostProcessing}" />
 
-        <DockPanel ToolTip="Use it to multiply FFB when wheel is placed in center">
-          <mui:ValueLabel Value="{Binding Controls.WheelFfbWheelCenterBoostGain}" Content="Center boost gain" Postfix="%" />
+        <DockPanel ToolTip="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain_Tooltip}">
+          <mui:ValueLabel Value="{Binding Controls.WheelFfbWheelCenterBoostGain}"
+              Content="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain}" Postfix="%" />
           <Slider Minimum="0" Maximum="100" Value="{Binding Controls.WheelFfbWheelCenterBoostGain}" TickFrequency="10" TickPlacement="BottomRight" />
         </DockPanel>
 
-        <DockPanel ToolTip="Use it to multiply FFB when wheel is placed in center">
-          <mui:ValueLabel Value="{Binding Controls.WheelFfbWheelCenterBoostRange}" Content="Center boost range" Postfix="%" />
+        <DockPanel ToolTip="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain_Tooltip}">
+          <mui:ValueLabel Value="{Binding Controls.WheelFfbWheelCenterBoostRange}"
+              Content="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_CenterBoostRange}" Postfix="%" />
           <Slider Minimum="0" Maximum="20" Value="{Binding Controls.WheelFfbWheelCenterBoostRange}" TickFrequency="2" TickPlacement="BottomRight" />
         </DockPanel>
 
         <CheckBox IsChecked="{Binding FfPostProcess.Enabled}">
-          <Label Content="Enable FFB post-processing" />
+          <Label Content="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_EnableFFBPostProcessing}" />
         </CheckBox>
 
         <DockPanel Visibility="{Binding FfPostProcess.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-          <Label Content="Mode:" Width="80" />
+          <Label Content="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_PostProcessingMode}" Width="80" />
           <ComboBox ItemsSource="{Binding FfPostProcess.Types}" SelectedItem="{Binding FfPostProcess.Type, Mode=TwoWay}" DisplayMemberPath="DisplayName" />
         </DockPanel>
 
@@ -189,17 +191,18 @@
             Visibility="{Binding FfPostProcess.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}">
           <StackPanel mui:Switch.When="GAMMA" Style="{StaticResource SettingsPanel}" Margin="0">
             <DockPanel>
-              <mui:ValueLabel Value="{Binding FfPostProcess.Gamma, Converter={StaticResource PercentageConverter}}" Postfix="%" Content="Gamma" Width="80" />
+              <mui:ValueLabel Value="{Binding FfPostProcess.Gamma, Converter={StaticResource PercentageConverter}}" Postfix="%"
+                  Content="{x:Static с:ControlsStrings.Controls_GammaAxis}" Width="80" />
               <Slider Minimum="0" Maximum="2" Value="{Binding FfPostProcess.Gamma, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01}"
                   TickFrequency="0.2" TickPlacement="BottomRight" />
             </DockPanel>
           </StackPanel>
           <StackPanel mui:Switch.When="LUT" Style="{StaticResource SettingsPanel}" Margin="0">
             <DockPanel>
-              <Label Content="LUT:" Width="80" />
-              <Button x:Name="ImportCsvButton" Content="Import CSV" Command="{Binding ImportCsvCommand}"
-                  ToolTip="Import CSV from WheelCheck (just drag’n’drop it if needed)" />
-              <Button Content="Import LUT" Command="{Binding ImportLutCommand}" ToolTip="Just drag’n’drop it if needed" />
+              <Label Content="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_LUT}" Width="80" />
+              <Button x:Name="ImportCsvButton" Content="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_ImportCSV}" Command="{Binding ImportCsvCommand}"
+                  ToolTip="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_ImportCSV_Tooltip}" />
+              <Button Content="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_ImportLUT}" Command="{Binding ImportLutCommand}" ToolTip="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_Import_Tooltip}" />
               <mui:BetterComboBox ItemsSource="{Binding FfPostProcess.LutNames}" SelectedItem="{Binding FfPostProcess.LutName, Mode=TwoWay}" />
             </DockPanel>
 

@@ -11,12 +11,17 @@ using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Helpers.Loaders {
     internal class MegaLoader : ILoader {
-        public static bool Test(string url) => Regex.IsMatch(url, @"^https?://(?:www.)?mega(?:\.co)?\.nz/#", RegexOptions.IgnoreCase);
+        // https://mega.nz/file/55MFAa4Z#uIILkF1kpXekTS0L8sxBGS5zzCEc00LLidIOVM2-Vt8
+        public static bool Test(string url) => Regex.IsMatch(url, @"^https?://(?:www.)?mega(?:\.co)?\.nz/(?:#|file/)", RegexOptions.IgnoreCase);
 
         private readonly Uri _uri;
         private MegaApiClient _client;
 
         public MegaLoader(string url) {
+            var match = Regex.Match(url, @"\.nz/file/([^#]{4,12})#(.+)");
+            if (match.Success) {
+                url = $@"https://mega.nz/#!{match.Groups[1]}!{match.Groups[2]}";
+            }
             _uri = new Uri(url);
         }
 
@@ -41,10 +46,15 @@ namespace AcManager.Tools.Helpers.Loaders {
                 await _client.LoginAnonymousAsync();
             }
 
-            var information = await _client.GetNodeFromLinkAsync(_uri);
-            TotalSize = information.Size;
-            FileName = information.Name;
-            return true;
+            try {
+                var information = await _client.GetNodeFromLinkAsync(_uri);
+                TotalSize = information.Size;
+                FileName = information.Name;
+                return true;
+            } catch (ApiException e) {
+                WindowsHelper.ViewInBrowser(_uri);
+                throw new InformativeException("Unsupported link", "Please download it manually.", e);
+            }
         }
 
         public bool UsesClientToDownload => false;
@@ -69,6 +79,9 @@ namespace AcManager.Tools.Helpers.Loaders {
                 return d.Filename;
             } catch (Exception e) when (IsBandwidthLimitExceeded(e)) {
                 throw new InformativeException("Bandwidth limit exceeded", "That’s Mega.nz for you.", e);
+            } catch (ApiException e) {
+                WindowsHelper.ViewInBrowser(_uri);
+                throw new InformativeException("Unsupported link", "Please download it manually.", e);
             }
 
             bool IsBandwidthLimitExceeded(Exception e) {

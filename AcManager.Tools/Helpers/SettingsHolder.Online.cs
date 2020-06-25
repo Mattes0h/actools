@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using AcManager.Tools.Helpers.Api;
+using AcManager.Tools.Managers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -64,6 +66,32 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _onlineServerId)) return;
                     _onlineServerId = value;
                     ValuesStorage.Set("Settings.OnlineSettings.OnlineServerId", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _cachingServerAvailable;
+
+            public bool CachingServerAvailable {
+                get => _cachingServerAvailable ?? (_cachingServerAvailable =
+                        ValuesStorage.Get("Settings.OnlineSettings.CachingServerAvailable", false)).Value;
+                set {
+                    if (Equals(value, _cachingServerAvailable)) return;
+                    _cachingServerAvailable = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.CachingServerAvailable", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _useCachingServer;
+
+            public bool UseCachingServer {
+                get => _useCachingServer ?? (_useCachingServer =
+                        ValuesStorage.Get("Settings.OnlineSettings.UseCachingServer", false)).Value;
+                set {
+                    if (Equals(value, _useCachingServer)) return;
+                    _useCachingServer = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.UseCachingServer", value);
                     OnPropertyChanged();
                 }
             }
@@ -174,6 +202,18 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _loadServerInformationDirectly)) return;
                     _loadServerInformationDirectly = value;
                     ValuesStorage.Set("Settings.OnlineSettings.LoadServerInformationDirectly", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _pausePingingInRace;
+
+            public bool PausePingingInRace {
+                get => _pausePingingInRace ?? (_pausePingingInRace = ValuesStorage.Get("Settings.OnlineSettings.PausePingingInRace", true)).Value;
+                set {
+                    if (Equals(value, _pausePingingInRace)) return;
+                    _pausePingingInRace = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.PausePingingInRace", value);
                     OnPropertyChanged();
                 }
             }
@@ -316,6 +356,20 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }*/
+
+            private string _serverPresetsDirectory;
+
+            public string ServerPresetsDirectory {
+                get => _serverPresetsDirectory ?? (_serverPresetsDirectory = ValuesStorage.Get("Settings.OnlineSettings.ServerPresetsDirectory",
+                        Path.Combine(AcRootDirectory.Instance.RequireValue, @"server", @"presets")));
+                set {
+                    value = value.Trim();
+                    if (Equals(value, _serverPresetsDirectory)) return;
+                    _serverPresetsDirectory = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.ServerPresetsDirectory", value);
+                    OnPropertyChanged();
+                }
+            }
 
             private bool? _serverPresetsAutoSave;
 

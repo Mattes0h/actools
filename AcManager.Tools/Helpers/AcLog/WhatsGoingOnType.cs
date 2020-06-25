@@ -76,6 +76,24 @@ namespace AcManager.Tools.Helpers.AcLog {
         WrongTextureFormat,
 
         [Description("Tyres might be wrong")]
-        TyresMightBeWrong
+        TyresMightBeWrong,
+
+        [Description("GPU failed; might be overclocked too much, or overheated")]
+        GpuFailed,
+
+        [Description("{0}")]
+        CustomShadersPatchReported,
+
+        [Description("Either race parameters are wrong, or track might be broken, containing no starting positions")]
+        NoCarsFound,
+
+        [Description("Critical error:\n[size=10][mono]\n{0}[/mono][/size]")]
+        CriticalError,
+
+        [Description("Error might have something to do with:\n[size=10][mono]\n{0}[/mono][/size]")]
+        UnknownCrash,
+
+        [Description("Content Manager couldn’t find out what’s wrong")]
+        UnknownEmptyCrash
     }
 }

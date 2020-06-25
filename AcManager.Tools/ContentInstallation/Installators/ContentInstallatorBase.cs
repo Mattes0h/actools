@@ -14,8 +14,8 @@ namespace AcManager.Tools.ContentInstallation.Installators {
         [NotNull]
         public ContentInstallationParams InstallationParams { get; }
 
-        protected ContentInstallatorBase([CanBeNull] ContentInstallationParams installationParams) {
-            InstallationParams = installationParams ?? ContentInstallationParams.Default;
+        protected ContentInstallatorBase([NotNull] ContentInstallationParams installationParams) {
+            InstallationParams = installationParams;
         }
 
         public virtual Task TrySetPasswordAsync(string password, CancellationToken cancellation) {
@@ -37,6 +37,9 @@ namespace AcManager.Tools.ContentInstallation.Installators {
         [CanBeNull]
         protected abstract string GetBaseId();
 
+        [CanBeNull]
+        protected abstract string GetBaseName();
+
         [ItemCanBeNull]
         protected abstract Task<IEnumerable<IFileOrDirectoryInfo>> GetFileEntriesAsync(CancellationToken cancellation);
 
@@ -50,7 +53,7 @@ namespace AcManager.Tools.ContentInstallation.Installators {
                     if (cancellation.IsCancellationRequested) return null;
                 }
 
-                var result = await new ContentScanner(InstallationParams).GetEntriesAsync(list, GetBaseId(), progress, cancellation);
+                var result = await new ContentScanner(InstallationParams).GetEntriesAsync(list, GetBaseId(), GetBaseName(), progress, cancellation);
                 if (result == null || cancellation.IsCancellationRequested) return null;
 
                 if (result.MissingContent) {

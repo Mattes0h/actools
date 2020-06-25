@@ -602,9 +602,6 @@ Tipo de entrada: [b]{2}[/b]</value>
   <data name="Share_SharedMessage" xml:space="preserve">
     <value>Ligação copiada para a área de transferência</value>
   </data>
-  <data name="Showroom_ShowroomLabel" xml:space="preserve">
-    <value>Showroom:</value>
-  <alternative>Salão de exposição:</alternative><alternative>Expositor:</alternative></data>
   <data name="Common_FilterLabel" xml:space="preserve">
     <value>Filtro:</value>
   </data>
@@ -686,9 +683,6 @@ Tipo de entrada: [b]{2}[/b]</value>
   <data name="CustomShowroom_Selected_NameLabel" xml:space="preserve">
     <value>Nome:</value>
   </data>
-  <data name="CustomShowroom_Selected_MaterialLabel" xml:space="preserve">
-    <value>Material:</value>
-  </data>
   <data name="CustomShowroom_Selected_TexturesLabel" xml:space="preserve">
     <value>Texturas:</value>
   </data>
@@ -746,9 +740,6 @@ Tipo de entrada: [b]{2}[/b]</value>
   <data name="Common_OfflineMode" xml:space="preserve">
     <value>Modo Offline</value>
   </data>
-  <data name="Showroom_DialogHeader" xml:space="preserve">
-    <value>Showroom</value>
-  <alternative>Salão de exposição</alternative><alternative>Expositor</alternative></data>
   <data name="Common_Downloading" xml:space="preserve">
     <value>Fazendo o download...</value>
   </data>
@@ -763,5 +754,35 @@ Tipo de entrada: [b]{2}[/b]</value>
   </data>
   <data name="Controls_MiscellaneousHeader" xml:space="preserve">
     <value>Diversos</value>
+  </data>
+  <data name="Common_RoundPostfix" xml:space="preserve">
+    <value> volta</value>
+  </data>
+  <data name="Common_FahrenheitPostfix" xml:space="preserve">
+    <value> °F</value>
+  </data>
+  <data name="TableHeader_Name" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="TableHeader_Car" xml:space="preserve">
+    <value>Viatura</value>
+  </data>
+  <data name="TableHeader_Track" xml:space="preserve">
+    <value>Pista</value>
+  </data>
+  <data name="TableHeader_BestLap" xml:space="preserve">
+    <value>Melhor volta</value>
+  </data>
+  <data name="TableHeader_Date" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="TableHeader_Nationality" xml:space="preserve">
+    <value>Nacionalidade</value>
+  </data>
+  <data name="TableHeader_Visible" xml:space="preserve">
+    <value>Visível</value>
+  </data>
+  <data name="TableHeader_Locked" xml:space="preserve">
+    <value>Bloqueado</value>
   </data>
 </root>

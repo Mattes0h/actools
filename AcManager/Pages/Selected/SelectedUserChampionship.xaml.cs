@@ -208,6 +208,7 @@ namespace AcManager.Pages.Selected {
 
                         RaceGridViewModel.AiLevelArrangeRandom = 0;
                         RaceGridViewModel.AiLevelArrangeReverse = false;
+                        RaceGridViewModel.AiLevelArrangePowerRatio = false;
                         RaceGridViewModel.AiLevel = 100;
                         RaceGridViewModel.AiLevelMin = 100;
 
@@ -585,8 +586,8 @@ namespace AcManager.Pages.Selected {
         private void OnRoundDescriptionDoubleClick(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton != MouseButton.Left) return;
             if (((FrameworkElement)sender).DataContext is UserChampionshipRoundExtended round) {
-                round.Description = Prompt.Show("Round description:", "Round Description", round.Description, round.Track?.Description, multiline: true) ??
-                        round.Description;
+                round.Description = Prompt.Show("Round description:", "Round Description", round.Description,
+                        round.Track?.Description, multiline: true) ?? round.Description;
             }
         }
     }

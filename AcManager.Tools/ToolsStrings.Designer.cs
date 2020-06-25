@@ -24,7 +24,7 @@ namespace AcManager.Tools {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ToolsStrings {
         
-        private static global::System.Resources.ResourceManager resourceMan;
+        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager.Tools {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Tools.ToolsStrings", typeof(ToolsStrings).Assembly);
+                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.Tools.ToolsStrings", typeof(ToolsStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -403,7 +403,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make sure there is no runned app working with object’s folder..
+        ///   Looks up a localized string similar to Make sure there are no running apps working with object’s folder..
         /// </summary>
         public static string AcObject_CannotToggle_Commentary {
             get {
@@ -880,7 +880,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Highspeed shaking.
+        ///   Looks up a localized string similar to High speed shaking.
         /// </summary>
         public static string AcSettings_View_HighspeedShaking {
             get {
@@ -1222,7 +1222,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatically syncronize RPM on downshifts.
+        ///   Looks up a localized string similar to Automatically synchronize RPM on downshifts.
         /// </summary>
         public static string Assists_AutoBlip_Tooltip {
             get {
@@ -1447,6 +1447,24 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Best lap:.
+        /// </summary>
+        public static string BestLapsControl_BestLap {
+            get {
+                return ResourceManager.GetString("BestLapsControl_BestLap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Best laps:.
+        /// </summary>
+        public static string BestLapsControl_BestLaps {
+            get {
+                return ResourceManager.GetString("BestLapsControl_BestLaps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t replace car’s sound.
         /// </summary>
         public static string Car_ReplaceSound_CannotReplace {
@@ -1555,6 +1573,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ballast.
+        /// </summary>
+        public static string Common_Ballast {
+            get {
+                return ResourceManager.GetString("Common_Ballast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t do.
         /// </summary>
         public static string Common_CannotDo {
@@ -1636,11 +1663,29 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0:F1} km.
+        /// </summary>
+        public static string Common_DistanceLarge_Format {
+            get {
+                return ResourceManager.GetString("Common_DistanceLarge_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exporting….
         /// </summary>
         public static string Common_Exporting {
             get {
                 return ResourceManager.GetString("Common_Exporting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  ft/s.
+        /// </summary>
+        public static string Common_FeetPerSecondPostfix {
+            get {
+                return ResourceManager.GetString("Common_FeetPerSecondPostfix", resourceCulture);
             }
         }
         
@@ -1699,6 +1744,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  kg.
+        /// </summary>
+        public static string Common_KilogramsPostfix {
+            get {
+                return ResourceManager.GetString("Common_KilogramsPostfix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to KN5.
         /// </summary>
         public static string Common_KN5 {
@@ -1740,6 +1794,15 @@ namespace AcManager.Tools {
         public static string Common_MakeSureThereIsEnoughSpace {
             get {
                 return ResourceManager.GetString("Common_MakeSureThereIsEnoughSpace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  m/s.
+        /// </summary>
+        public static string Common_MetersPerSecondPostfix {
+            get {
+                return ResourceManager.GetString("Common_MetersPerSecondPostfix", resourceCulture);
             }
         }
         
@@ -1794,6 +1857,15 @@ namespace AcManager.Tools {
         public static string Common_Recommended {
             get {
                 return ResourceManager.GetString("Common_Recommended", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restrictor.
+        /// </summary>
+        public static string Common_Restrictor {
+            get {
+                return ResourceManager.GetString("Common_Restrictor", resourceCulture);
             }
         }
         
@@ -1875,6 +1947,15 @@ namespace AcManager.Tools {
         public static string Common_UnhandledError_Commentary {
             get {
                 return ResourceManager.GetString("Common_UnhandledError_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  Hz.
+        /// </summary>
+        public static string Common_Unit_Hz {
+            get {
+                return ResourceManager.GetString("Common_Unit_Hz", resourceCulture);
             }
         }
         
@@ -2725,7 +2806,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make sure command doesn’t take more than {0:F1} seconds; use “start [app.exe]” instead of “[app.exe]” if app supposed to run in background.
+        ///   Looks up a localized string similar to Make sure command doesn’t take more than {0:F1} seconds; use “start [app.exe]” instead of “[app.exe]” if app is supposed to run in background.
         /// </summary>
         public static string GameCommand_TimeoutExceeded_Commentary {
             get {
@@ -3247,8 +3328,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Server is unavailable (ping failed).
-        ///.
+        ///   Looks up a localized string similar to Server is unavailable (ping failed)..
         /// </summary>
         public static string Online_Server_CannotPing {
             get {
@@ -3257,8 +3337,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can’t refresh server information.
-        ///.
+        ///   Looks up a localized string similar to Can’t refresh server information..
         /// </summary>
         public static string Online_Server_CannotRefresh {
             get {
@@ -3312,8 +3391,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Not implemented.
-        ///.
+        ///   Looks up a localized string similar to Not implemented..
         /// </summary>
         public static string Online_Server_NotImplemented {
             get {
@@ -3570,6 +3648,51 @@ namespace AcManager.Tools {
         public static string Presets_FileFilter {
             get {
                 return ResourceManager.GetString("Presets_FileFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Arrange AI strength based on P/W ratio.
+        /// </summary>
+        public static string Race_ArrangeAIStrengthBasedOnPWRatio {
+            get {
+                return ResourceManager.GetString("Race_ArrangeAIStrengthBasedOnPWRatio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Opponents aggression.
+        /// </summary>
+        public static string Race_OpponentsAggression {
+            get {
+                return ResourceManager.GetString("Race_OpponentsAggression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Randomization:.
+        /// </summary>
+        public static string Race_RandomizationTitle {
+            get {
+                return ResourceManager.GetString("Race_RandomizationTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show AI aggression in driver’s name.
+        /// </summary>
+        public static string Race_ShowAIAggression {
+            get {
+                return ResourceManager.GetString("Race_ShowAIAggression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show relative range.
+        /// </summary>
+        public static string Race_ShowRelativeRange {
+            get {
+                return ResourceManager.GetString("Race_ShowRelativeRange", resourceCulture);
             }
         }
         
@@ -3936,7 +4059,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fastest one, runs race directly without using Steam at all; online will work, but you’ll miss all achievments.
+        ///   Looks up a localized string similar to Fastest one, runs race directly without using Steam at all; online will work, but you’ll miss all achievements.
         /// </summary>
         public static string Settings_Starter_Sse_Description {
             get {
@@ -4188,7 +4311,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make sure there is no runned app working with showroom’s sound files..
+        ///   Looks up a localized string similar to Make sure there are no running app working with showroom’s sound files..
         /// </summary>
         public static string ShowroomObject_CannotToggleSound_Commentary {
             get {

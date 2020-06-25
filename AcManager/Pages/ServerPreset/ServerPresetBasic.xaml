@@ -2,6 +2,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:t="http://acstuff.ru/app/tools"
+    xmlns:c="http://acstuff.ru/app/controls"
+    xmlns:g="clr-namespace:AcManager"
     mc:Ignorable="d" d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}">
   <UserControl.Resources>
     <ResourceDictionary>
@@ -23,7 +25,7 @@
           <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Margin="0 0 20 0" Grid.Column="0" Background="Gray">
+        <StackPanel Margin="0 0 20 0" Grid.Column="0" Background="Gray" Width="160" Height="120">
           <Button Padding="0" Width="160" Height="120" Command="{Binding ChangeTrackCommand}" HorizontalContentAlignment="Stretch"
               VerticalContentAlignment="Stretch">
             <Grid Margin="-1" ClipToBounds="True" IsHitTestVisible="False" DataContext="{Binding Track}">
@@ -35,8 +37,10 @@
           </Button>
         </StackPanel>
 
-        <StackPanel Margin="0 0 20 0" Grid.Column="1" Background="Gray">
-          <Button Padding="0" Width="160" Height="120" IsHitTestVisible="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+        <StackPanel Margin="0 0 20 0" Grid.Column="1" Background="Gray" Width="160" Height="120">
+          <Button Padding="0" Width="160" Height="120" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+              Command="GoToPage" CommandParameter="/Pages/ServerPreset/ServerPresetEntryList.xaml"
+              >
             <Grid Margin="-1" ClipToBounds="True" IsHitTestVisible="False">
               <mui:BetterImage Filename="{Binding Cars[0].SelectedSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
               <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}"
@@ -45,16 +49,11 @@
           </Button>
         </StackPanel>
 
-        <ItemsControl Grid.Column="2" ItemsSource="{Binding Cars}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-          <ItemsControl.ItemsPanel>
-            <ItemsPanelTemplate>
-              <VirtualizingStackPanel IsItemsHost="True" CacheLength="1,1" CacheLengthUnit="Page" ScrollUnit="Pixel" VirtualizationMode="Recycling"
-                  IsVirtualizing="True" />
-            </ItemsPanelTemplate>
-          </ItemsControl.ItemsPanel>
+        <ItemsControl Grid.Column="2" ItemsSource="{Binding Cars}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Height="120"
+            Style="{StaticResource VirtualizingItemsControl}">
           <ItemsControl.ItemTemplate>
             <DataTemplate>
-              <DockPanel Margin="0 0 0 4">
+              <DockPanel Margin="0 0 0 4" Background="Transparent" mui:Draggable.Data="{Binding}" c:ToolTips.Car="{Binding}" c:ContextMenus.Car="{Binding}">
                 <mui:BetterImage Filename="{Binding BrandBadge}" Width="16" Height="16" DockPanel.Dock="Left" Margin="0 0 8 0" ClearOnChange="True" />
                 <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Center" />
               </DockPanel>
@@ -87,7 +86,7 @@
             </TextBlock.Text>
           </TextBlock>
           <DockPanel ToolTip="Set a password if you want a private server" Margin="0 20 0 8">
-            <Label Content="Password:" />
+            <Label Content="{x:Static g:AppStrings.Online_PasswordLabel}" />
             <mui:BetterTextBox Text="{Binding SelectedObject.Password}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
           </DockPanel>
           <DockPanel>
@@ -114,7 +113,7 @@
           </DockPanel>
           <DockPanel Margin="0 0 0 8">
             <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.WelcomeMessage}" AcceptsReturn="True" TextWrapping="Wrap"
-                Placeholder="None" Height="200" DockPanel.Dock="Bottom" Margin="20 8 0 0" x:Name="WelcomeMessageTextArea" />
+                Placeholder="{x:Static t:ToolsStrings.Common_None}" Height="200" DockPanel.Dock="Bottom" Margin="20 8 0 0" x:Name="WelcomeMessageTextArea" />
             <Label Content="Welcome message:" HorizontalAlignment="Left" />
           </DockPanel>
         </StackPanel>
@@ -145,7 +144,7 @@
           </DockPanel>
           <DockPanel Margin="0 0 0 8">
             <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.ManagerDescription}" AcceptsReturn="False" TextWrapping="Wrap"
-                Placeholder="None" Height="60" DockPanel.Dock="Bottom" Margin="20 8 0 0" />
+                Placeholder="{x:Static t:ToolsStrings.Common_None}" Height="60" DockPanel.Dock="Bottom" Margin="20 8 0 0" />
             <Label Content="Manager description:" HorizontalAlignment="Left" Width="200" />
           </DockPanel>
         </StackPanel>

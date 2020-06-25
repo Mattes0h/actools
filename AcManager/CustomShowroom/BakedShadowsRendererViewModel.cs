@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows;
 using AcManager.Controls;
 using AcManager.Controls.Dialogs;
 using AcManager.Tools.Helpers;
@@ -23,6 +24,7 @@ using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
+using Size = System.Windows.Size;
 
 namespace AcManager.CustomShowroom {
     public class BakedShadowsRendererViewModel : NotifyPropertyChanged, IUserPresetable {
@@ -32,13 +34,13 @@ namespace AcManager.CustomShowroom {
         private class SaveableData {
             public double From, To = 60d, Brightness = 220d, Gamma = 60d, PixelDensity = 4d, Ambient, ShadowBias, ShadowBiasCullBack = 70d;
             public int Iterations = 5000, Padding = 4, ShadowMapSize = 2048;
-            public bool UseFxaa = true;
+            public bool UseFxaa = true, FullyTransparent = true, UseDxt5 = true;
         }
 
         [CanBeNull]
         private readonly BaseRenderer _renderer;
 
-        private readonly Kn5 _kn5;
+        private readonly IKn5 _kn5;
         private readonly ISaveHelper _saveable;
 
         [NotNull]
@@ -64,17 +66,17 @@ namespace AcManager.CustomShowroom {
         [CanBeNull]
         private readonly CarObject _car;
 
-        public static BakedShadowsRendererViewModel ForTexture([CanBeNull] BaseRenderer renderer, [NotNull] Kn5 kn5, [NotNull] string textureName,
+        public static BakedShadowsRendererViewModel ForTexture([CanBeNull] BaseRenderer renderer, [NotNull] IKn5 kn5, [NotNull] string textureName,
                 [CanBeNull] CarObject car) {
             return new BakedShadowsRendererViewModel(renderer, kn5, textureName, null, car);
         }
 
-        public static BakedShadowsRendererViewModel ForObject([CanBeNull] BaseRenderer renderer, [NotNull] Kn5 kn5, [NotNull] string objectPath,
+        public static BakedShadowsRendererViewModel ForObject([CanBeNull] BaseRenderer renderer, [NotNull] IKn5 kn5, [NotNull] string objectPath,
                 [CanBeNull] CarObject car) {
             return new BakedShadowsRendererViewModel(renderer, kn5, null, objectPath, car);
         }
 
-        private BakedShadowsRendererViewModel([CanBeNull] BaseRenderer renderer, [NotNull] Kn5 kn5,
+        private BakedShadowsRendererViewModel([CanBeNull] BaseRenderer renderer, [NotNull] IKn5 kn5,
                 [CanBeNull] string textureName, [CanBeNull] string objectPath, [CanBeNull] CarObject car) {
             _renderer = renderer;
             _kn5 = kn5;
@@ -109,6 +111,8 @@ namespace AcManager.CustomShowroom {
                 Padding = Padding,
                 ShadowMapSize = ShadowMapSize,
                 UseFxaa = UseFxaa,
+                FullyTransparent = FullyTransparent,
+                UseDxt5 = UseDxt5,
             }, o => {
                 From = o.From;
                 To = o.To;
@@ -122,6 +126,8 @@ namespace AcManager.CustomShowroom {
                 Padding = o.Padding;
                 ShadowMapSize = o.ShadowMapSize;
                 UseFxaa = o.UseFxaa;
+                FullyTransparent = o.FullyTransparent;
+                UseDxt5 = o.UseDxt5;
             });
 
             _saveable.Initialize();
@@ -220,6 +226,20 @@ namespace AcManager.CustomShowroom {
             set => Apply(value, ref _useFxaa);
         }
 
+        private bool _fullyTransparent;
+
+        public bool FullyTransparent {
+            get => _fullyTransparent;
+            set => Apply(value, ref _fullyTransparent);
+        }
+
+        private bool _useDxt5;
+
+        public bool UseDxt5 {
+            get => _useDxt5;
+            set => Apply(value, ref _useDxt5);
+        }
+
         private int _shadowMapSize;
 
         public int ShadowMapSize {
@@ -243,7 +263,7 @@ namespace AcManager.CustomShowroom {
         private const string KeyDimensions = "__BakedShadowsRendererViewModel.Dimensions";
 
         [ItemCanBeNull]
-        private async Task<Tuple<byte[], Size>> CalculateAo(int? size, [CanBeNull] CarObject car) {
+        private async Task<Tuple<byte[], byte[], Size>> CalculateAo(int? size, [CanBeNull] CarObject car) {
             int width, height;
             switch (size) {
                 case null:
@@ -296,6 +316,7 @@ namespace AcManager.CustomShowroom {
                         ShadowBiasCullFront = (float)ShadowBiasCullFront / 100f,
                         ShadowBiasCullBack = (float)ShadowBiasCullBack / 100f,
                         UseFxaa = UseFxaa,
+                        FullyTransparent = FullyTransparent,
                         Padding = Padding,
                         MapSize = ShadowMapSize,
                         ResolutionMultiplier = Math.Sqrt(PixelDensity)
@@ -303,7 +324,17 @@ namespace AcManager.CustomShowroom {
                         renderer.CopyStateFrom(_renderer as ToolsKn5ObjectRenderer);
                         renderer.Width = width;
                         renderer.Height = height;
-                        return Tuple.Create(renderer.Shot(TextureName, ObjectPath, progress, cancellation), new Size(width, height));
+                        var shot = renderer.Shot(TextureName, ObjectPath, progress, cancellation);
+                        var toDisplay = shot;
+                        if (FullyTransparent && shot != null) {
+                            waiting.Report("Preparing for preview…");
+                            using (var stream = new MemoryStream(shot))
+                            using (var output = new MemoryStream()) {
+                                ImageUtils.Convert(stream, output, 97);
+                                toDisplay = output.ToArray();
+                            }
+                        }
+                        return Tuple.Create(shot, toDisplay, new Size(width, height));
                     }
                 });
             }
@@ -314,25 +345,29 @@ namespace AcManager.CustomShowroom {
         public AsyncCommand<string> CalculateAoCommand => _calculateAoCommand ?? (_calculateAoCommand = new AsyncCommand<string>(async o => {
             try {
                 var calculated = await CalculateAo(FlexibleParser.TryParseInt(o), _car);
-                if (calculated == null) return;
+                if (calculated?.Item2 == null) return;
 
-                new ImageViewer(new object[] { calculated.Item1, await GetOriginal() }.NonNull(), detailsCallback: DetailsCallback) {
-                    MaxImageWidth = calculated.Item2.Width,
-                    MaxImageHeight = calculated.Item2.Height,
-                    Model = {
-                        Saveable = true,
-                        SaveableTitle = ControlsStrings.CustomShowroom_ViewMapping_Export,
-                        SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename),
-                        SaveDialogFilterPieces = {
-                            DialogFilterPiece.DdsFiles,
-                            DialogFilterPiece.JpegFiles,
-                            DialogFilterPiece.PngFiles,
-                        },
-                        SaveCallback = SaveCallback,
-                        CanBeSavedCallback = i => i == 0
-                    },
-                    ShowInTaskbar = true
-                }.ShowDialog();
+                var viewer = new ImageViewer(new object[] { calculated.Item2, await GetOriginal() }.NonNull(),
+                        detailsCallback: DetailsCallback) {
+                            MaxImageWidth = calculated.Item3.Width,
+                            MaxImageHeight = calculated.Item3.Height,
+                            Model = {
+                                Saveable = true,
+                                SaveableTitle = ControlsStrings.CustomShowroom_ViewMapping_Export,
+                                SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename),
+                                SaveDefaultFileName = TextureName,
+                                SaveDialogFilterPieces = {
+                                    DialogFilterPiece.DdsFiles,
+                                    DialogFilterPiece.JpegFiles,
+                                    DialogFilterPiece.PngFiles,
+                                },
+                                SaveCallback = SaveCallback,
+                                CanBeSavedCallback = i => i == 0
+                            },
+                            ShowInTaskbar = false,
+                            DoNotAttachToWaitingDialogs = true
+                        };
+                viewer.ShowDialog();
 
                 Task<byte[]> GetOriginal() {
                     if (_renderer == null || !_kn5.TexturesData.TryGetValue(TextureName, out var data)) {
@@ -340,7 +375,7 @@ namespace AcManager.CustomShowroom {
                     }
 
                     return Task.Run(() => new TextureReader().ToPng(data, true,
-                            new System.Drawing.Size(calculated.Item2.Width.RoundToInt(), calculated.Item2.Height.RoundToInt())));
+                            new System.Drawing.Size(calculated.Item3.Width.RoundToInt(), calculated.Item3.Height.RoundToInt())));
                 }
 
                 object DetailsCallback(int index) {
@@ -352,8 +387,21 @@ namespace AcManager.CustomShowroom {
                         var extension = Path.GetExtension(destination)?.ToLowerInvariant();
                         switch (extension) {
                             case ".dds":
-                                DdsEncoder.SaveAsDds(destination, calculated.Item1, PreferredDdsFormat.LuminanceTransparency, null);
+                                DdsEncoder.SaveAsDds(destination, calculated.Item1,
+                                        UseDxt5 ? PreferredDdsFormat.DXT5 : PreferredDdsFormat.LuminanceTransparency, null);
                                 break;
+                            case ".png":
+                                if (FullyTransparent) {
+                                    using (var stream = new MemoryStream(calculated.Item1))
+                                    using (var jpgStream = new MemoryStream()) {
+                                        ImageUtils.Convert(stream, jpgStream, 97);
+                                        using (var output = File.Create(destination)) {
+                                            jpgStream.Position = 0;
+                                            Image.FromStream(jpgStream).Save(output, ImageFormat.Png);
+                                        }
+                                    }
+                                    break;
+                                } else goto default;
                             case ".jpg":
                             case ".jpeg":
                                 using (var stream = new MemoryStream(calculated.Item1))

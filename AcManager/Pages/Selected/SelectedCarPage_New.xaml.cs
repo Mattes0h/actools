@@ -353,6 +353,8 @@ namespace AcManager.Pages.Selected {
             public DelegateCommand CarAnalyzerCommand
                 => _carAnalyzerCommand ?? (_carAnalyzerCommand = new DelegateCommand(() => { CarAnalyzer.Run(SelectedObject); }));
 
+            public AsyncCommand ClearStatsCommand => SelectedObject.ClearStatsCommand;
+
             #region Specs editor
             private const string KeyRecalculatePwRatioAutomatically = "SelectedCarPage.RecalculatePwRatioAutomatically";
             private bool _recalculatePwRatioAutomatically = ValuesStorage.Get(KeyRecalculatePwRatioAutomatically, true);
@@ -393,6 +395,56 @@ namespace AcManager.Pages.Selected {
 
                 SelectedObject.SpecsWeight = SpecsFormat(AppStrings.CarSpecs_Weight_FormatTooltip,
                         (weight.Value - CommonAcConsts.DriverWeight).ToString(@"F0", CultureInfo.InvariantCulture));
+            }));
+
+            [CanBeNull]
+            private Tuple<double, double> RecalculateTorqueAndPower() {
+                var o = SelectedObject;
+
+                var data = o.AcdData;
+                if (data == null) {
+                    NonfatalError.Notify(ToolsStrings.Common_CannotDo_Title, "Data is damaged");
+                    return null;
+                }
+
+                Lut torque, power;
+                try {
+                    torque = TorquePhysicUtils.LoadCarTorque(data);
+                    power = TorquePhysicUtils.TorqueToPower(torque);
+                } catch (Exception ex) {
+                    NonfatalError.Notify(ToolsStrings.Common_CannotDo_Title, ex);
+                    return null;
+                }
+
+                var dlg = new CarTransmissionLossSelector(o, torque.MaxY, power.MaxY);
+                dlg.ShowDialog();
+                if (!dlg.IsResultOk) return null;
+
+                torque.UpdateBoundingBox();
+                power.UpdateBoundingBox();
+                return Tuple.Create(torque.MaxY * dlg.Multipler, power.MaxY * dlg.Multipler);
+            }
+
+            private DelegateCommand _recalculateTorqueCommand;
+
+            public DelegateCommand RecalculateTorqueCommand => _recalculateTorqueCommand ?? (_recalculateTorqueCommand = new DelegateCommand(() => {
+                var torque = RecalculateTorqueAndPower()?.Item1;
+                if (torque == null) {
+                    return;
+                }
+                SelectedObject.SpecsTorque = SpecsFormat(AppStrings.CarSpecs_Torque_FormatTooltip,
+                        torque.Value.ToString(@"F0", CultureInfo.InvariantCulture));
+            }));
+
+            private DelegateCommand _recalculatePowerCommand;
+
+            public DelegateCommand RecalculatePowerCommand => _recalculatePowerCommand ?? (_recalculatePowerCommand = new DelegateCommand(() => {
+                var power = RecalculateTorqueAndPower()?.Item2;
+                if (power == null) {
+                    return;
+                }
+                SelectedObject.SpecsTorque = SpecsFormat(AppStrings.CarSpecs_Power_FormatTooltip,
+                        power.Value.ToString(@"F0", CultureInfo.InvariantCulture));
             }));
 
             private void InitializeSpecs() {

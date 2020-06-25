@@ -11,6 +11,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
@@ -542,14 +543,20 @@ namespace AcManager.Tools.Objects {
         public int AllowTyresOut {
             get => _allowTyresOut;
             set {
-                value = value.Clamp(0, 4);
+                value = value.Clamp(-1, 4);
                 if (Equals(value, _allowTyresOut)) return;
                 _allowTyresOut = value;
                 if (Loaded) {
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(DisplayAllowTyresOut));
                     Changed = true;
                 }
             }
+        }
+
+        public string DisplayAllowTyresOut {
+            get => AllowTyresOut < 0 ? "Any" : AllowTyresOut.ToInvariantString();
+            set => AllowTyresOut = value?.As(-1) ?? -1;
         }
 
         private int _maxBallast;
@@ -713,7 +720,7 @@ namespace AcManager.Tools.Objects {
         public double TimeMultiplier {
             get => _timeMultiplier;
             set {
-                value = value.Clamp(0, 60).Round();
+                value = value.Clamp(0, 3600);
                 if (Equals(value, _timeMultiplier)) return;
                 _timeMultiplier = value;
                 if (Loaded) {
@@ -724,7 +731,7 @@ namespace AcManager.Tools.Objects {
         }
 
         public string DisplayTime {
-            get => $@"{_time / 60 / 60:D2}:{_time / 60 % 60:D2}";
+            get => _time.ToDisplayTime();
             set {
                 if (!FlexibleParser.TryParseTime(value, out var time)) return;
                 Time = time;
@@ -759,6 +766,7 @@ namespace AcManager.Tools.Objects {
 
         private ChangeableObservableCollection<ServerWeatherEntry> _weather;
 
+        [CanBeNull]
         public ChangeableObservableCollection<ServerWeatherEntry> Weather {
             get => _weather;
             set {
@@ -806,7 +814,7 @@ namespace AcManager.Tools.Objects {
                 case nameof(ServerWeatherEntry.RecommendedRoadTemperature):
                     return;
                 case nameof(ServerWeatherEntry.Deleted):
-                    Weather.Remove((ServerWeatherEntry)sender);
+                    Weather?.Remove((ServerWeatherEntry)sender);
                     return;
             }
 

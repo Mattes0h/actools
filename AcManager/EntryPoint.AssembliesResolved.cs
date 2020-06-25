@@ -39,7 +39,12 @@ namespace AcManager {
                 return;
             }
 
-            var appGuid = ((GuidAttribute)Assembly.GetEntryAssembly().GetCustomAttributes(typeof(GuidAttribute), true).GetValue(0)).Value;
+            var assembly = Assembly.GetEntryAssembly();
+            if (assembly == null) {
+                return;
+            }
+
+            var appGuid = ((GuidAttribute)assembly.GetCustomAttributes(typeof(GuidAttribute), true).GetValue(0)).Value;
             var mutexId = $@"Global\{{{appGuid}}}";
 
             if (Array.IndexOf(args, WindowsHelper.RestartArg) != -1) {
@@ -182,9 +187,9 @@ namespace AcManager {
         private static void UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs args) {
             _crashed = true;
             var e = args.Exception as Exception;
-            var app = System.Windows.Application.Current;
-            if (app != null) {
-                app.Dispatcher.Invoke(() => { UnhandledExceptionHandler(e); });
+            var dispatcher = System.Windows.Application.Current?.Dispatcher;
+            if (dispatcher != null) {
+                dispatcher.Invoke(() => { UnhandledExceptionHandler(e); });
             } else {
                 UnhandledExceptionHandler(e);
             }
@@ -271,7 +276,7 @@ namespace AcManager {
             var e = args.ExceptionObject as Exception;
             var app = System.Windows.Application.Current;
             if (app != null) {
-                app.Dispatcher.Invoke(() => { UnhandledExceptionHandler(e); });
+                app.Dispatcher?.Invoke(() => { UnhandledExceptionHandler(e); });
             } else {
                 UnhandledExceptionHandler(e);
             }

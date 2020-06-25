@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AcObject_Author_Tooltip" xml:space="preserve">
+    <value>Author, version, and URL</value>
+  </data>
+  <data name="AcObject_AuthorLabel" xml:space="preserve">
+    <value>Creator:</value>
+  </data>
+  <data name="AcObject_CannotUpdatePreview" xml:space="preserve">
+    <value>Unable to update the preview</value>
+  </data>
+  <data name="AcObject_CannotUpdatePreview_TrackCommentary" xml:space="preserve">
+    <value>You need to make at least one screenshot of the track.</value>
+  </data>
+  <data name="AcObject_CarParentLabel" xml:space="preserve">
+    <value>Base Model:</value>
+  </data>
+  <data name="AcObject_CarParentLabel_Tooltip" xml:space="preserve">
+    <value>The original version of the vehicle this was modified from (where applicable).</value>
+  </data>
+  <data name="AcObject_Fuel" xml:space="preserve">
+    <value>Fuel:</value>
+  </data>
+  <data name="AcObject_SpecsLabel" xml:space="preserve">
+    <value>Specifications:</value>
+  </data>
+  <data name="AcObject_TrackGeoTagsLabel" xml:space="preserve">
+    <value>Geo Tags:</value>
+  </data>
+  <data name="AcObject_TyresLabel" xml:space="preserve">
+    <value>Tires:</value>
+  </data>
+  <data name="AcObject_UrlLabel" xml:space="preserve">
+    <value>Link:</value>
+  </data>
+  <data name="AcObject_YearLabel_CarTooltip" xml:space="preserve">
+    <value>This is when the car began production.</value>
+  </data>
+  <data name="Assists_AutoShifterLabel" xml:space="preserve">
+    <value>Automatic shifter:</value>
+  </data>
+  <data name="Assists_IdealLineLabel" xml:space="preserve">
+    <value>Driving line:</value>
+  </data>
+  <data name="Assists_TyreWearLabel" xml:space="preserve">
+    <value>Tire wear:</value>
+  </data>
+  <data name="Car_OpenInCustomShowroom" xml:space="preserve">
+    <value>Open In Custom Showroom</value>
+  </data>
+  <data name="Car_OpenInShowroom" xml:space="preserve">
+    <value>Open In Showroom</value>
+  </data>
+  <data name="CarParent_MakeIndependent" xml:space="preserve">
+    <value>Make Independent</value>
+  </data>
+  <data name="Common_ChangeSkin" xml:space="preserve">
+    <value>Change Skin</value>
+  </data>
+  <data name="Common_DevTools" xml:space="preserve">
+    <value>Developer Tools</value>
+  </data>
+  <data name="Common_OfflineMode" xml:space="preserve">
+    <value>Offline Mode</value>
+  </data>
+  <data name="Common_TryAgain" xml:space="preserve">
+    <value>Try Again</value>
+  </data>
+  <data name="Controls_BuiltInPresets" xml:space="preserve">
+    <value>Built-in Presets</value>
+  </data>
+  <data name="Controls_LoadPresetWarning" xml:space="preserve">
+    <value>Load “{0}”? Current values will be replaced (but later could be restored from Recycle Bin).</value>
+  </data>
+  <data name="Controls_UserPresets" xml:space="preserve">
+    <value>User Presets</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Reset" xml:space="preserve">
+    <value>Reset To Recommended Values</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Update" xml:space="preserve">
+    <value>Update Ambient Shadows</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsHeader" xml:space="preserve">
+    <value>Ambient Shadow</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_EncryptedData" xml:space="preserve">
+    <value>Data Is Encrypted</value>
+  </data>
+  <data name="CustomShowroom_ObjectInformation" xml:space="preserve">
+    <value>Object name: [b]{0}[/b]
+Class: [b]{1}[/b]
+
+Active: [b]{2}[/b]
+Renderable: [b]{3}[/b]
+Visible: [b]{4}[/b]
+
+Transparent: [b]{5}[/b]
+Casting Shadows: [b]{6}[/b]
+
+Layer: [b]{7}[/b]
+LOD In: [b]{8}[/b]
+LOD In: [b]{9}[/b]
+
+Material: [b]{10}[/b]</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping" xml:space="preserve">
+    <value>View Mapping</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_1024" xml:space="preserve">
+    <value>View in 1024×1025</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_2048" xml:space="preserve">
+    <value>View in 2048×2049</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_4096" xml:space="preserve">
+    <value>View in 4096×4097</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_512" xml:space="preserve">
+    <value>View in 512×513</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_Export" xml:space="preserve">
+    <value>Export Texture Mapping</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_Prompt" xml:space="preserve">
+    <value>Dimensions ([Width]×[Height]):</value>
+  </data>
+  <data name="FindInformation_SaveAsCountry" xml:space="preserve">
+    <value>Save as Country</value>
+  </data>
+  <data name="FindInformation_SaveAsDescription" xml:space="preserve">
+    <value>Save as Description</value>
+  </data>
+  <data name="FindInformation_SaveAsYear" xml:space="preserve">
+    <value>Save as Year</value>
+  </data>
+  <data name="ImageViewer_Save_Title" xml:space="preserve">
+    <value>Save Image As</value>
+  </data>
+  <data name="Online_JoinUsing" xml:space="preserve">
+    <value>Join Using {0}</value>
+  </data>
+  <data name="Plugins_DownloadAndInstall" xml:space="preserve">
+    <value>Download And Install ({0})</value>
+  </data>
+  <data name="Plugins_Update" xml:space="preserve">
+    <value>Update (New Version: {0})</value>
+  </data>
+  <data name="Presets_Save" xml:space="preserve">
+    <value>Save Preset</value>
+  </data>
+  <data name="Presets_Unsaved" xml:space="preserve">
+    <value>Unsaved Preset</value>
+  </data>
+  <data name="QuickSwitches_Header" xml:space="preserve">
+    <value>Quick Switches</value>
+  </data>
+  <data name="Share_EnterNameHeader" xml:space="preserve">
+    <value>Share As</value>
+  </data>
+  <data name="Share_SharedMessage" xml:space="preserve">
+    <value>Link copied to clipboard</value>
+  </data>
+  <data name="Share_SharedMessageAlternative" xml:space="preserve">
+    <value>Click to open link</value>
+  </data>
+  <data name="Share_VerifyMessageHeader" xml:space="preserve">
+    <value>Is Everything OK?</value>
+  </data>
+  <data name="Toolbar_DeleteJson_Tooltip" xml:space="preserve">
+    <value>Remove ui_skin.json to Recycle Bin (Alt+Delete)</value>
+  </data>
+  <data name="Common_RoundPostfix" xml:space="preserve">
+    <value> lap</value>
+  </data>
+  <data name="Controls_SkipFfbSteps_Tooltip" xml:space="preserve">
+    <value>Physics engine steps to skip in order to accomodate wheels with lower FF input buffer; if you’re expeciencing problems with CPU, increase it to 2-4, it might help</value>
+  </data>
+  <data name="CustomShowroom_EditingMode_Tooltip" xml:space="preserve">
+    <value>Use PSD, XCF, etc. instead if exists (Magick.NET addon is required)</value>
+  </data>
+  <data name="QuickSwitches_FreeCamera_Tooltip" xml:space="preserve">
+    <value>Enable free camera (press F7 on track)</value>
+  </data>
+  <data name="Showroom_DisableSweetFx_Tooltip" xml:space="preserve">
+    <value>Apparantly SweetFX doesn’t affect the result, but could decrease loading time</value>
+  </data>
+  <data name="Video_CannotPlay_Commentary" xml:space="preserve">
+    <value>Please, go to the Settings and enable VLC addon.</value>
+  </data>
+  <data name="VideoViewer_CannotPlay_Commentary" xml:space="preserve">
+    <value>Make sure VLC addon is installed properly.</value>
+  </data>
+</root>

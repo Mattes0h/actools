@@ -63,11 +63,14 @@ namespace AcManager.Tools.Objects {
                 if (name == null) return Id;
 
                 if (SettingsHolder.Content.CarsDisplayNameCleanUp) {
-                    name = name.Replace("™", "");
+                    name = name.Replace(@"™", "");
                 }
 
                 var yearValue = Year ?? 0;
                 if (yearValue > 1900 && SettingsHolder.Content.CarsYearPostfix) {
+                    if (SettingsHolder.Content.CarsYearPostfixAlt) {
+                        return $@"{name} ({yearValue})";
+                    }
                     var year = yearValue.ToString();
                     var index = name.Length - year.Length - 1;
                     if ((!name.EndsWith(year) || index > 0 && char.IsLetterOrDigit(name[index]))
@@ -427,6 +430,16 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        public double SpecsPwRatioValue {
+            get {
+                var pwRatio = SpecsPwRatio;
+                if (pwRatio == null || !PwUsualFormat.IsMatch(pwRatio) || !FlexibleParser.TryParseDouble(pwRatio, out var value)) {
+                    return 0.12;
+                }
+                return 1 / value;
+            }
+        }
+
         public string SpecsPwRatioDisplay {
             get {
                 var pwRatio = SpecsPwRatio;
@@ -641,6 +654,7 @@ namespace AcManager.Tools.Objects {
                 // Various files
                 yield return Add("body_shadow.png", "tyre_?_shadow.png", "collider.kn5", "driver_base_pos.knh", "logo.png");
                 yield return Add("animations/*.ksanim");
+                yield return Add("extension/*");
                 yield return Add("sfx/GUIDs.txt", $"sfx/{t.Id}.bank");
                 yield return Add("texture/*", "texture/flames/*.dds", "texture/flames/*.png");
                 yield return Add("ui/badge.png", "ui/ui_car.json", "ui/upgrade.png", "ui/cm_*.json");

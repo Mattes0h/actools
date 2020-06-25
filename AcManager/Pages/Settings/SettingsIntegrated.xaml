@@ -16,7 +16,7 @@
 
       <StackPanel set:Search.Category="Integrated" Style="{StaticResource SettingsPanel}">
 
-        <TextBlock Text="The Setup Market:" Style="{StaticResource SettingsPanel.Heading2}" />
+        <TextBlock Text="The Setup Market:" Style="{StaticResource SettingsPanel.Heading2.First}" />
 
         <c:MessageBlock Margin="0 0 0 8">
           <mui:BbCodeBlock>
@@ -33,17 +33,16 @@
           <Label Content="Add available setups counter" />
         </CheckBox>
 
-        <c:MessageBlock Margin="0 0 0 8">
+        <!--<c:MessageBlock Margin="0 0 0 8">
           <mui:BbCodeBlock>
             <mui:BbCodeBlock.Text>To avoid overloading TSM server, heavy caching is applying. Please, keep periods big. If you want to see the newest setups, I recommend to use browser with that extension for now.</mui:BbCodeBlock.Text>
           </mui:BbCodeBlock>
-        </c:MessageBlock>
-
-        <DockPanel IsEnabled="{Binding Integrated.TheSetupMarketTab}">
+        </c:MessageBlock>-->
+        <!--<DockPanel IsEnabled="{Binding Integrated.TheSetupMarketTab}">
           <Label Content="Cache list of setups for:" />
           <ComboBox ItemsSource="{Binding Integrated.Periods}" SelectedItem="{Binding Integrated.TheSetupMarketCacheListPeriod}"
               DisplayMemberPath="DisplayName" />
-        </DockPanel>
+        </DockPanel>-->
 
         <DockPanel IsEnabled="{Binding Integrated.TheSetupMarketTab}">
           <Label Content="Cache data per setup for:" />
@@ -51,9 +50,9 @@
               DisplayMemberPath="DisplayName" />
         </DockPanel>
 
-        <CheckBox IsChecked="{Binding Integrated.TheSetupMarketCacheServer}" IsEnabled="{Binding Integrated.TheSetupMarketTab}">
+        <!--<CheckBox IsChecked="{Binding Integrated.TheSetupMarketCacheServer}" IsEnabled="{Binding Integrated.TheSetupMarketTab}">
           <Label Content="Use caching proxy for setups list to avoid overloading The Setup Market server" />
-        </CheckBox>
+        </CheckBox>-->
 
         <TextBlock Text="RSR:" Style="{StaticResource SettingsPanel.Heading2}" />
 
@@ -92,6 +91,10 @@
         <StackPanel IsEnabled="{Binding Live.SrsEnabled}">
           <CheckBox IsChecked="{Binding Live.SrsCustomStyle}" ToolTip="{x:Static g:AppStrings.Settings_Live_SrsCustomStyle_Tooltip}">
             <Label Content="{x:Static g:AppStrings.Settings_Live_CustomStyle}" />
+          </CheckBox>
+
+          <CheckBox IsChecked="{Binding Live.SrsCollectCombinations}">
+            <Label Content="Collect race combinations for quick testing and training" />
           </CheckBox>
 
           <!--<CheckBox IsChecked="{Binding Live.SrsAutoMode}" ToolTip="{x:Static g:AppStrings.Settings_Live_SrsJoinFromOnline_Tooltip}">
@@ -157,6 +160,11 @@
           <Button Content="Browse" Command="{Binding Integrated.SelectDBoxLocationCommand}" />
           <mui:BetterTextBox Text="{Binding Integrated.DBoxLocation}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
         </DockPanel>
+
+        <c:MessageBlock Margin="0 0 0 8" c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureSharedMemoryReduceGForcesWhenSlow}">
+          <mui:BbCodeBlock
+              Text="You can use Custom Shaders Patch to reduce G-forces for cars going slower than 6 km/h. There is an option for it in General settings." />
+        </c:MessageBlock>
 
       </StackPanel>
       <StackPanel set:Search.Category="Integrated" Style="{StaticResource SettingsPanel}">

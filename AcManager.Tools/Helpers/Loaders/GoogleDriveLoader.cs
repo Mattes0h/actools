@@ -4,13 +4,14 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using AcManager.Tools.Helpers.Api;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using HtmlAgilityPack;
 
 namespace AcManager.Tools.Helpers.Loaders {
     public class GoogleDriveLoader : DirectLoader {
-        public static bool OptionManualRedirect = false;
+        public static bool OptionManualRedirect = true;
         public static bool OptionDebugMode = false;
 
         public static bool Test(string url) => Regex.IsMatch(url, @"^https?://drive\.google\.com/", RegexOptions.IgnoreCase);
@@ -69,10 +70,14 @@ namespace AcManager.Tools.Helpers.Loaders {
             var doc = new HtmlDocument();
             doc.LoadHtml(webPageContent);
 
-            var link = doc.DocumentNode.SelectSingleNode(@"//a[contains(@href, 'export=download')]").Attributes[@"href"].Value;
+            var link = doc.DocumentNode.SelectSingleNode(@"//a[contains(@href, 'export=download')]")?.Attributes[@"href"]?.Value;
             if (link == null) {
-                NonfatalError.Notify(ToolsStrings.Common_CannotDownloadFile, ToolsStrings.DirectLoader_GoogleDriveChanged);
-                return false;
+                if (doc.DocumentNode.SelectSingleNode(@"//head/title/text()")?.InnerText.Contains("Quota exceeded") == true) {
+                    throw new InformativeException(ToolsStrings.Common_CannotDownloadFile, "Google Drive quota exceeded");
+                }
+
+                Logging.Warning(webPageContent);
+                throw new InformativeException(ToolsStrings.Common_CannotDownloadFile, ToolsStrings.DirectLoader_GoogleDriveChanged);
             }
 
             Url = @"https://drive.google.com" + HttpUtility.HtmlDecode(link);
@@ -95,21 +100,31 @@ namespace AcManager.Tools.Helpers.Loaders {
                 using (client.SetDebugMode(OptionDebugMode))
                 using (client.SetAutoRedirect(false)) {
                     var redirect = await client.DownloadStringTaskAsync(Url);
-                    Logging.Debug(redirect);
+                    // Logging.Debug("First redirect: " + redirect);
 
                     if (!redirect.Contains("<TITLE>Moved Temporarily</TITLE>")) {
-                        NonfatalError.Notify(ToolsStrings.Common_CannotDownloadFile, ToolsStrings.DirectLoader_GoogleDriveChanged);
-                        return false;
+                        throw new InformativeException(ToolsStrings.Common_CannotDownloadFile, ToolsStrings.DirectLoader_GoogleDriveChanged);
                     }
 
                     var redirectMatch = Regex.Match(redirect, @"href=""([^""]+)", RegexOptions.IgnoreCase);
                     if (!redirectMatch.Success) {
-                        NonfatalError.Notify(ToolsStrings.Common_CannotDownloadFile, ToolsStrings.DirectLoader_GoogleDriveChanged);
-                        return false;
+                        throw new InformativeException(ToolsStrings.Common_CannotDownloadFile, ToolsStrings.DirectLoader_GoogleDriveChanged);
                     }
 
                     Url = HttpUtility.HtmlDecode(redirectMatch.Groups[1].Value);
-                    Logging.Debug(Url);
+                    // Logging.Debug("Second redirect: " + Url);
+
+                    for (var i = 0; i < 10; i++) {
+                        using (await client.OpenReadTaskAsync(Url)) {
+                            if (client.ResponseLocation != null) {
+                                Url = client.ResponseLocation;
+                                // Logging.Debug("Subsequent redirect: " + Url);
+                            } else {
+                                // Logging.Debug("File found: " + Url);
+                                break;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -120,6 +135,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                 FlexibleLoaderGetPreferredDestinationCallback getPreferredDestination,
                 FlexibleLoaderReportDestinationCallback reportDestination, Func<bool> checkIfPaused,
                 IProgress<long> progress, CancellationToken cancellation) {
+            using (client.SetUserAgent(CmApiProvider.CommonUserAgent))
             using (client.SetDebugMode(OptionDebugMode))
             using (client.SetAutoRedirect(!OptionManualRedirect)) {
                 return await base.DownloadAsyncInner(client, getPreferredDestination, reportDestination, checkIfPaused, progress, cancellation);

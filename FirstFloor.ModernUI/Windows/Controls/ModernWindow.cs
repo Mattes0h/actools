@@ -81,13 +81,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (LinkNavigator == null) return;
 
             var titleLink = e.Parameter as TitleLink;
-            if (titleLink?.GroupKey != null) {
+            if (titleLink?.GroupKey != null && !titleLink.GroupKey.Contains(@"/")) {
                 _menu?.SwitchToGroupByKey(titleLink.GroupKey);
                 return;
             }
 
             var eParameter = (e.Parameter as Link)?.Source ?? e.Parameter;
-            if (NavigationHelper.TryParseUriWithParameters(eParameter, out var uri, out var parameter, out var _)) {
+            if (NavigationHelper.TryParseUriWithParameters(eParameter, out var uri, out var parameter, out var _, out _)) {
                 LinkNavigator.Navigate(uri, e.Source as FrameworkElement, parameter);
             }
         }
@@ -112,7 +112,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             // in case of command uri, check if ICommand.CanExecute is true
             // TODO: CanNavigate is invoked a lot, which means a lot of parsing. need improvements?
-            if (!NavigationHelper.TryParseUriWithParameters(e.Parameter, out var uri, out var parameter, out var _)) {
+            if (!NavigationHelper.TryParseUriWithParameters(e.Parameter, out var uri, out var parameter, out var _, out _)) {
                 return;
             }
 
@@ -123,7 +123,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void OnNavigateLink(object sender, ExecutedRoutedEventArgs e) {
             if (LinkNavigator == null) return;
-            if (NavigationHelper.TryParseUriWithParameters(e.Parameter, out var uri, out var parameter, out var _)) {
+            if (NavigationHelper.TryParseUriWithParameters(e.Parameter, out var uri, out var parameter, out var _, out _)) {
                 LinkNavigator.Navigate(uri, e.Source as FrameworkElement, parameter);
             }
         }
@@ -247,6 +247,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public Visibility BackButtonVisibility {
             get => GetValue(BackButtonVisibilityProperty) as Visibility? ?? default;
             set => SetValue(BackButtonVisibilityProperty, value);
+        }
+
+        public static readonly DependencyProperty TitleButtonsVisibilityProperty = DependencyProperty.Register(nameof(TitleButtonsVisibility), typeof(Visibility),
+                typeof(ModernWindow), new PropertyMetadata(Visibility.Visible));
+
+        public Visibility TitleButtonsVisibility {
+            get => (Visibility)GetValue(TitleButtonsVisibilityProperty);
+            set => SetValue(TitleButtonsVisibilityProperty, value);
+        }
+
+        public static readonly DependencyProperty MenuTopRowVisibilityProperty = DependencyProperty.Register(nameof(MenuTopRowVisibility), typeof(Visibility),
+                typeof(ModernWindow), new PropertyMetadata(Visibility.Visible));
+
+        public Visibility MenuTopRowVisibility {
+            get => (Visibility)GetValue(MenuTopRowVisibilityProperty);
+            set => SetValue(MenuTopRowVisibilityProperty, value);
         }
 
         public static readonly DependencyProperty ShowErrorsButtonProperty = DependencyProperty.Register(nameof(ShowErrorsButton), typeof(bool),

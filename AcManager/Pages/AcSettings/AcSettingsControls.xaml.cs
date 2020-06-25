@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using AcManager.Controls;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
@@ -22,6 +23,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using Microsoft.Win32;
@@ -47,7 +49,7 @@ namespace AcManager.Pages.AcSettings {
         }
 
         private void ResizingStuff() {
-            DetectedControllers.Visibility = ActualWidth > 640 ? Visibility.Visible : Visibility.Collapsed;
+            DetectedControllers.Visibility = ActualWidth > 800 ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public class ViewModel : NotifyPropertyChanged {
@@ -59,8 +61,8 @@ namespace AcManager.Pages.AcSettings {
                 var filename = Controls.CurrentPresetFilename;
                 filename = FileRelatedDialogs.Save(new SaveDialogParams {
                     InitialDirectory = ControlsSettings.UserPresetsDirectory,
-                    Filters = { new DialogFilterPiece("Presets", "*.ini") },
-                    DetaultExtension = ".ini",
+                    Filters = { new DialogFilterPiece(ControlsStrings.Common_Presets, "*.ini") },
+                    DetaultExtension = @".ini",
                     DefaultFileName = o ?? Path.GetFileNameWithoutExtension(filename),
                     CustomPlaces = {
                         new FileDialogCustomPlace(ControlsSettings.UserPresetsDirectory)
@@ -68,6 +70,9 @@ namespace AcManager.Pages.AcSettings {
                 }, filename != null && FileUtils.IsAffectedBy(filename, ControlsSettings.UserPresetsDirectory)
                         && o == null ? filename : null);
                 if (filename == null) return;
+
+                Logging.Debug(filename);
+                Logging.Debug(ControlsSettings.UserPresetsDirectory);
 
                 if (!FileUtils.IsAffectedBy(filename, ControlsSettings.UserPresetsDirectory)) {
                     if (MessageDialog.Show(AppStrings.Controls_InvalidDirectory_Commentary,
@@ -168,7 +173,15 @@ namespace AcManager.Pages.AcSettings {
         private void OnUnloaded(object sender, RoutedEventArgs e) { }
 
         private void OnPreviewKeyDown(object sender, KeyEventArgs e) {
-            switch (e.Key) {
+            // Logging.Write("KEY: " + e.Key + ", i=" + (int)e.Key);
+            // Logging.Write("SKEY: " + e.SystemKey + ", i=" + (int)e.SystemKey);
+
+            var key = e.Key;
+            if (e.KeyboardDevice.Modifiers == ModifierKeys.Alt && key == Key.System) {
+                key = e.SystemKey;
+            }
+
+            switch (key) {
                 case Key.Escape:
                 case Key.Back:
                 case Key.Enter:
@@ -184,7 +197,7 @@ namespace AcManager.Pages.AcSettings {
                     break;
 
                 default:
-                    if (AcSettingsHolder.Controls.AssignKey(e.Key)) {
+                    if (AcSettingsHolder.Controls.AssignKey(key)) {
                         e.Handled = true;
                     }
                     break;

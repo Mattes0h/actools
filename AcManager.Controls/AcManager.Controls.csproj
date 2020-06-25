@@ -60,26 +60,33 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CefSharp, Version=63.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\CefSharp-63.0.0-$(ActualPlatform)\CefSharp.dll</HintPath>
+    <Reference Include="CefSharp, Version=79.1.360.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\CefSharp-79.1.360-$(ActualPlatform)\CefSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CefSharp.Core, Version=63.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\CefSharp-63.0.0-$(ActualPlatform)\CefSharp.Core.dll</HintPath>
+    <Reference Include="CefSharp.Core, Version=79.1.360.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\CefSharp-79.1.360-$(ActualPlatform)\CefSharp.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CefSharp.Wpf, Version=63.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\CefSharp-63.0.0-$(ActualPlatform)\CefSharp.Wpf.dll</HintPath>
+    <Reference Include="CefSharp.Wpf, Version=79.1.360.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\CefSharp-79.1.360-$(ActualPlatform)\CefSharp.Wpf.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CefSharp.WinForms, Version=63.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\CefSharp-63.0.0-$(ActualPlatform)\CefSharp.WinForms.dll</HintPath>
+    <Reference Include="CefSharp.WinForms, Version=79.1.360.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\CefSharp-79.1.360-$(ActualPlatform)\CefSharp.WinForms.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <HintPath>..\packages\Blend.Interctivity.WPF.v4.0.1.0.3\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Windows.Interactivity">
+      <HintPath>..\Libraries\System.Windows.Interactivity\System.Windows.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="xZune.Vlc">
       <HintPath>..\Libraries\xZune.Vlc\xZune.Vlc.dll</HintPath>
@@ -120,9 +127,6 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -137,11 +141,10 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BatchAction.cs" />
     <Compile Include="CarBlock.cs" />
     <Compile Include="CarIcon.cs" />
-    <Compile Include="CommonBatchActions.cs" />
     <Compile Include="ContextMenus.cs" />
+    <Compile Include="Converters\PostfixLabelConverter.cs" />
     <Compile Include="Converters\TemperatureToFahrenheitConverter.cs" />
     <Compile Include="CountryIcon.cs" />
     <Compile Include="CustomShowroom\Dummy.cs" />
@@ -158,17 +161,23 @@
     <Compile Include="Graphs\CustomTrackerControl.cs" />
     <Compile Include="Graphs\GraphDataViewerBase.cs" />
     <Compile Include="Graphs\OxyExtenstion.cs" />
+    <Compile Include="Helpers\AcDateLimiter.cs" />
     <Compile Include="Helpers\CupUi.cs" />
     <Compile Include="Helpers\FancyHints.cs" />
+    <Compile Include="Helpers\FeatureIsAvailable.cs" />
     <Compile Include="Helpers\FilterHints.cs" />
     <Compile Include="Helpers\IAcObjectsUriProvider.cs" />
     <Compile Include="Helpers\ILocalKeyBindings.cs" />
     <Compile Include="Helpers\LocalKeyBindingsController.cs" />
     <Compile Include="Helpers\WeatherPreviewProvider.cs" />
+    <Compile Include="NotesBlock.cs" />
     <Compile Include="OriginIcon.cs" />
     <Compile Include="Presentation\ExtraProgressRings.cs" />
     <Compile Include="Presentation\TitleLinkEnabledEntry.cs" />
+    <Compile Include="QuickSwitches\ShadersPatchPresetsControl.cs" />
     <Compile Include="RaceGridEditorTable.cs" />
+    <Compile Include="RatingBar.cs" />
+    <Compile Include="Services\TimeSliderService.cs" />
     <Compile Include="TemperatureValueLabel.cs" />
     <Compile Include="AcObjectBase.cs" />
     <Compile Include="AcObjectErrorsSection.cs" />
@@ -300,6 +309,7 @@
     <Compile Include="ViewModels\AssistsViewModel.cs" />
     <Compile Include="ViewModels\AcObjectListCollectionViewWrapperBase.cs" />
     <Compile Include="ViewModels\AssistsViewModelBase.cs" />
+    <Compile Include="ViewModels\CupViewModel.cs" />
     <Compile Include="ViewModels\DiapasonMapper.cs" />
     <Compile Include="ViewModels\RaceGridEntry.cs" />
     <Compile Include="ViewModels\RaceGridMode.cs" />

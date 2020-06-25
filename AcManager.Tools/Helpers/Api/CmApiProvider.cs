@@ -31,14 +31,14 @@ namespace AcManager.Tools.Helpers.Api {
         static CmApiProvider() {
             var windows = $"Windows NT {Environment.OSVersion.Version};{(Environment.Is64BitOperatingSystem ? @" WOW64;" : "")}";
             UserAgent = $"ContentManager/{BuildInformation.AppVersion} ({windows})";
-            CommonUserAgent = $@"Mozilla/5.0 ({windows}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36";
+            CommonUserAgent = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.1.2222.33 Safari/537.36";
         }
         #endregion
 
         [CanBeNull]
         public static string GetString(string url) {
             try {
-                var result = InternalUtils.CmGetData_v2(url, UserAgent);
+                var result = InternalUtils.CmGetData_v3(url, UserAgent);
                 return result == null ? null : Encoding.UTF8.GetString(result);
             } catch (Exception e) {
                 Logging.Warning($"Cannot read as UTF8 from {url}: " + e);
@@ -83,7 +83,7 @@ namespace AcManager.Tools.Helpers.Api {
 
         [CanBeNull]
         public static byte[] GetData(string url) {
-            return InternalUtils.CmGetData_v2(url, UserAgent);
+            return InternalUtils.CmGetData_v3(url, UserAgent);
         }
 
         [ItemCanBeNull]
@@ -224,6 +224,110 @@ namespace AcManager.Tools.Helpers.Api {
             return t?.Item2 == true ? await FileUtils.ReadAllBytesAsync(t.Item1) : null;
         }
 
+        private static readonly List<string> JustLoadedPatchData = new List<string>();
+
+        public static void ResetPatchDataCache(PatchDataType type, [NotNull] string version) {
+            var key = GetPatchCacheKey(type, version);
+            var file = FilesStorage.Instance.GetFilename("Temporary", "Patch", key);
+            JustLoadedPatchData.Remove(key);
+            FileUtils.TryToDelete(file);
+        }
+
+        public enum PatchDataType {
+            Manifest, Patch, Chunk
+        }
+
+        /// <summary>
+        /// Load piece of static data, either from CM API, or from cache.
+        /// </summary>
+        /// <returns>Cached filename and if data is just loaded or not.</returns>
+        [ItemCanBeNull]
+        public static async Task<Tuple<string, bool>> GetPatchDataAsync(PatchDataType type, [NotNull] string version, TimeSpan maxAge, IProgress<AsyncProgressEntry> progress = null,
+                CancellationToken cancellation = default) {
+            var key = GetPatchCacheKey(type, version);
+            var file = new FileInfo(FilesStorage.Instance.GetFilename("Temporary", "Patch", key));
+
+            if (file.Exists && (JustLoadedPatchData.Contains(key) || DateTime.Now - file.LastWriteTime < maxAge)) {
+                return Tuple.Create(file.FullName, false);
+            }
+
+            var result = await InternalUtils.CmGetDataAsync(GetPatchUrl(type, version), UserAgent,
+                    file.Exists ? file.LastWriteTime : (DateTime?)null, progress, cancellation).ConfigureAwait(false);
+            if (cancellation.IsCancellationRequested) return null;
+
+            if (result != null && result.Item1.Length != 0) {
+                Logging.Write($"Fresh version of {key} loaded, from {result.Item2?.ToString() ?? "UNKNOWN"}");
+                var lastWriteTime = result.Item2 ?? DateTime.Now;
+                await FileUtils.WriteAllBytesAsync(file.FullName, result.Item1, cancellation).ConfigureAwait(false);
+                file.Refresh();
+                file.LastWriteTime = lastWriteTime;
+                JustLoadedPatchData.Add(key);
+                return Tuple.Create(file.FullName, true);
+            }
+
+            if (!file.Exists) {
+                return null;
+            }
+
+            Logging.Write($"Cached {key} used");
+            JustLoadedPatchData.Add(key);
+            return Tuple.Create(file.FullName, false);
+        }
+
+        private static string GetPatchCacheKey(PatchDataType type, string version) {
+            switch (type) {
+                case PatchDataType.Manifest:
+                    return "Manifest.json";
+                case PatchDataType.Patch:
+                    return $"patch-{version}.zip";
+                case PatchDataType.Chunk:
+                    return $"chunk-{version}.zip";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+        }
+
+        private static string GetPatchUrl(PatchDataType type, string version) {
+            switch (type) {
+                case PatchDataType.Manifest:
+                    return "patch/manifest";
+                case PatchDataType.Patch:
+                    return $"patch/get/{version}";
+                case PatchDataType.Chunk:
+                    return $"patch/chunk/{version}";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+        }
+
+        [ItemCanBeNull]
+        public static async Task<byte[]> GetPatchVersionAsync(string version, IProgress<AsyncProgressEntry> progress = null,
+                CancellationToken cancellation = default) {
+            var t = await GetPatchDataAsync(PatchDataType.Patch, version, TimeSpan.MaxValue, progress, cancellation);
+            try {
+                return t == null ? null : await FileUtils.ReadAllBytesAsync(t.Item1);
+            } catch (Exception e) {
+                Logging.Error(e);
+                return null;
+            }
+        }
+
+        [ItemCanBeNull]
+        public static async Task<byte[]> GetChunkVersionAsync(string version, IProgress<AsyncProgressEntry> progress = null,
+                CancellationToken cancellation = default) {
+            var t = await GetPatchDataAsync(PatchDataType.Chunk, version, TimeSpan.MaxValue, progress, cancellation);
+            try {
+                return t == null ? null : await FileUtils.ReadAllBytesAsync(t.Item1);
+            } catch (Exception e) {
+                Logging.Error(e);
+                return null;
+            }
+        }
+
+        public static bool HasPatchCached(string version) {
+            return File.Exists(FilesStorage.Instance.GetFilename("Temporary", "Patch", $"{version}.zip"));
+        }
+
         [ItemCanBeNull]
         public static async Task<string> GetContentStringAsync(string url, CancellationToken cancellation = default) {
             try {
@@ -290,7 +394,7 @@ namespace AcManager.Tools.Helpers.Api {
             return LazierCached.CreateAsync(@".OnlineData:" + id,
                     () => InternalUtils.GetOnlineDataAsync(id, UserAgent, cancellation).ContinueWith(
                             r => {
-                                Logging.Debug(JsonConvert.SerializeObject(r.Result));
+                                // Logging.Debug(JsonConvert.SerializeObject(r.Result));
                                 return JsonConvert.DeserializeObject<ServerInformationExtra>(r.Result);
                             },
                             TaskContinuationOptions.OnlyOnRanToCompletion)

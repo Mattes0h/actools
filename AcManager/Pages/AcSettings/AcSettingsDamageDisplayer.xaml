@@ -1,8 +1,8 @@
 ﻿<UserControl x:Class="AcManager.Pages.AcSettings.AcSettingsDamageDisplayer" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:acSettings="clr-namespace:AcManager.Pages.AcSettings" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
-    d:DataContext="{d:DesignInstance acSettings:AcSettingsDamageDisplayer+ViewModel}">
+    xmlns:acSettings="clr-namespace:AcManager.Pages.AcSettings" xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
+    FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acSettings:AcSettingsDamageDisplayer+ViewModel}">
   <UserControl.Resources>
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
   </UserControl.Resources>
@@ -44,12 +44,12 @@
         <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Params:" />
 
         <DockPanel>
-          <mui:ValueLabel Value="{Binding DamageDisplayer.X}" Postfix=" px" Content="X" />
+          <mui:ValueLabel Value="{Binding DamageDisplayer.X}" Postfix=" px" Content="{x:Static c:ControlsStrings.TableHeader_X}" />
           <Slider x:Name="XSlider" Minimum="0" Maximum="2000" Value="{Binding DamageDisplayer.X}" TickFrequency="100" TickPlacement="BottomRight" />
         </DockPanel>
 
         <DockPanel>
-          <mui:ValueLabel Value="{Binding DamageDisplayer.Y}" Postfix=" px" Content="Y" />
+          <mui:ValueLabel Value="{Binding DamageDisplayer.Y}" Postfix=" px" Content="{x:Static c:ControlsStrings.TableHeader_Y}" />
           <Slider x:Name="YSlider" Minimum="0" Maximum="2000" Value="{Binding DamageDisplayer.Y}" TickFrequency="100" TickPlacement="BottomRight" />
         </DockPanel>
 

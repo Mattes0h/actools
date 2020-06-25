@@ -718,6 +718,15 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rating:.
+        /// </summary>
+        public static string Common_Rating {
+            get {
+                return ResourceManager.GetString("Common_Rating", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Recommended value: {0}%.
         /// </summary>
         public static string Common_RecommendedPercentageFormat {
@@ -750,6 +759,15 @@ namespace AcManager.Controls {
         public static string Common_RoundPostfix {
             get {
                 return ResourceManager.GetString("Common_RoundPostfix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scroll to selected (Ctrl+Shift+V).
+        /// </summary>
+        public static string Common_ScrollToSelected {
+            get {
+                return ResourceManager.GetString("Common_ScrollToSelected", resourceCulture);
             }
         }
         
@@ -817,6 +835,15 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to What is it?.
+        /// </summary>
+        public static string Common_WhatIsIt {
+            get {
+                return ResourceManager.GetString("Common_WhatIsIt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Built-in presets.
         /// </summary>
         public static string Controls_BuiltInPresets {
@@ -871,11 +898,11 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Degress.
+        ///   Looks up a localized string similar to Degrees.
         /// </summary>
-        public static string Controls_DegressLabel {
+        public static string Controls_DegreesLabel {
             get {
-                return ResourceManager.GetString("Controls_DegressLabel", resourceCulture);
+                return ResourceManager.GetString("Controls_DegreesLabel", resourceCulture);
             }
         }
         
@@ -1069,7 +1096,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Physics engine steps to skip in order to accomodate wheels with lower FF input buffer; if you’re expeciencing problems with CPU, increase it to 2-4, it might help.
+        ///   Looks up a localized string similar to Physics engine steps to skip in order to accomodate wheels with lower FF input buffer; if you’re experiencing problems with CPU, increase it to 2-4, it might help.
         /// </summary>
         public static string Controls_SkipFfbSteps_Tooltip {
             get {
@@ -1357,7 +1384,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use PSD, XCF, etc. instead if exists (Magick.NET addon is required).
+        ///   Looks up a localized string similar to Use PSD, XCF, etc. instead if exists (Magick.NET plugin is required).
         /// </summary>
         public static string CustomShowroom_EditingMode_Tooltip {
             get {
@@ -1952,7 +1979,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable free camera (press F7 on track).
+        ///   Looks up a localized string similar to Enable free camera (while in game, press F7 and navigate via arrow keys, right mouse button and scrolling wheel).
         /// </summary>
         public static string QuickSwitches_FreeCamera_Tooltip {
             get {
@@ -2332,7 +2359,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Apparantly SweetFX doesn’t affect the result, but could decrease loading time.
+        ///   Looks up a localized string similar to Apparently SweetFX doesn’t affect the result, but could decrease loading time.
         /// </summary>
         public static string Showroom_DisableSweetFx_Tooltip {
             get {
@@ -2548,7 +2575,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please, go to the Settings and enable VLC addon..
+        ///   Looks up a localized string similar to Please, go to the Settings and enable VLC plugin..
         /// </summary>
         public static string Video_CannotPlay_Commentary {
             get {
@@ -2566,7 +2593,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make sure VLC addon is installed properly..
+        ///   Looks up a localized string similar to Make sure VLC plugin is installed properly..
         /// </summary>
         public static string VideoViewer_CannotPlay_Commentary {
             get {

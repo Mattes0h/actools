@@ -111,11 +111,13 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         [NotNull]
-        private static T[] LoadList<T>(string uri, TimeSpan timeout, Func<Stream, T[]> deserializationFn) where T : ServerInformation {
+        private static T[] LoadList<T>(string uri, TimeSpan timeout, CancellationToken cancellation, Func<Stream, T[]> deserializationFn)
+                where T : ServerInformation {
             var request = new HttpRequestMessage(HttpMethod.Get, uri);
             try {
-                using (var cancellation = new CancellationTokenSource(timeout))
-                using (var response = HttpClientHolder.Get().SendAsync(request, cancellation.Token).Result)
+                using (var cancellationTimer = new CancellationTokenSource(timeout))
+                using (var cancellationLocal = CancellationTokenSource.CreateLinkedTokenSource(cancellationTimer.Token, cancellation))
+                using (var response = HttpClientHolder.Get().SendAsync(request, cancellationLocal.Token).Result)
                 using (var stream = response.Content.ReadAsStreamAsync().Result) {
                     return deserializationFn(stream);
                 }
@@ -125,13 +127,26 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         [CanBeNull]
-        public static ServerInformationComplete[] TryToGetList(IProgress<int> progress = null) {
+        public static ServerInformationComplete[] TryToGetList(IProgress<int> progress = null, CancellationToken cancellation = default) {
             if (SteamIdHelper.Instance.Value == null) throw new InformativeException(ToolsStrings.Common_SteamIdIsMissing);
 
+            if (SettingsHolder.Online.CachingServerAvailable && SettingsHolder.Online.UseCachingServer) {
+                try {
+                    var watch = Stopwatch.StartNew();
+                    var ret = LoadList(InternalUtils.GetKunosServerProxyUri(), OptionWebRequestTimeout, cancellation,
+                            ServerInformationComplete.Deserialize);
+                    Logging.Write($"Fast loading with proxy lobby server: {watch.Elapsed.TotalMilliseconds:F1} ms");
+                    return ret;
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                }
+            }
+
+            if (cancellation.IsCancellationRequested) throw new UserCancelledException();
             for (var i = 0; i < ServersNumber && ServerUri != null; i++) {
                 if (progress != null) {
                     var j = i;
-                    ActionExtension.InvokeInMainThread(() => { progress.Report(j); });
+                    ActionExtension.InvokeInMainThread(() => progress.Report(j));
                 }
 
                 var uri = ServerUri;
@@ -140,8 +155,9 @@ namespace AcManager.Tools.Helpers.Api {
 
                 try {
                     var watch = Stopwatch.StartNew();
-                    parsed = LoadList(requestUri, OptionWebRequestTimeout, ServerInformationComplete.Deserialize);
-                    Logging.Write($"{watch.Elapsed.TotalMilliseconds:F1} ms");
+                    parsed = LoadList(requestUri, OptionWebRequestTimeout, cancellation, ServerInformationComplete.Deserialize);
+                    if (cancellation.IsCancellationRequested) throw new UserCancelledException();
+                    Logging.Write($"Regular loading with main lobby server: {watch.Elapsed.TotalMilliseconds:F1} ms");
                 } catch (Exception e) {
                     Logging.Warning(e);
                     NextServer();
@@ -151,11 +167,15 @@ namespace AcManager.Tools.Helpers.Api {
                 if (parsed.Length == 0) return parsed;
 
                 var ip = parsed[0].Ip;
-                if (!ip.StartsWith(@"192")) return parsed;
+                if (!ip.StartsWith(@"192")) {
+                    SettingsHolder.Online.CachingServerAvailable = true;
+                    return parsed;
+                }
 
                 for (var j = parsed.Length - 1; j >= 0; j--) {
                     var p = parsed[j];
                     if (p.Ip != ip) {
+                        SettingsHolder.Online.CachingServerAvailable = true;
                         return parsed;
                     }
                 }
@@ -168,10 +188,11 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         [CanBeNull]
-        public static MinoratingServerInformation[] TryToGetMinoratingList() {
+        public static MinoratingServerInformation[] TryToGetMinoratingList(CancellationToken cancellation = default) {
             try {
                 var watch = Stopwatch.StartNew();
-                var parsed = LoadList(@"http://www.minorating.com/MRServerLobbyAPI", OptionWebRequestTimeout, MinoratingServerInformation.Deserialize);
+                var parsed = LoadList(@"http://www.minorating.com/MRServerLobbyAPI", OptionWebRequestTimeout,
+                        cancellation, MinoratingServerInformation.Deserialize);
 
                 var passwordsForEverything = true;
                 for (var i = 0; i < parsed.Length; i++) {
@@ -211,22 +232,28 @@ namespace AcManager.Tools.Helpers.Api {
         /// <param name="port">Port or -1 if port is missing.</param>
         /// <returns>True if parsing is successful.</returns>
         public static bool ParseAddress(string address, out string ip, out int port) {
-            var parsed = Regex.Match(address, @"^(?:.*//)?((?:\d+\.){3}\d+)(?::(\d+))?(?:/.*)?$");
-            if (!parsed.Success) {
-                parsed = Regex.Match(address, @"^(?:.*//)?([\w\.]+)(?::(\d+))(?:/.*)?$");
+            try {
+                var parsed = Regex.Match(address, @"^(?:.*//)?((?:\d+\.){3}\d+)(?::(\d+))?(?:/.*)?$");
                 if (!parsed.Success) {
-                    ip = null;
-                    port = 0;
-                    return false;
+                    parsed = Regex.Match(address, @"^(?:.*//)?([\w\.]+)(?::(\d+))(?:/.*)?$");
+                    if (!parsed.Success) {
+                        ip = null;
+                        port = 0;
+                        return false;
+                    }
+
+                    ip = Dns.GetHostEntry(parsed.Groups[1].Value).AddressList.Where(x => x.AddressFamily == AddressFamily.InterNetwork).ToString();
+                } else {
+                    ip = parsed.Groups[1].Value;
                 }
 
-                ip = Dns.GetHostEntry(parsed.Groups[1].Value).AddressList.Where(x => x.AddressFamily == AddressFamily.InterNetwork).ToString();
-            } else {
-                ip = parsed.Groups[1].Value;
+                port = parsed.Groups[2].Success ? int.Parse(parsed.Groups[2].Value, CultureInfo.InvariantCulture) : -1;
+                return true;
+            } catch {
+                ip = null;
+                port = 0;
+                return false;
             }
-
-            port = parsed.Groups[2].Success ? int.Parse(parsed.Groups[2].Value, CultureInfo.InvariantCulture) : -1;
-            return true;
         }
 
         private static ServerInformationComplete PrepareLoadedDirectly(ServerInformationComplete result, string ip) {
@@ -251,6 +278,10 @@ namespace AcManager.Tools.Helpers.Api {
                 }
             }
 
+            if (result.SessionTypes != null && result.Session >= 0 && result.Session < result.SessionTypes.Length) {
+                result.Session = result.SessionTypes[result.Session];
+            }
+
             return result;
         }
 
@@ -259,9 +290,6 @@ namespace AcManager.Tools.Helpers.Api {
                 // because, loaded directly, IP might different from global IP
                 result.Ip = ip;
             }
-
-            Logging.Debug(result.Until);
-            Logging.Debug(serverTime);
 
             if (result.Until != 0 && serverTime != 0) {
                 result.UntilLocal = DateTime.Now + TimeSpan.FromMilliseconds(result.Until - serverTime);

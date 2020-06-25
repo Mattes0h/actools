@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.Tools.Data;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.GameProperties.WeatherSpecific;
 using AcManager.Tools.Helpers;
@@ -14,6 +15,7 @@ using AcManager.Tools.Starters;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
@@ -163,7 +165,8 @@ namespace AcManager.Tools.SemiGui {
             }
 
             properties.SetAdditional(new TrackDetails());
-            properties.SetAdditional(new WeatherProceduralHelper(properties.ConditionProperties != null && properties.ConditionProperties.RoadTemperature == null));
+            properties.SetAdditional(
+                    new WeatherProceduralHelper(properties.ConditionProperties != null && properties.ConditionProperties.RoadTemperature == null));
             properties.SetAdditional(new WeatherSpecificLightingHelper());
 
             if (SettingsHolder.Drive.WeatherSpecificClouds) {
@@ -204,17 +207,24 @@ namespace AcManager.Tools.SemiGui {
                     StereoOdometerHelper.Export(carId);
                 }
 
-                var car = CarsManager.Instance.GetById(carId);
-                if (car != null) {
-                    properties.SetAdditional(new DrivenDistance(car.TotalDrivenDistance));
+                if (PatchHelper.IsFeatureSupported(PatchHelper.FeatureNeedsOdometerValue)) {
+                    var car = CarsManager.Instance.GetById(carId);
+                    if (car != null) {
+                        properties.SetAdditional(new DrivenDistance(car.TotalDrivenDistance));
+                    }
                 }
             }
 
             properties.SetAdditional(new ModeSpecificPresetsHelper());
             properties.SetAdditional(new WeatherSpecificVideoSettingsHelper());
             properties.SetAdditional(new CarSpecificControlsPresetHelper());
+            properties.SetAdditional(new CarSpecificFanatecSettingsHelper());
             properties.SetAdditional(new CarRaceTextures());
-            properties.SetAdditional(new AcPatchTrackOutline());
+
+            if (PatchHelper.GetInstalledVersion() != null) {
+                properties.SetAdditional(new AcPatchTrackOutline());
+            }
+
             properties.SetAdditional(new ExtraHotkeysRaceHelper());
 
             if (SettingsHolder.Drive.CopyFilterToSystemForOculus
@@ -238,7 +248,8 @@ namespace AcManager.Tools.SemiGui {
         private static IAcsStarter CreateStarter(Game.StartProperties properties) {
             var starter = AcsStarterFactory.Create();
 
-            if (SettingsHolder.Drive.PatchAcToDisableShadows && AcShadowsPatcher.IsSupposedToWork()) {
+            if (SettingsHolder.Drive.PatchAcToDisableShadows && !PatchHelper.IsFeatureSupported(PatchHelper.FeatureDynamicShadowResolution)
+                    && AcShadowsPatcher.IsSupposedToWork()) {
                 properties.SetAdditional(new AcShadowsPatcher(starter));
             }
 
@@ -289,6 +300,8 @@ namespace AcManager.Tools.SemiGui {
                 IsInGame = true;
 
                 try {
+                    FileUtils.TryToDelete(AcPaths.GetLogFilename());
+
                     Game.Result result;
                     using (ReplaysExtensionSetter.OnlyNewIfEnabled())
                     using (ScreenshotsConverter.OnlyNewIfEnabled()) {
@@ -317,6 +330,31 @@ namespace AcManager.Tools.SemiGui {
                             await PrepareReplay(properties, ui, cancellationToken);
                         }
 
+                        var trackId = string.IsNullOrWhiteSpace(properties.BasicProperties?.TrackConfigurationId)
+                                ? properties.BasicProperties?.TrackId
+                                : properties.BasicProperties?.TrackId + @"/" + properties.BasicProperties?.TrackConfigurationId;
+                        using (var cancellation = new CancellationTokenSource()) {
+                            ui.OnProgress("Loading data for Custom Shaders Patch…", AsyncProgressEntry.Indetermitate, () => { cancellation.Cancel(); });
+                            var carName = properties.BasicProperties?.CarId == null ? null : CarsManager.Instance.GetById(properties.BasicProperties?.CarId);
+                            var trackName = trackId == null ? null : TracksManager.Instance.GetById(trackId)?.Name ?? trackId;
+                            await PatchTracksDataUpdater.Instance.TriggerAutoLoadAsync(trackId,
+                                    PatchSubProgress($"Config for track {trackName}"), cancellation.Token);
+                            await PatchTracksVaoDataUpdater.Instance.TriggerAutoLoadAsync(trackId,
+                                    PatchSubProgress($"Ambient occlusion patch for track {trackName}"), cancellation.Token);
+                            await PatchBackgroundDataUpdater.Instance.TriggerAutoLoadAsync(trackId,
+                                    PatchSubProgress($"Backgrounds for track {trackName}"), cancellation.Token);
+                            await PatchCarsDataUpdater.Instance.TriggerAutoLoadAsync(properties.BasicProperties?.CarId,
+                                    PatchSubProgress($"Config for car {carName}"), cancellation.Token);
+                            await PatchCarsVaoDataUpdater.Instance.TriggerAutoLoadAsync(properties.BasicProperties?.CarId,
+                                    PatchSubProgress($"Ambient occlusion patch for car {carName}"), cancellation.Token);
+                            ui.OnProgress("Final preparations…");
+
+                            IProgress<AsyncProgressEntry> PatchSubProgress(string target) {
+                                return new Progress<AsyncProgressEntry>(p => ui.OnProgress("Loading data for Custom Shaders Patch…",
+                                        new AsyncProgressEntry($"{target}\n{p.Message ?? @"…"}", p.IsReady || p.Progress == null ? 0d : p.Progress),
+                                        () => cancellation.Cancel()));
+                            }
+                        }
                         result = await Game.StartAsync(CreateStarter(properties), properties, new ProgressHandler(ui), cancellationToken);
                     }
 

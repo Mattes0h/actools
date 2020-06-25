@@ -37,6 +37,19 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _use12HrTimeFormat;
+
+            public bool Use12HrTimeFormat {
+                get => _use12HrTimeFormat ?? (_use12HrTimeFormat = ValuesStorage.Get("Settings.CommonSettings.Use12HrTimeFormat", false)).Value;
+                set {
+                    if (Equals(value, _use12HrTimeFormat)) return;
+                    _use12HrTimeFormat = value;
+                    ValuesStorage.Set("Settings.CommonSettings.Use12HrTimeFormat", value);
+                    OnPropertyChanged();
+                    LocalizationHelper.Use12HrFormat = value;
+                }
+            }
+
             public static string DistanceFormat => Common.UseImperialUnits ? "{0:F1} mi" : "{0:F1} km";
             public static string DistancePostfix => Common.UseImperialUnits ? "mi" : "km";
             public static string SpaceDistancePostfix => Common.UseImperialUnits ? " mi" : " km";
@@ -132,6 +145,18 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _showDetailedChangelog)) return;
                     _showDetailedChangelog = value;
                     ValuesStorage.Set("Settings.CommonSettings.ShowDetailedChangelog", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _launchSteamAtStart;
+
+            public bool LaunchSteamAtStart {
+                get => _launchSteamAtStart ?? (_launchSteamAtStart = ValuesStorage.Get("Settings.CommonSettings.LaunchSteamAtStart", true)).Value;
+                set {
+                    if (Equals(value, _launchSteamAtStart)) return;
+                    _launchSteamAtStart = value;
+                    ValuesStorage.Set("Settings.CommonSettings.LaunchSteamAtStart", value);
                     OnPropertyChanged();
                 }
             }

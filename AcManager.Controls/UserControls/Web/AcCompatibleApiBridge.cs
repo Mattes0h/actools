@@ -71,8 +71,10 @@ namespace AcManager.Controls.UserControls.Web {
         }
 
         public override void PageInject(string url, Collection<string> toInject, Collection<KeyValuePair<string, string>> replacements) {
+            Logging.Debug(url.GetDomainNameFromUrl());
             if (AcApiHosts.Contains(url.GetDomainNameFromUrl(), StringComparer.OrdinalIgnoreCase)) {
                 toInject.Add(@"<script>!function(){
+window.__ACClasses = {};
 window.__AC = {};
 window.__AC.CarsArray = JSON.parse(window.external.GetCars());
 window.__AC.TracksArray = JSON.parse(window.external.GetTracks());
@@ -92,23 +94,40 @@ function find(a, f, p1, p2) {
 }
 window.__AC.findCar = find.bind(null, __AC.CarsArray);
 window.__AC.findTrack = find.bind(null, __AC.TracksArray);
+window.__AC.getDbValue = window.external.GetDbValue;
 }()</script>");
             }
         }
 
+        public class AcItemAccessedEventArgs : EventArgs {
+            public string Id { get; set; }
+        }
+
+        public EventHandler<AcItemAccessedEventArgs> TrackAccessed;
+        public EventHandler<AcItemAccessedEventArgs> CarAccessed;
+
         [UsedImplicitly]
         public void SetLastAccessed(string id, bool car) {
-            Logging.Debug($"Last accessed: {id} (car: {car})");
             if (car) {
                 _raceConfig["RACE"]["MODEL"] = id;
                 _raceConfig["CAR_0"]["MODEL"] = id;
+                ActionExtension.InvokeInMainThreadAsync(() => CarAccessed?.Invoke(this, new AcItemAccessedEventArgs { Id = id }));
             } else {
                 var track = TracksManager.Instance.GetLayoutByKunosId(id);
                 if (track != null) {
                     _raceConfig["RACE"]["TRACK"] = track.Id;
                     _raceConfig["RACE"]["CONFIG_TRACK"] = track.LayoutId;
+                    ActionExtension.InvokeInMainThreadAsync(() => TrackAccessed?.Invoke(this, new AcItemAccessedEventArgs { Id = track.IdWithLayout }));
                 }
             }
+        }
+
+        [UsedImplicitly]
+        public string GetDbValue(string id) {
+            if (id == "player.guid") {
+                return SteamIdHelper.Instance.Value;
+            }
+            return null;
         }
 
         [UsedImplicitly]

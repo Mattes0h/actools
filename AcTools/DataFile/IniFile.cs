@@ -71,8 +71,7 @@ namespace AcTools.DataFile {
         [NotNull]
         public IniFileSection this[[NotNull, LocalizationRequired(false)] string key] {
             get {
-                IniFileSection result;
-                if (_content.TryGetValue(key, out result)) return result;
+                if (_content.TryGetValue(key, out var result)) return result;
 
                 result = new IniFileSection(Data);
                 _content[key] = result;
@@ -661,13 +660,13 @@ namespace AcTools.DataFile {
         }
 
         public void SetSections<T>([Localizable(false)] string prefixName, int startFrom, IEnumerable<T> source, Action<T, IniFileSection> saveAction) {
-            var list = source.ToList();
+            var list = source?.ToList();
 
-            foreach (var key in GetExistingSectionNames(prefixName, startFrom).Skip(list.Count).ToList()) {
+            foreach (var key in GetExistingSectionNames(prefixName, startFrom).Skip(list?.Count ?? 0).ToList()) {
                 Remove(key);
             }
 
-            list.ForEach(GetSectionNames(prefixName, startFrom), (value, key) => {
+            list?.ForEach(GetSectionNames(prefixName, startFrom), (value, key) => {
                 saveAction(value, this[key]);
             });
         }

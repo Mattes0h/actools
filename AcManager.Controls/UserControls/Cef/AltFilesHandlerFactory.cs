@@ -5,6 +5,7 @@ using AcManager.Tools.Managers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using CefSharp;
+using CefSharp.Callback;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
@@ -56,6 +57,11 @@ namespace AcManager.Controls.UserControls.Cef {
                 }
             }
 
+            bool IResourceHandler.Open(IRequest request, out bool handleRequest, ICallback callback) {
+                handleRequest = true;
+                return true;
+            }
+
             bool IResourceHandler.ProcessRequest(IRequest request, ICallback callback) {
                 callback.Continue();
                 return true;
@@ -70,9 +76,28 @@ namespace AcManager.Controls.UserControls.Cef {
                     response.MimeType = _mimeType;
                     response.StatusCode = 200;
                     response.StatusText = @"OK";
-                    response.ResponseHeaders = new NameValueCollection();
+                    response.Headers = new NameValueCollection();
                     responseLength = _data.Length;
                 }
+            }
+
+            bool IResourceHandler.Skip(long bytesToSkip, out long bytesSkipped, IResourceSkipCallback callback) {
+                bytesSkipped = -1;
+                return false;
+            }
+
+            bool IResourceHandler.Read(Stream dataOut, out int bytesRead, IResourceReadCallback callback) {
+                if (!callback.IsDisposed) {
+                    callback.Dispose();
+                }
+
+                if (_data == null) {
+                    bytesRead = 0;
+                    return false;
+                }
+
+                bytesRead = _data.CopyTo(dataOut, (int)dataOut.Length, 8192);
+                return bytesRead > 0;
             }
 
             bool IResourceHandler.ReadResponse(Stream dataOut, out int bytesRead, ICallback callback) {
@@ -88,9 +113,6 @@ namespace AcManager.Controls.UserControls.Cef {
                 bytesRead = _data.CopyTo(dataOut, (int)dataOut.Length, 8192);
                 return bytesRead > 0;
             }
-
-            bool IResourceHandler.CanGetCookie(Cookie cookie) => true;
-            bool IResourceHandler.CanSetCookie(Cookie cookie) => true;
 
             void IDisposable.Dispose() {
                 _data?.Dispose();

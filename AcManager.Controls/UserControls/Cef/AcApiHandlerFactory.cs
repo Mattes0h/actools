@@ -7,6 +7,7 @@ using System.Text;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using CefSharp;
+using CefSharp.Callback;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
@@ -89,18 +90,28 @@ namespace AcManager.Controls.UserControls.Cef {
                 if (_response == null || _response.Length == 0) {
                     response.StatusCode = 204;
                     response.StatusText = @"No Content";
-                    response.ResponseHeaders = new NameValueCollection();
+                    response.Headers = new NameValueCollection();
                     responseLength = 0L;
                 } else {
                     response.MimeType = @"text/html; charset=utf-8";
                     response.StatusCode = 200;
                     response.StatusText = @"OK";
-                    response.ResponseHeaders = new NameValueCollection();
+                    response.Headers = new NameValueCollection();
                     responseLength = _response.Length;
                 }
             }
 
-            bool IResourceHandler.ReadResponse(Stream dataOut, out int bytesRead, ICallback callback) {
+            bool IResourceHandler.Open(IRequest request, out bool handleRequest, ICallback callback) {
+                handleRequest = true;
+                return true;
+            }
+
+            bool IResourceHandler.Skip(long bytesToSkip, out long bytesSkipped, IResourceSkipCallback callback) {
+                bytesSkipped = -1;
+                return false;
+            }
+
+            bool IResourceHandler.Read(Stream dataOut, out int bytesRead, IResourceReadCallback callback) {
                 if (!callback.IsDisposed) {
                     callback.Dispose();
                 }
@@ -116,9 +127,24 @@ namespace AcManager.Controls.UserControls.Cef {
                 }
             }
 
-            bool IResourceHandler.CanGetCookie(Cookie cookie) => true;
-            bool IResourceHandler.CanSetCookie(Cookie cookie) => true;
+            public bool ReadResponse(Stream dataOut, out int bytesRead, ICallback callback) {
+                if (!callback.IsDisposed) {
+                    callback.Dispose();
+                }
+
+                if (_response == null) {
+                    bytesRead = 0;
+                    return false;
+                }
+
+                using (var s = new MemoryStream(_response)) {
+                    bytesRead = s.CopyTo(dataOut, (int)dataOut.Length, 8192);
+                    return bytesRead > 0;
+                }
+            }
+
             void IResourceHandler.Cancel() { }
+
             void IDisposable.Dispose() { }
         }
     }

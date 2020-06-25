@@ -63,6 +63,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Doesn’t do anything if OptionDecodeImageSync is true.
         /// </summary>
         public static int OptionDecodeImageSyncThreshold = 50 * 1000; // 50 KB
+        // public static int OptionDecodeImageSyncThreshold = 50; // 50 KB
 
         /// <summary>
         /// Considering that 30 KB image takes ≈1.8 ms to be decoded and value of
@@ -80,7 +81,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// <summary>
         /// Before loading cached entity, check if according file exists and was not updated.
         /// </summary>
-        public static bool OptionEnsureCacheIsFresh = true;
+        // public static bool OptionEnsureCacheIsFresh = true;
+        public static bool OptionEnsureCacheIsFresh = false;
 
         /// <summary>
         /// Do not set it to zero if OptionReadFileSync is true and OptionDecodeImageSync is true!
@@ -738,7 +740,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        public static async Task<Image> LoadBitmapSourceAsync(string filename, int decodeWidth = -1, int decodeHeight = -1) {
+        [NotNull]
+        public static async Task<Image> LoadBitmapSourceAsync([CanBeNull] string filename, int decodeWidth = -1, int decodeHeight = -1) {
             if (filename.IsWebUrl()) {
                 Uri uri;
                 try {
@@ -1080,9 +1083,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     });
 
                     if (OptionDisplayImmediate) {
-                        Dispatcher.Invoke(result);
+                        Dispatcher?.Invoke(result);
                     } else {
-                        Dispatcher.BeginInvoke(DispatcherPriority.Background, result);
+                        Dispatcher?.BeginInvoke(DispatcherPriority.Background, result);
                     }
                 });
             } else {

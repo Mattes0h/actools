@@ -167,7 +167,7 @@ namespace AcManager.Tools.Objects {
                 if (value != null) {
                     if (!_setDriversQuietly) {
                         var player = value.First(x => x.IsPlayer);
-                        PlayerCarEntries.ReplaceEverythingBy_Direct(new [] {
+                        PlayerCarEntries.ReplaceEverythingBy_Direct(new[] {
                             new PlayerCarEntry(player.CarId, player.SkinId),
                         });
                     }
@@ -321,7 +321,7 @@ namespace AcManager.Tools.Objects {
                 CarSkinId = carSkinId;
             }
 
-            public PlayerCarEntry(CarObject car, CarSkinObject carSkin) : this(car.Id, carSkin.Id) {}
+            public PlayerCarEntry(CarObject car, CarSkinObject carSkin) : this(car.Id, carSkin.Id) { }
 
             private readonly Lazier<CarObject> _car;
             private readonly Lazier<CarSkinObject> _carSkin;
@@ -350,17 +350,31 @@ namespace AcManager.Tools.Objects {
 
         public PlayerCarEntry MainPlayerCarEntry {
             get => _mainPlayerCarEntry;
-            set => Apply(value, ref _mainPlayerCarEntry);
+            set => Apply(value, ref _mainPlayerCarEntry, () => {
+                if (Loaded) {
+                    ChangedData = true;
+                    ChangedExtended = true;
+                }
+            });
         }
 
         public ChangeableObservableCollection<PlayerCarEntry> PlayerCarEntries { get; } = new ChangeableObservableCollection<PlayerCarEntry>();
 
-        private void OnPlayerCarsPropertyChanged(object sender, PropertyChangedEventArgs args) {}
+        private void OnPlayerCarsPropertyChanged(object sender, PropertyChangedEventArgs args) {
+            if (Loaded) {
+                ChangedData = true;
+                ChangedExtended = true;
+            }
+        }
 
         private void OnPlayerCarsCollectionChanged(object sender, NotifyCollectionChangedEventArgs args) {
             MainPlayerCarEntry = PlayerCarEntries.FirstOrDefault();
             if (!PlayerCarEntries.Contains(UserCar)) {
                 UserCar = MainPlayerCarEntry;
+            }
+            if (Loaded) {
+                ChangedData = true;
+                ChangedExtended = true;
             }
         }
         #endregion
@@ -392,6 +406,23 @@ namespace AcManager.Tools.Objects {
                 if (Loaded) {
                     OnPropertyChanged();
                     ChangedExtended = true;
+                }
+            }
+        }
+
+        private int _timeMultiplier;
+
+        public int TimeMultiplier {
+            get => _timeMultiplier;
+            set {
+                value = value.Clamp(0, 3600);
+                if (Equals(value, _timeMultiplier)) return;
+                _timeMultiplier = value;
+
+                if (Loaded) {
+                    OnPropertyChanged();
+                    ChangedExtended = true;
+                    UpdateCoherentTime();
                 }
             }
         }
@@ -466,15 +497,16 @@ namespace AcManager.Tools.Objects {
                     round.Time = time;
 
                     if (Rules.Practice > 0) {
-                        time += Rules.Practice * 60 + interval;
+                        time += (Rules.Practice * 60 + interval) * Math.Max(TimeMultiplier, 1);
                     }
 
                     if (Rules.Qualifying > 0) {
-                        time += Rules.Qualifying * 60 + interval;
+                        time += (Rules.Qualifying * 60 + interval) * Math.Max(TimeMultiplier, 1);
                     }
 
                     var approximateLapDuration = (int)(round.Track?.GuessApproximateLapDuration(playerCar).TotalSeconds ?? 150d);
-                    time = (time + approximateLapDuration * round.LapsCount + interval).Ceiling(15 * 60);
+                    time += (approximateLapDuration * round.LapsCount + interval) * Math.Max(TimeMultiplier, 1);
+                    time = time.Ceiling(15 * 60);
 
                     if (time > CommonAcConsts.TimeMaximum - 60 * 60) {
                         time = CommonAcConsts.TimeMinimum;
@@ -860,6 +892,7 @@ namespace AcManager.Tools.Objects {
                 CoherentTime = json.GetBoolValueOnly("coherentTime") ?? false;
                 RealConditions = json.GetBoolValueOnly("realConditions") ?? false;
                 RealConditionsManualTime = json.GetBoolValueOnly("realConditionsManualTime") ?? false;
+                TimeMultiplier = json.GetIntValueOnly("timeMultiplier", 1);
 
                 Author = json.GetStringValueOnly("author")?.Trim();
                 Version = json.GetStringValueOnly("version")?.Trim();
@@ -904,6 +937,7 @@ namespace AcManager.Tools.Objects {
             json.SetNonDefault("coherentTime", CoherentTime);
             json.SetNonDefault("realConditions", RealConditions);
             json.SetNonDefault("realConditionsManualTime", RealConditionsManualTime);
+            json.SetNonDefault("timeMultiplier", TimeMultiplier, 1);
             json.SetNonDefault("author", Author);
             json.SetNonDefault("version", Version);
             json.SetNonDefault("url", Url);

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -15,10 +16,13 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
     public sealed class PythonAppConfig : Displayable, IWithId {
+        public PythonAppObject Parent { get; }
+
         [NotNull]
         public PythonAppConfigParams ConfigParams { get; }
 
-        internal string Filename { get; }
+        public string Filename { get; }
+        public string FileNameWithoutExtension { get; }
 
         private readonly string _defaultsFilename;
         private readonly IniFile _valuesIniFile;
@@ -35,12 +39,22 @@ namespace AcManager.Tools.Objects {
             set => Apply(value, ref _isNonDefault);
         }
 
-        private PythonAppConfig([NotNull] PythonAppConfigParams configParams, string filename, IniFile ini, string name, IniFile values = null) {
+        private bool _hasAnythingNew;
+
+        public bool HasAnythingNew {
+            get => _hasAnythingNew;
+            set => Apply(value, ref _hasAnythingNew);
+        }
+
+        private PythonAppConfig([NotNull] PythonAppConfigParams configParams, string filename, IniFile ini, string name, PythonAppObject parent,
+                IniFile values = null) {
             IsResettable = values != null;
             _valuesIniFile = values ?? ini;
 
             ConfigParams = configParams;
             Filename = filename;
+            FileNameWithoutExtension = Path.GetFileNameWithoutExtension(filename)?.ToLowerInvariant();
+            Parent = parent;
 
             _defaultsFilename = ini.Filename;
             if (_defaultsFilename == Filename) {
@@ -48,9 +62,11 @@ namespace AcManager.Tools.Objects {
             }
 
             DisplayName = name.Trim();
-            Sections = new List<PythonAppConfigSection>(ini.Select(x => new PythonAppConfigSection(configParams, x, values?[x.Key]))
-                                                           .Where(x => x.DisplayName != @"hidden"));
+            Sections = new List<PythonAppConfigSection>(ini.Select(x =>
+                    new PythonAppConfigSection(configParams, x, values?[x.Key]))
+                    .Where(x => x.DisplayName != @"hidden"));
             IsSingleSection = Sections.Count == 1 && IsSectionNameUseless(Sections[0].DisplayName, configParams.PythonAppLocation);
+            HasAnythingNew = Sections.Any(x => x.Any(y => y.IsNew));
 
             foreach (var value in Sections.SelectMany(x => x)) {
                 value.PropertyChanged += OnValuePropertyChanged;
@@ -96,8 +112,10 @@ namespace AcManager.Tools.Objects {
             set => Apply(value, ref _changed);
         }
 
+        public static bool IgnoreChanges = false;
+
         private void OnValuePropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(PythonAppConfigValue.Value)) {
+            if (!IgnoreChanges && e.PropertyName == nameof(PythonAppConfigValue.Value)) {
                 Changed = true;
 
                 if (IsResettable) {
@@ -133,24 +151,52 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        public void Save() {
-            if (!Changed) return;
-            Changed = false;
-
+        public void ApplyChangesFromIni() {
+            Changed = true;
             foreach (var section in Sections) {
                 if (section.Key == @"ℹ") continue;
                 var iniSection = _valuesIniFile[section.Key];
                 foreach (var p in section) {
-                    // if (ConfigParams.SaveOnlyChanged && !p.IsChanged) continue;
-                    if (ConfigParams.SaveOnlyNonDefault && !p.IsNonDefault) {
-                        iniSection.Remove(p.OriginalKey);
+                    if (iniSection.ContainsKey(p.Id)) {
+                        p.Value = iniSection.GetPossiblyEmpty(p.Id);
                     } else {
-                        iniSection.Set(p.OriginalKey, p.Value);
+                        p.Reset();
                     }
                 }
             }
+        }
 
-            _valuesIniFile.Save(true);
+        private void ApplyChangesToIni() {
+            foreach (var section in Sections) {
+                if (section.Key == @"ℹ") continue;
+                var iniSection = _valuesIniFile[section.Key];
+                foreach (var p in section) {
+                    if (ConfigParams.SaveOnlyNonDefault && !p.IsNonDefault) {
+                        iniSection.Remove(p.Id);
+                    } else {
+                        iniSection.Set(p.Id, p.Value);
+                    }
+                }
+            }
+        }
+
+        public IniFile ValuesIni() {
+            Changed = false;
+            return _valuesIniFile;
+        }
+
+        public IniFile Export() {
+            if (Changed) {
+                ApplyChangesToIni();
+            }
+            return _valuesIniFile;
+        }
+
+        public void Save() {
+            if (!Changed) return;
+            Changed = false;
+            ApplyChangesToIni();
+            _valuesIniFile.Save();
         }
 
         internal bool IsAffectedBy(string changed) {
@@ -190,8 +236,9 @@ namespace AcManager.Tools.Objects {
             return new PythonAppConfig(configParams, filename, ini,
                     (ini.ContainsKey("ℹ") ? ini["ℹ"].GetNonEmpty("FULLNAME") : null)
                             ?? relative.ApartFromLast(extension, StringComparison.OrdinalIgnoreCase)
-                                       .Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries)
-                                       .Select(AcStringValues.NameFromId).JoinToString('/'),
+                                    .Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries)
+                                    .Select(AcStringValues.NameFromId).JoinToString('/'),
+                    PythonAppsManager.Instance.FirstOrDefault(x => x.Location == configParams.PythonAppLocation),
                     defaultsMode ? new IniFile(filename) : null);
         }
 
@@ -211,10 +258,20 @@ namespace AcManager.Tools.Objects {
             return CapitalizeFirstOnly(Regex.Replace(original, @"[\s_-]+|(?<=[a-z])(?=[A-Z])", " ").Trim());
         }
 
+        [NotNull]
         public string Id => Filename;
+
+        [CanBeNull]
         public string Order => Sections.GetByIdOrDefault("ℹ")?.Order;
+
+        [CanBeNull]
         public string Description => Sections.GetByIdOrDefault("ℹ")?.Description;
+
+        [CanBeNull]
         public string ShortDescription => Sections.GetByIdOrDefault("ℹ")?.ShortDescription;
+
         public bool IsActive => Sections.GetByIdOrDefault("BASIC")?.GetByIdOrDefault("ENABLED")?.Value.As<bool?>() != false;
+
+        public string PresetId => Path.GetFileNameWithoutExtension(Id).ToUpperInvariant();
     }
 }

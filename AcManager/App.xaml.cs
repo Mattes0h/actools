@@ -6,9 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -60,6 +62,9 @@ using AcTools.AcdFile;
 using AcTools.DataFile;
 using AcTools.GenericMods;
 using AcTools.Kn5File;
+#if !DEBUG
+using AcTools.Kn5Tools;
+#endif
 using AcTools.NeuralTyres;
 using AcTools.Processes;
 using AcTools.Render.Kn5SpecificSpecial;
@@ -81,6 +86,8 @@ using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
 using Newtonsoft.Json;
 using StringBasedFilter;
+using ComboBox = System.Windows.Controls.ComboBox;
+using HorizontalAlignment = System.Windows.HorizontalAlignment;
 
 namespace AcManager {
     public partial class App : IDisposable {
@@ -134,12 +141,32 @@ namespace AcManager {
             // Some sort of safe mode
             if (forceSoftwareRenderingMode && !softwareRenderingModeWasEnabled) {
                 Toast.Show("Safe mode", "Failed to start the last time, now CM uses software rendering", () => {
-                    if (ModernDialog.ShowMessage(
+                    if (MessageDialog.Show(
                             "Would you like to switch back to hardware rendering? You can always do that in Settings/Appearance. App will be restarted.",
                             "Switch back", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
                         ValuesStorage.Set(AppAppearanceManager.KeySoftwareRendering, false);
                         Storage.SaveBeforeExit(); // Just in case
                         WindowsHelper.RestartCurrentApplication();
+                    }
+                });
+            }
+
+            var move = AppArguments.Get(AppFlag.MoveApp);
+            if (move != null && File.Exists(move)) {
+                for (var i = 0; i < 10; i++) {
+                    if (FileUtils.TryToDelete(move) || !File.Exists(move)) break;
+                    Thread.Sleep(100);
+                }
+                Toast.Show("App moved", $"App moved from AC root folder, now Oculus Rift should work better", () => {
+                    var originalRemoved = File.Exists(move) ? "failed to remove original file" : "original file removed";
+                    if (MessageDialog.Show(
+                            $"New location is “{MainExecutingFile.Location}”, {originalRemoved}. Please don’t forget to recreate any shortcuts you might have created.",
+                            "Content Manager is moved",
+                            new MessageDialogButton {
+                                [MessageBoxResult.Yes] = "View new location",
+                                [MessageBoxResult.No] = UiStrings.Ok
+                            }) == MessageBoxResult.Yes) {
+                        WindowsHelper.ViewFile(MainExecutingFile.Location);
                     }
                 });
             }
@@ -227,6 +254,9 @@ namespace AcManager {
             AppArguments.Set(AppFlag.FbxMultiMaterial, ref Kn5.OptionJoinToMultiMaterial);
 
             Acd.Factory = new AcdFactory();
+            #if !DEBUG
+            Kn5.Factory = Kn5New.GetFactoryInstance();
+            #endif
             Lazier.SyncAction = ActionExtension.InvokeInMainThreadAsync;
             KeyboardListenerFactory.Register<KeyboardListener>();
 
@@ -297,6 +327,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.ShowroomUiVerbose, ref LiteShowroomFormWrapperWithTools.OptionAttachedToolsVerboseMode);
             AppArguments.Set(AppFlag.BenchmarkReplays, ref GameDialog.OptionBenchmarkReplays);
             AppArguments.Set(AppFlag.HideRaceCancelButton, ref GameDialog.OptionHideCancelButton);
+            AppArguments.Set(AppFlag.PatchSupport, ref PatchHelper.OptionPatchSupport);
 
             // Shared memory, now as an app flag
             SettingsHolder.Drive.WatchForSharedMemory = !AppArguments.GetBool(AppFlag.DisableSharedMemory);
@@ -312,6 +343,7 @@ namespace AcManager {
             ContentUtils.Register("ControlsStrings", ControlsStrings.ResourceManager);
             ContentUtils.Register("ToolsStrings", ToolsStrings.ResourceManager);
             ContentUtils.Register("UiStrings", UiStrings.ResourceManager);
+            LocalizationHelper.Use12HrFormat = SettingsHolder.Common.Use12HrTimeFormat;
 
             AcObjectsUriManager.Register(new UriProvider());
 
@@ -360,6 +392,7 @@ namespace AcManager {
 
             Storage.TemporaryBackupsDirectory = FilesStorage.Instance.GetTemporaryDirectory("Storages Backups");
             CupClient.Initialize();
+            CupViewModel.Initialize();
             Superintendent.Initialize();
             ModsWebBrowser.Initialize();
 
@@ -410,6 +443,25 @@ namespace AcManager {
 
             BbCodeBlock.AddLinkCommand(new Uri("cmd://createNeutralLut"),
                     new DelegateCommand<string>(id => NeutralColorGradingLut.CreateNeutralLut(id.As(16))));
+
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://findSrsServers"),
+                    new DelegateCommand(() => new ModernDialog {
+                        ShowTitle = false,
+                        ShowTopBlob = false,
+                        Title = "Connect to SimRacingSystem",
+                        Content = new ModernFrame {
+                            Source = new Uri("/Pages/Drive/Online.xaml?Filter=SimRacingSystem", UriKind.Relative)
+                        },
+                        MinHeight = 400,
+                        MinWidth = 800,
+                        MaxHeight = DpiAwareWindow.UnlimitedSize,
+                        MaxWidth = DpiAwareWindow.UnlimitedSize,
+                        Padding = new Thickness(0),
+                        ButtonsMargin = new Thickness(8, -32, 8, 8),
+                        SizeToContent = SizeToContent.Manual,
+                        ResizeMode = ResizeMode.CanResizeWithGrip,
+                        LocationAndSizeKey = @".SrsJoinDialog"
+                    }.ShowDialog()));
 
             BbCodeBlock.DefaultLinkNavigator.PreviewNavigate += (sender, args) => {
                 if (args.Uri.IsAbsoluteUri && args.Uri.Scheme == "acmanager") {
@@ -510,8 +562,8 @@ namespace AcManager {
 
             // Reshade?
             var loadReShade = AppArguments.GetBool(AppFlag.ForceReshade);
-            if (!loadReShade && string.Equals(AppArguments.Get(AppFlag.ForceReshade), "kn5only", StringComparison.OrdinalIgnoreCase)) {
-                loadReShade = AppArguments.Values.Any(x => x.EndsWith(".kn5", StringComparison.OrdinalIgnoreCase));
+            if (!loadReShade && string.Equals(AppArguments.Get(AppFlag.ForceReshade), @"kn5only", StringComparison.OrdinalIgnoreCase)) {
+                loadReShade = AppArguments.Values.Any(x => x.EndsWith(@".kn5", StringComparison.OrdinalIgnoreCase));
             }
 
             if (loadReShade) {
@@ -524,9 +576,30 @@ namespace AcManager {
             // Auto-show that thing
             InstallAdditionalContentDialog.Initialize();
 
+            // Make sure Steam is running
+            if (SettingsHolder.Common.LaunchSteamAtStart) {
+                LaunchSteam().Ignore();
+            }
+
             // Let’s roll
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
-            new AppUi(this).Run();
+            new AppUi(this).Run(() => {
+                if (PatchHelper.OptionPatchSupport) {
+                    PatchUpdater.Initialize();
+                    PatchUpdater.Instance.Updated += OnPatchUpdated;
+                }
+            });
+        }
+
+        private static async Task LaunchSteam() {
+            await Task.Delay(500);
+            await Task.Run(() => {
+                try {
+                    SteamRunningHelper.EnsureSteamIsRunning(true, false);
+                } catch (Exception e) {
+                    Logging.Error(e);
+                }
+            });
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -570,6 +643,20 @@ namespace AcManager {
             }
         }
 
+        private static void DisableWindowsTransparency(DependencyProperty dp, Type type) {
+            try {
+                var m = dp.GetMetadata(type);
+                var p = m.GetType().GetProperty("Sealed",
+                        System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                        ?? throw new Exception(@"Sealed property is missing");
+                p.SetValue(m, false);
+                m.CoerceValueCallback = (d, o) => false;
+                p.SetValue(m, true);
+            } catch (Exception e) {
+                Logging.Error(e);
+            }
+        }
+
         private static void PrepareUi() {
             try {
                 ToolTipService.ShowOnDisabledProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(true));
@@ -577,6 +664,11 @@ namespace AcManager {
                 ToolTipService.BetweenShowDelayProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(600));
                 ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(60000));
                 ItemsControl.IsTextSearchCaseSensitiveProperty.OverrideMetadata(typeof(ComboBox), new FrameworkPropertyMetadata(true));
+
+                if (AppAppearanceManager.Instance.DisallowTransparency) {
+                    DisableWindowsTransparency(Window.AllowsTransparencyProperty, typeof(Window));
+                    DisableWindowsTransparency(Popup.AllowsTransparencyProperty, typeof(Popup));
+                }
             } catch (Exception e) {
                 Logging.Error(e);
             }
@@ -594,7 +686,7 @@ namespace AcManager {
             ValuesStorage.SetEncrypted(AppKeyDialog.AppKeyRevokedKey, InternalUtils.Revoked);
             InternalUtils.SetKey(null, null);
 
-            Current.Dispatcher.Invoke(() => {
+            Current.Dispatcher?.Invoke(() => {
                 if (Current?.MainWindow is MainWindow && Current.MainWindow.IsActive) {
                     AppKeyDialog.ShowRevokedMessage();
                 }
@@ -608,6 +700,7 @@ namespace AcManager {
             WeatherSpecificVideoSettingsHelper.Revert();
             WeatherSpecificLightingHelper.Revert();
             CarSpecificControlsPresetHelper.Revert();
+            CarSpecificFanatecSettingsHelper.Revert();
             CarCustomDataHelper.Revert();
             CopyFilterToSystemForOculusHelper.Revert();
             AcShadowsPatcher.Revert();
@@ -658,7 +751,7 @@ namespace AcManager {
                     if (changelog.Any()) {
                         Toast.Show(AppStrings.App_AppUpdated, AppStrings.App_AppUpdated_Details, () => {
                             ModernDialog.ShowMessage(changelog.Select(x => $@"[b]{x.Version}[/b]{Environment.NewLine}{x.Changes}")
-                                                              .JoinToString(Environment.NewLine.RepeatString(2)), AppStrings.Changelog_RecentChanges_Title,
+                                    .JoinToString(Environment.NewLine.RepeatString(2)), AppStrings.Changelog_RecentChanges_Title,
                                     MessageBoxButton.OK);
                         });
                     }
@@ -677,10 +770,10 @@ namespace AcManager {
                 await Task.Delay(5000);
                 await Task.Run(() => {
                     foreach (var f in from file in Directory.GetFiles(FilesStorage.Instance.GetDirectory("Logs"))
-                                      where file.EndsWith(@".txt") || file.EndsWith(@".log") || file.EndsWith(@".json")
-                                      let info = new FileInfo(file)
-                                      where info.LastWriteTime < DateTime.Now - TimeSpan.FromDays(3)
-                                      select info) {
+                        where file.EndsWith(@".txt") || file.EndsWith(@".log") || file.EndsWith(@".json")
+                        let info = new FileInfo(file)
+                        where info.LastWriteTime < DateTime.Now - TimeSpan.FromDays(3)
+                        select info) {
                         f.Delete();
                     }
                 });
@@ -721,6 +814,12 @@ namespace AcManager {
 
         private void OnDataUpdated(object sender, EventArgs e) {
             Toast.Show(AppStrings.App_DataUpdated, string.Format(AppStrings.App_DataUpdated_Details, DataUpdater.Instance.InstalledVersion));
+        }
+
+        private void OnPatchUpdated(object sender, EventArgs e) {
+            /*if (PatchUpdater.Instance.ShowDetailedChangelog.Value) {
+                Toast.Show("Shaders Patch updated", string.Format(AppStrings.App_DataUpdated_Details, PatchUpdater.Instance.DisplayInstalledVersion));
+            }*/
         }
 
         private void OnAppUpdated(object sender, EventArgs e) {

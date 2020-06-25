@@ -41,9 +41,8 @@
                 </mui:SpacingStackPanel.IsEnabled>
                 <mui:ValueLabel Value="{Binding Time, Converter={StaticResource AcTimeDisplayConverter}}" mui:BetterTextBox.Mode="Time"
                     Content="{x:Static g:AppStrings.Drive_Time}" />
-                <Slider Value="{Binding Time}" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False"
-                    Minimum="{Binding Source={x:Static a:CommonAcConsts.TimeMinimum}}" Maximum="{Binding Source={x:Static a:CommonAcConsts.TimeMaximum}}"
-                    SmallChange="900" LargeChange="1800" />
+                <Slider Value="{Binding Time}" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False" SmallChange="900"
+                    LargeChange="1800" c:TimeSliderService.IsTimeSlider="True" />
               </mui:SpacingStackPanel>
 
               <mui:SpacingStackPanel Spacing="4"
@@ -263,10 +262,23 @@
           <CheckBox IsChecked="{Binding SelectedObject.CoherentTime}" IsEnabled="{Binding ShowTimeControls}">
             <Label Content="Sheduled rounds" />
           </CheckBox>
+
+          <DockPanel>
+            <mui:ValueLabel Value="{Binding SelectedObject.TimeMultiplier}" Postfix="×" Content="{x:Static g:AppStrings.Drive_TimeMultiplerLabel}" />
+            <Slider Minimum="0" Maximum="1" TickFrequency="0.2" TickPlacement="None" IsSnapToTickEnabled="False">
+              <Slider.Value>
+                <Binding Path="SelectedObject.TimeMultiplier">
+                  <Binding.Converter>
+                    <mui:LogarithmicScale Minimum="0" Middle="10" Maximum="60" />
+                  </Binding.Converter>
+                </Binding>
+              </Slider.Value>
+            </Slider>
+          </DockPanel>
         </StackPanel>
 
-        <ListBox mui:Draggable.Enabled="True" SelectionMode="Extended" ItemTemplateSelector="{StaticResource RoundsListDataTemplateSelector}"
-            Style="{StaticResource VirtualizingListBox}">
+        <ListBox mui:Draggable.Enabled="True" mui:Draggable.Destination="{x:Static t:UserChampionshipRoundExtended.DraggableFormat}" SelectionMode="Extended"
+            ItemTemplateSelector="{StaticResource RoundsListDataTemplateSelector}" Style="{StaticResource VirtualizingListBox}">
           <ListBox.ItemsPanel>
             <ItemsPanelTemplate>
               <VirtualizingStackPanel IsItemsHost="True" CacheLength="{TemplateBinding VirtualizingPanel.CacheLength}"
@@ -372,8 +384,12 @@
                           LabelUnchecked="{x:Static mui:UiStrings.Common_Descending}" IsChecked="{Binding RaceGridViewModel.AiLevelArrangeReverse}" />
                     </DockPanel>
 
+                    <CheckBox IsChecked="{Binding RaceGridViewModel.AiLevelArrangePowerRatio}">
+                      <Label Content="{x:Static t:ToolsStrings.Race_ArrangeAIStrengthBasedOnPWRatio}" />
+                    </CheckBox>
+
                     <DockPanel>
-                      <Label Content="Randomization:" />
+                      <Label Content="{x:Static t:ToolsStrings.Race_RandomizationTitle}" />
                       <Slider Minimum="0" Maximum="100" TickFrequency="20" TickPlacement="BottomRight"
                           Value="{Binding RaceGridViewModel.AiLevelArrangeRandom, Converter={StaticResource PercentageConverter}}" />
                     </DockPanel>
@@ -383,14 +399,14 @@
                     </CheckBox>
 
                     <CheckBox IsChecked="{mui:Stored 'aiRelativeRange=True'}" Margin="0">
-                      <Label Content="Show relative range" />
+                      <Label Content="{x:Static t:ToolsStrings.Race_ShowRelativeRange}" />
                     </CheckBox>
                   </StackPanel>
                 </c:ModernPopup>
               </mui:ContextMenuButton>
               <mui:DoubleValueLabel Value="{Binding RaceGridViewModel.AiLevelMin}" SecondValue="{Binding RaceGridViewModel.AiLevel}" Postfix='%'
                   JoinIfEqual="True" RelativeRange="{mui:Stored 'aiRelativeRange=True'}" Content="{x:Static g:AppStrings.Drive_OpponentsStrength}"
-                  RelativeRangeStringFormat="F1" />
+                  RelativeRangeStringFormat="0.#" />
             </DockPanel>
 
             <DockPanel>
@@ -410,23 +426,24 @@
                     </DockPanel>
 
                     <DockPanel>
-                      <Label Content="Randomization:" />
+                      <Label Content="{x:Static t:ToolsStrings.Race_RandomizationTitle}" />
                       <Slider Minimum="0" Maximum="100" TickFrequency="20" TickPlacement="BottomRight"
                           Value="{Binding RaceGridViewModel.AiAggressionArrangeRandom, Converter={StaticResource PercentageConverter}}" />
                     </DockPanel>
 
                     <CheckBox IsChecked="{Binding RaceGridViewModel.AiAggressionInDriverName, Mode=TwoWay}">
-                      <Label Content="Show AI aggression in driver’s name" />
+                      <Label Content="{x:Static t:ToolsStrings.Race_ShowAIAggression}" />
                     </CheckBox>
 
                     <CheckBox IsChecked="{mui:Stored 'aiRelativeRange=True'}" Margin="0">
-                      <Label Content="Show relative range" />
+                      <Label Content="{x:Static t:ToolsStrings.Race_ShowRelativeRange}" />
                     </CheckBox>
                   </StackPanel>
                 </c:ModernPopup>
               </mui:ContextMenuButton>
               <mui:DoubleValueLabel Value="{Binding RaceGridViewModel.AiAggressionMin}" SecondValue="{Binding RaceGridViewModel.AiAggression}" Postfix='%'
-                  JoinIfEqual="True" RelativeRange="{mui:Stored 'aiRelativeRange=True'}" Content="Opponents aggression" RelativeRangeStringFormat="F1" />
+                  JoinIfEqual="True" RelativeRange="{mui:Stored 'aiRelativeRange=True'}" Content="{x:Static t:ToolsStrings.Race_OpponentsAggression}"
+                  RelativeRangeStringFormat="0.#" />
             </DockPanel>
 
             <!--<StackPanel>
@@ -520,10 +537,11 @@
       <ToolBar Band="1" BandIndex="1" IsEnabled="{Binding SelectedObject.IsStarted, Converter={StaticResource InvertBooleanConverter}}">
         <Button Content="{x:Static g:AppStrings.Toolbar_Disable}" Command="{Binding SelectedObject.ToggleCommand}"
             ToolTip="{x:Static g:AppStrings.Toolbar_Disable_Tooltip}"
-            Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}" PreviewMouseLeftButtonUp="OnToggleClick" />
         <Button Content="{x:Static g:AppStrings.Toolbar_Enable}" Command="{Binding SelectedObject.ToggleCommand}"
             ToolTip="{x:Static g:AppStrings.Toolbar_Enable_Tooltip}"
-            Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+            Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
+            PreviewMouseLeftButtonUp="OnToggleClick" />
         <Button Content="{x:Static g:AppStrings.Toolbar_Save}" Command="{Binding SelectedObject.SaveCommand}"
             ToolTip="{x:Static g:AppStrings.Toolbar_Save_JsonTooltip}" />
         <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"

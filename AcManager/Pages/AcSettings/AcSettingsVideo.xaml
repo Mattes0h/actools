@@ -17,8 +17,8 @@
           <TextBlock x:Name="SettingValue" Style="{StaticResource Title}" FontWeight="Bold" />
         </DockPanel>
         <DockPanel x:Name="PerformanceHitPanel" Dock="Top" Margin="0 0 0 28" Background="Transparent"
-            ToolTip="Huge approximation, might not correlate with reality. Measured in 1920×1080 resolution.">
-          <TextBlock Text="Performance hit: " Style="{StaticResource Heading2}" FontWeight="Normal" />
+            ToolTip="{x:Static g:AppStrings.AcSettings_Video_PerformanceHit_Tooltip}">
+          <TextBlock Text="{x:Static g:AppStrings.AcSettings_Video_PerformanceHit}" Style="{StaticResource Heading2}" FontWeight="Normal" />
           <TextBlock x:Name="PerformanceHit" Style="{StaticResource Heading2}" />
         </DockPanel>
         <mui:BbCodeBlock x:Name="Description" />
@@ -55,14 +55,14 @@
               <mui:ReferenceSwitch Value="{Binding Video.LastSessionPerformanceData}">
                 <mui:ReferenceSwitch.Null>
                   <DockPanel Margin="0">
-                    <TextBlock Style="{StaticResource Label}" Text="Previous session’s performance:" DockPanel.Dock="Top" Margin="0 0 0 4" />
-                    <TextBlock Style="{StaticResource Title}" Text="N/A" />
+                    <TextBlock Style="{StaticResource Label}" Text="{x:Static g:AppStrings.Main_FPS_Title}" DockPanel.Dock="Top" Margin="0 0 0 4" />
+                    <TextBlock Style="{StaticResource Title}" Text="{x:Static t:ToolsStrings.Common_NA}" />
                   </DockPanel>
                 </mui:ReferenceSwitch.Null>
                 <mui:ReferenceSwitch.NonNull>
                   <DockPanel Margin="0">
                     <DockPanel.ToolTip>
-                      <c:PropertiesGrid Columns="1">
+                      <c:PropertiesGrid Columns="1" Margin="0 0 12 0">
                         <TextBlock c:PropertiesGrid.Label="Average:"
                             Text="{Binding Video.LastSessionPerformanceData.AverageFps, StringFormat='{}{0:F1} frames per second'}" />
                         <TextBlock c:PropertiesGrid.Label="Minimum:"
@@ -71,7 +71,7 @@
                             Text="{Binding Video.LastSessionPerformanceData.SamplesTaken, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} sample'}" />
                       </c:PropertiesGrid>
                     </DockPanel.ToolTip>
-                    <TextBlock Style="{StaticResource Label}" Text="Previous session’s performance:" DockPanel.Dock="Top" Margin="0 0 0 8" />
+                    <TextBlock Style="{StaticResource Label}" Text="{x:Static g:AppStrings.Main_FPS_Title}" DockPanel.Dock="Top" Margin="0 0 0 8" />
                     <TextBlock Style="{StaticResource Title}"
                         Text="{Binding Video.LastSessionPerformanceData.AverageFps, StringFormat='{}{0:F1} frames per second'}" />
                   </DockPanel>
@@ -81,9 +81,19 @@
           </mui:BooleanSwitch>
 
           <!-- Resolution -->
-          <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Resolution and FPS:" />
+          <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static g:AppStrings.AcSettings_Video_ResolutionAndFPS}" />
 
-          <CheckBox IsChecked="{Binding Video.Fullscreen}">
+          <DockPanel>
+            <Label Content="{x:Static g:AppStrings.AcSettings_Video_RenderingModeLabel}" />
+            <ComboBox ItemsSource="{Binding Video.CameraModes}" SelectedItem="{Binding Video.CameraMode}" DisplayMemberPath="DisplayName" />
+          </DockPanel>
+
+          <c:MessageBlock CloseKey="oculusRiftWarningBlock" Margin="0 0 0 8">
+            <mui:BbCodeBlock
+                Text="[b]Important note:[/b] Oculus Rift might not work properly with Content Manager in AC root folder. It’s better to move it somewhere else to avoid potential issues." />
+          </c:MessageBlock>
+
+          <CheckBox IsChecked="{Binding Video.Fullscreen}" Margin="0 20 0 8">
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_Fullscreen}" />
           </CheckBox>
 
@@ -108,13 +118,8 @@
               <TextBlock Text=", " />
               <mui:BetterTextBox Text="{Binding Video.CustomResolution.Framerate}" Placeholder="{x:Static g:AppStrings.AcSettings_Video_Framerate}"
                   Mode="Positive" Width="60" ToolTip="{x:Static g:AppStrings.AcSettings_Video_Framerate}" />
-              <TextBlock Text=" Hz" />
+              <TextBlock Text="{x:Static t:ToolsStrings.Common_Unit_Hz}" />
             </StackPanel>
-          </DockPanel>
-
-          <DockPanel Margin="0 20 0 8">
-            <Label Content="{x:Static g:AppStrings.AcSettings_Video_RenderingModeLabel}" />
-            <ComboBox ItemsSource="{Binding Video.CameraModes}" SelectedItem="{Binding Video.CameraMode}" DisplayMemberPath="DisplayName" />
           </DockPanel>
 
           <CheckBox IsChecked="{Binding Video.VerticalSynchronization}">
@@ -129,6 +134,24 @@
             <mui:ValueLabel Value="{Binding Video.FramerateLimit}" mui:BetterTextBox.Minimum="1" Postfix="{x:Static c:ControlsStrings.Common_FpsPostfix}"
                 Content="{x:Static g:AppStrings.AcSettings_Video_Framerate}" />
             <Slider Minimum="30" Maximum="240" Value="{Binding Video.FramerateLimit}" TickFrequency="21" TickPlacement="BottomRight" />
+          </DockPanel>
+
+          <DockPanel c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureWindowPosition}" mui:NewMarkService.New="True"
+              IsEnabled="{Binding Video.Fullscreen, Converter={StaticResource InvertBooleanConverter}}"
+              ToolTip="Requires Custom Shaders Patch, available only without fullscreen mode" ToolTipService.ShowOnDisabled="True">
+            <Label Content="Show on screen:" />
+            <mui:BetterComboBox ItemsSource="{Binding Screens}" SelectedItem="{Binding ForceScreen, Mode=TwoWay}" Nullable="True" IsEditable="False">
+              <mui:BetterComboBox.ItemTemplate>
+                <DataTemplate>
+                  <TextBlock x:Name="PART_DisplayName" Text="{Binding DisplayName}" />
+                  <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding}" Value="{x:Static mui:BetterComboBox.NullValue}">
+                      <Setter TargetName="PART_DisplayName" Property="Text" Value="Default" />
+                    </DataTrigger>
+                  </DataTemplate.Triggers>
+                </DataTemplate>
+              </mui:BetterComboBox.ItemTemplate>
+            </mui:BetterComboBox>
           </DockPanel>
 
           <!-- Quality -->
@@ -158,7 +181,7 @@
             <ComboBox ItemsSource="{Binding Video.ShadowMapSizes}" SelectedItem="{Binding Video.ShadowMapSize}" DisplayMemberPath="DisplayName" />
           </DockPanel>
 
-          <CheckBox IsChecked="{Binding PatchAcToDisableShadows, Source={x:Static t:SettingsHolder.Drive}}"
+          <CheckBox x:Name="PatchAcToDisableShadows" IsChecked="{Binding PatchAcToDisableShadows, Source={x:Static t:SettingsHolder.Drive}}"
               set:Search.Keywords="drive events;video;graphics;shadows"
               ToolTip="If needed, backup will be saved as “acs_backup_shadows.exe”. More information in “Settings/Content Manager/Drive” section. Not recommended if you’re using Custom Shaders Patch, it can take care of it as well">
             <Label Content="If shadows are disabled, patch AC to fully disable them (global)" />
@@ -314,7 +337,7 @@
           <DockPanel ToolTip="{x:Static g:AppStrings.AcSettings_Video_MipLodBias_Tooltip}">
             <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionMipLodBiasCommand}" />
             <mui:ValueLabel Value="{Binding Graphics.MipLodBias}" Content="{x:Static g:AppStrings.AcSettings_Video_MipLodBias}" />
-            <Slider Minimum="-4" Maximum="0" Value="{Binding Graphics.MipLodBias}" IsSnapToTickEnabled="True" TickFrequency="1" TickPlacement="BottomRight" />
+            <Slider Minimum="-4" Maximum="0" Value="{Binding Graphics.MipLodBias}" IsSnapToTickEnabled="True" TickFrequency="0.25" TickPlacement="BottomRight" />
           </DockPanel>
 
           <DockPanel ToolTip="{x:Static g:AppStrings.AcSettings_Video_MaximumFrameLatency_Tooltip}">
@@ -337,8 +360,8 @@
       <mui:ButtonWithComboBox Command="{Binding BenchmarkCommand}" Content="{x:Static g:AppStrings.AcSettings_Video_Benchmark}"
           ButtonToolTip="{x:Static g:AppStrings.AcSettings_Video_Benchmark_Tooltip}" Style="{StaticResource Go.ButtonWithComboBox}">
         <mui:ButtonWithComboBox.MenuItems>
-          <MenuItem Command="{Binding BenchmarkFastCommand}" Header="Time-limited benchmark"
-              ToolTip="Use it to get similar results if you need to compare settings" InputGestureText="Ctrl+Shift+G" />
+          <MenuItem Command="{Binding BenchmarkFastCommand}" Header="{x:Static g:AppStrings.AcSettings_Video_TimeLimitedBenchmark}"
+              ToolTip="{x:Static g:AppStrings.AcSettings_Video_TimeLimitedBenchmark_Tooltip}" InputGestureText="Ctrl+Shift+G" />
         </mui:ButtonWithComboBox.MenuItems>
       </mui:ButtonWithComboBox>
     </StackPanel>

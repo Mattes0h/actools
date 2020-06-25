@@ -9,6 +9,7 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Directories;
@@ -56,6 +57,15 @@ namespace AcManager.Tools.Objects {
             }
 
             return base.LoadJsonOrThrow();
+        }
+
+        public bool IsActive {
+            get => AcSettingsHolder.Python.IsActivated(Id);
+            set => AcSettingsHolder.Python.SetActivated(Id, value);
+        }
+
+        public void OnActiveChanged() {
+            OnPropertyChanged(nameof(IsActive));
         }
 
         protected override void LoadVersionInfo(JObject json) {
@@ -188,13 +198,13 @@ namespace AcManager.Tools.Objects {
             return base.HandleChangedFile(filename);
         }
 
-        string ICupSupportedObject.InstalledVersion => Version;
         public CupContentType CupContentType => CupContentType.App;
-        public bool IsCupUpdateAvailable => CupClient.Instance?.ContainsAnUpdate(CupContentType, Id, Version) ?? false;
-        public CupClient.CupInformation CupUpdateInformation => CupClient.Instance?.GetInformation(CupContentType, Id);
+
+        public bool IsCupUpdateAvailable => CupClient.Instance?.ContainsAnUpdate(CupContentType, Id.ToLowerInvariant(), Version) ?? false;
+
+        public CupClient.CupInformation CupUpdateInformation => CupClient.Instance?.GetInformation(CupContentType, Id.ToLowerInvariant());
 
         protected override void OnVersionChanged() {
-            OnPropertyChanged(nameof(ICupSupportedObject.InstalledVersion));
             OnPropertyChanged(nameof(IsCupUpdateAvailable));
             OnPropertyChanged(nameof(CupUpdateInformation));
         }

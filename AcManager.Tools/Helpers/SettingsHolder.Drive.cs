@@ -64,11 +64,12 @@ namespace AcManager.Tools.Helpers {
 
             public static readonly StarterType OfficialStarterType = new StarterType(
                     "Official",
-                    string.Format(ToolsStrings.Common_Recommended, ToolsStrings.Settings_Starter_Official),
+                    ToolsStrings.Settings_Starter_Official,
                     ToolsStrings.Settings_Starter_Official_Description);
 
             public static readonly StarterType AppIdStarterType = new StarterType(
                     "AppID",
+                    // string.Format(ToolsStrings.Common_Recommended, "AppID"),
                     "AppID",
                     "Adds “steam_appid.txt” with AC’s Steam ID to AC root folder thus allowing to run “acs.exe” directly. Thanks to [url=\"http://www.assettocorsa.net/forum/index.php?members/zkirtaem.135368/\"]@Zkirtaem[/url] for the idea.");
 
@@ -79,7 +80,7 @@ namespace AcManager.Tools.Helpers {
 
             public static readonly StarterType SteamStarterType = new StarterType(
                     "Steam",
-                    "Replacement",
+                    "Steam",
                     "For this starter, you have to replace the original “AssettoCorsa.exe” with “Content Manager.exe”. This way, CM will get an access to Steam as if it is the original launcher.",
                     nonSelectable: true, requiresSteam: false /* because it is Steam! sort of */);
 
@@ -164,8 +165,8 @@ namespace AcManager.Tools.Helpers {
 
             public StarterType[] StarterTypes => _starterTypes
                     ?? (_starterTypes = new[] {
-                        OfficialStarterType,
                         AppIdStarterType,
+                        OfficialStarterType,
                         SidePassageStarterType,
                         SteamStarterType,
                         TrickyStarterType,
@@ -1005,6 +1006,20 @@ namespace AcManager.Tools.Helpers {
                 }) ?? RhmSettingsLocation;
             }));
 
+            public BeepingNoiseType[] BeepingNoises => EnumExtension.GetValues<BeepingNoiseType>();
+
+            private BeepingNoiseType? _crashBeepingNoise;
+
+            public BeepingNoiseType CrashBeepingNoise {
+                get => _crashBeepingNoise ?? (_crashBeepingNoise = ValuesStorage.Get("Settings.DriveSettings.CrashBeepingNoise", BeepingNoiseType.System)).Value;
+                set {
+                    if (Equals(value, _crashBeepingNoise)) return;
+                    _crashBeepingNoise = value;
+                    ValuesStorage.Set("Settings.DriveSettings.CrashBeepingNoise", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _checkAndFixControlsOrder;
 
             public bool CheckAndFixControlsOrder {
@@ -1087,7 +1102,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool MonitorFramesPerSecond {
                 get => _monitorFramesPerSecond
-                        ?? (_monitorFramesPerSecond = ValuesStorage.Get("Settings.DriveSettings.MonitorFramesPerSecond", false)).Value;
+                        ?? (_monitorFramesPerSecond = ValuesStorage.Get("Settings.DriveSettings.MonitorFramesPerSecond", true)).Value;
                 set {
                     if (Equals(value, _monitorFramesPerSecond)) return;
                     _monitorFramesPerSecond = value;

@@ -74,7 +74,8 @@ namespace AcTools.Utils.Helpers {
             } catch (Exception) {
                 try {
                     return JObject.Parse(data.Replace("﻿", ""));
-                } catch (Exception) {
+                } catch (Exception e) {
+                    AcToolsLogging.Write(e);
                     AcToolsLogging.Write(data);
                     throw;
                 }
@@ -315,8 +316,8 @@ namespace AcTools.Utils.Helpers {
             }
         }
 
-        public static void SetNonDefault(this JObject obj, [LocalizationRequired(false)] string key, int? value) {
-            if (!value.HasValue || value == 0) {
+        public static void SetNonDefault(this JObject obj, [LocalizationRequired(false)] string key, int? value, int defaultValue = 0) {
+            if (!value.HasValue || value == defaultValue) {
                 obj.Remove(key);
             } else {
                 obj[key] = value.Value;

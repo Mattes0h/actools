@@ -117,24 +117,21 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Theme_Nordschleife" xml:space="preserve">
-    <value>Nordschleife</value>
-  </data>
   <data name="Assists_IdealLineLabel" xml:space="preserve">
-    <value>Trazada Ideal:</value>
-  </data>
+    <value>Trazada ideal:</value>
+  <alternative>Trazada Ideal:</alternative></data>
   <data name="Assists_Header" xml:space="preserve">
     <value>Ayudas:</value>
   <alternative>Asistencia:</alternative></data>
   <data name="Assists_AutoShifterLabel" xml:space="preserve">
-    <value>Cambio Automatico:</value>
-  </data>
+    <value>Cambio automático:</value>
+  <alternative>Cambio Automatico:</alternative></data>
   <data name="Assists_AutoClutchLabel" xml:space="preserve">
-    <value>Embrague Automatico:</value>
-  </data>
+    <value>Embrague automático:</value>
+  <alternative>Embrague Automatico:</alternative></data>
   <data name="Assists_AutoBlipLabel" xml:space="preserve">
-    <value>Punta tacon:</value>
-  </data>
+    <value>Punta tacón:</value>
+  <alternative>Punta tacon:</alternative></data>
   <data name="Assists_StabilityControlLabel" xml:space="preserve">
     <value>Control de Estabilidad:</value>
   </data>
@@ -192,9 +189,6 @@
   <data name="KunosCareer_CompletedLabel" xml:space="preserve">
     <value>Completado:</value>
   </data>
-  <data name="KunosCareer_Error" xml:space="preserve">
-    <value>{0} error</value>
-  </data>
   <data name="Video_CannotPlay" xml:space="preserve">
     <value>No se puede reproducir el video</value>
   </data>
@@ -223,17 +217,17 @@
     <value>Ajustes Rapidos</value>
   </data>
   <data name="QuickSwitches_HideWheel" xml:space="preserve">
-    <value>Ocultar Volante</value>
-  </data>
+    <value>Ocultar volante</value>
+  <alternative>Ocultar Volante</alternative></data>
   <data name="QuickSwitches_HideWheel_Tooltip" xml:space="preserve">
-    <value>Esconder Volante Giro</value>
-  </data>
+    <value>Ocultar volante</value>
+  <alternative>Esconder Volante Giro</alternative></data>
   <data name="QuickSwitches_LockWheel" xml:space="preserve">
-    <value>Bloq. Volante</value>
-  </data>
+    <value>Bloquear volante</value>
+  <alternative>Bloq. Volante</alternative></data>
   <data name="QuickSwitches_LockCamera" xml:space="preserve">
-    <value>Bloq. Camara</value>
-  </data>
+    <value>Bloquear camara</value>
+  <alternative>Bloq. Camara</alternative></data>
   <data name="QuickSwitches_Mirror" xml:space="preserve">
     <value>Espejo</value>
   </data>
@@ -373,13 +367,15 @@
     <value>ID personalizado</value>
   </data>
   <data name="Share_VerifyMessage" xml:space="preserve">
-    <value>Author name: [b]{0}[/b]
+    <value>Nombre de autor: [b]{0}[/b]
+Nombre de entrada: [b]{1}[/b]
+Tipo de entrada: [b]{2}[/b]</value>
+  <alternative>Author name: [b]{0}[/b]
 Entry name: [b]{1}[/b]
-Entry type: [b]{2}[/b]</value>
-  </data>
+Entry type: [b]{2}[/b]</alternative></data>
   <data name="Share_VerifyMessageHeader" xml:space="preserve">
-    <value>Va todo bien?</value>
-  </data>
+    <value>¿Va todo bien?</value>
+  <alternative>Va todo bien?</alternative></data>
   <data name="Share_InProgress" xml:space="preserve">
     <value>Compartiendo</value>
   </data>
@@ -412,9 +408,6 @@ Entry type: [b]{2}[/b]</value>
   </data>
   <data name="Showroom_DisableSweetFx_Tooltip" xml:space="preserve">
     <value>Aparentemente SweetFX no afecta al resultado, pero puede ralentizar el tiempo de carga</value>
-  </data>
-  <data name="Showroom_FovLabel" xml:space="preserve">
-    <value>FOV:</value>
   </data>
   <data name="Showroom_CannotStart" xml:space="preserve">
     <value>No se puede iniciar el showroom</value>
@@ -500,9 +493,6 @@ Entry type: [b]{2}[/b]</value>
   <data name="CustomShowroom_Selected_NameLabel" xml:space="preserve">
     <value>Nombre:</value>
   </data>
-  <data name="CustomShowroom_Selected_MaterialLabel" xml:space="preserve">
-    <value>Material:</value>
-  </data>
   <data name="CustomShowroom_Selected_TexturesLabel" xml:space="preserve">
     <value>Texturas:</value>
   </data>
@@ -512,20 +502,11 @@ Entry type: [b]{2}[/b]</value>
   <data name="CustomShowroom_StatsHeader" xml:space="preserve">
     <value>Estadisticas</value>
   </data>
-  <data name="CustomShowroom_Stats_FpsLabel" xml:space="preserve">
-    <value>FPS:</value>
-  </data>
   <data name="CustomShowroom_Stats_ObjectsLabel" xml:space="preserve">
     <value>Objetos:</value>
   </data>
-  <data name="CustomShowroom_ControlHeader" xml:space="preserve">
-    <value>Control</value>
-  </data>
   <data name="CustomShowroom_Control_Lights" xml:space="preserve">
     <value>Luces</value>
-  </data>
-  <data name="CustomShowroom_Control_Wireframe" xml:space="preserve">
-    <value>Wireframe</value>
   </data>
   <data name="CustomShowroom_SkinHeader" xml:space="preserve">
     <value>Aspecto</value>
@@ -591,25 +572,34 @@ Entry type: [b]{2}[/b]</value>
     <value>Los datos estan encriptados</value>
   </data>
   <data name="CustomShowroom_AmbientShadowsSize_EncryptedDataMessage" xml:space="preserve">
-    <value>Size of the shadow will be saved to “data/ambient_shadows.ini”, but data is encrypted, so it won’t have any affect. Continue?</value>
-  </data>
+    <value>El tamaño de la sombra se guardara en “data/ambient_shadows.ini”, pero la información esta encriptada, por lo que no tendra ningun efecto. Continuar?</value>
+  <alternative>Size of the shadow will be saved to “data/ambient_shadows.ini”, but data is encrypted, so it won’t have any affect. Continue?</alternative></data>
   <data name="Common_DevTools" xml:space="preserve">
     <value>Herramientas de Desarrollador</value>
   </data>
   <data name="Common_Unpack" xml:space="preserve">
     <value>Desempaquetar {0}</value>
   </data>
-  <data name="AcObject_VersionLabel" xml:space="preserve">
-    <value>Version:</value>
-  </data>
-  <data name="AcObject_UrlLabel" xml:space="preserve">
-    <value>URL:</value>
-  </data>
   <data name="Common_FolderExists" xml:space="preserve">
     <value>Carpeta “{0}” ya existe. Quieres sobreescribir los archivos?</value>
   </data>
   <data name="CustomShowroom_ObjectInformation" xml:space="preserve">
-    <value>Object name: [b]{0}[/b]
+    <value>Nombre de objeto: [b]{0}[/b]
+Clase: [b]{1}[/b]
+
+Activo: [b]{2}[/b]
+Renderizable: [b]{3}[/b]
+Visible: [b]{4}[/b]
+
+Transparente: [b]{5}[/b]
+Proyecta sombras: [b]{6}[/b]
+
+Capa: [b]{7}[/b]
+LOD In: [b]{8}[/b]
+LOD In: [b]{9}[/b]
+
+Material: [b]{10}[/b]</value>
+  <alternative>Object name: [b]{0}[/b]
 Class: [b]{1}[/b]
 
 Active: [b]{2}[/b]
@@ -623,16 +613,7 @@ Layer: [b]{7}[/b]
 LOD In: [b]{8}[/b]
 LOD In: [b]{9}[/b]
 
-Material: [b]{10}[/b]</value>
-  </data>
-  <data name="CustomShowroom_MaterialInformation" xml:space="preserve">
-    <value>Material name: [b]{0}[/b]
-Shader: [b]{1}[/b]
-
-Blend mode: [b]{2}[/b]
-Alpha test: [b]{3}[/b]
-Depth mode: [b]{4}[/b]</value>
-  </data>
+Material: [b]{10}[/b]</alternative></data>
   <data name="CustomShowroom_ShaderProperties" xml:space="preserve">
     <value>Propiedades del sombreado:</value>
   </data>
@@ -660,21 +641,18 @@ Depth mode: [b]{4}[/b]</value>
   <data name="Controls_RangeToAxis" xml:space="preserve">
     <value>Hasta</value>
   </data>
-  <data name="Controls_GammaAxis" xml:space="preserve">
-    <value>Gamma</value>
-  </data>
   <data name="Controls_FilterAxis" xml:space="preserve">
     <value>Filtro</value>
   </data>
   <data name="Controls_SpeedSensitivity" xml:space="preserve">
-    <value>Sencibilidad de velocidad</value>
-  </data>
+    <value>Sensibilidad de velocidad</value>
+  <alternative>Sencibilidad de velocidad</alternative></data>
   <data name="Controls_ClearWheelBinding" xml:space="preserve">
-    <value>Clear wheel binding</value>
-  </data>
+    <value>Eliminar asignacion de volante</value>
+  <alternative>Clear wheel binding</alternative></data>
   <data name="Controls_ClearKeyboardBinding" xml:space="preserve">
-    <value>Clear keyboard binding</value>
-  </data>
+    <value>Eliminar asignacion de teclado</value>
+  <alternative>Clear keyboard binding</alternative></data>
   <data name="Controls_SteeringWheelButton" xml:space="preserve">
     <value>Boton del volante</value>
   </data>
@@ -708,17 +686,11 @@ Depth mode: [b]{4}[/b]</value>
   <data name="Common_Cancelled" xml:space="preserve">
     <value>Cancelado</value>
   </data>
-  <data name="Common_Error" xml:space="preserve">
-    <value>Error</value>
-  </data>
   <data name="AssistsPreset_Gamer" xml:space="preserve">
     <value>Jugador</value>
   </data>
   <data name="AssistsPreset_Intermediate" xml:space="preserve">
     <value>Intermedio</value>
-  </data>
-  <data name="AssistsPreset_Pro" xml:space="preserve">
-    <value>Pro</value>
   </data>
   <data name="Common_Loading" xml:space="preserve">
     <value>Cargando...</value>
@@ -774,9 +746,6 @@ Depth mode: [b]{4}[/b]</value>
   <data name="Common_CelsiusPostfix" xml:space="preserve">
     <value> °C</value>
   </data>
-  <data name="Common_CelsiusFormat" xml:space="preserve">
-    <value>{0:F0} °C</value>
-  </data>
   <data name="Common_OpponentsFormat" xml:space="preserve">
     <value>{0} oponentes</value>
   </data>
@@ -797,9 +766,6 @@ Depth mode: [b]{4}[/b]</value>
   </data>
   <data name="Common_OfflineMode" xml:space="preserve">
     <value>Modo sin conexion</value>
-  </data>
-  <data name="Showroom_DialogHeader" xml:space="preserve">
-    <value>Showroom</value>
   </data>
   <data name="Common_SecondsPostfix" xml:space="preserve">
     <value>sec</value>
@@ -826,8 +792,8 @@ Depth mode: [b]{4}[/b]</value>
     <value>La carpeta seran movidos al directorio superior</value>
   </data>
   <data name="FindInformation_Description" xml:space="preserve">
-    <value>Select year or description and press OK; hold Ctrl to extend description instead of replacing it.</value>
-  </data>
+    <value>Selecciona año o descripcion y pulsa OK; manten Ctrl para ampliar informacion en lugar de reemplazarla</value>
+  <alternative>Select year or description and press OK; hold Ctrl to extend description instead of replacing it.</alternative></data>
   <data name="FindInformation_SaveAndClose" xml:space="preserve">
     <value>Guardar y cerrar</value>
   </data>
@@ -882,9 +848,6 @@ Depth mode: [b]{4}[/b]</value>
   <data name="Controls_SkipFfbSteps" xml:space="preserve">
     <value>Saltar pasos del FFB</value>
   <alternative>Saktar pasos del FFB</alternative></data>
-  <data name="Controls_ExperimentalHeader" xml:space="preserve">
-    <value>Experimental:</value>
-  <alternative>EXperimental:</alternative></data>
   <data name="Controls_UnlockExperimental" xml:space="preserve">
     <value>Desbloquear opciones experimentales (precaucion!)</value>
   </data>
@@ -898,11 +861,8 @@ Depth mode: [b]{4}[/b]</value>
     <value>Nivel minimo del amortiguador</value>
   </data>
   <data name="Controls_DamperGain_Tooltip" xml:space="preserve">
-    <value>Establece 0 par el Logitech G920, manten 1 para todos los demas</value>
-  </data>
-  <data name="Controls_SkipFfbSteps_Tooltip" xml:space="preserve">
-    <value>Physics engine steps to skip in order to accomodate wheels with lower FF input buffer; if you’re expeciencing problems with CPU, increase it to 2-4, it might help</value>
-  </data>
+    <value>Establece 0 para el Logitech G920, mantén 1 para todos los demás</value>
+  <alternative>Establece 0 par el Logitech G920, manten 1 para todos los demas</alternative></data>
   <data name="Common_ExposureLabel" xml:space="preserve">
     <value>Exposicion:</value>
   </data>
@@ -932,5 +892,35 @@ Depth mode: [b]{4}[/b]</value>
   </data>
   <data name="Common_RoundPostfix" xml:space="preserve">
     <value>Vuelta</value>
+  </data>
+  <data name="TableHeader_Name" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="TableHeader_Car" xml:space="preserve">
+    <value>Vehículo</value>
+  </data>
+  <data name="TableHeader_Track" xml:space="preserve">
+    <value>Pista</value>
+  </data>
+  <data name="TableHeader_BestLap" xml:space="preserve">
+    <value>Mejor vuelta</value>
+  </data>
+  <data name="TableHeader_Date" xml:space="preserve">
+    <value>Fecha</value>
+  </data>
+  <data name="TableHeader_Nationality" xml:space="preserve">
+    <value>Nacionalidad</value>
+  </data>
+  <data name="TableHeader_Ai" xml:space="preserve">
+    <value>IA</value>
+  </data>
+  <data name="TableHeader_Locked" xml:space="preserve">
+    <value>Bloqueado</value>
+  </data>
+  <data name="Controls_SkipFfbSteps_Tooltip" xml:space="preserve">
+    <value>Physics engine steps to skip in order to accomodate wheels with lower FF input buffer; if you’re expeciencing problems with CPU, increase it to 2-4, it might help</value>
+  </data>
+  <data name="Common_ScrollToSelected" xml:space="preserve">
+    <value>Desplácese hasta seleccionado (Ctrl+Mayús+V)</value>
   </data>
 </root>

@@ -14,7 +14,8 @@
       </ResourceDictionary.MergedDictionaries>
 
       <DataTemplate x:Key="Detailed.CarDataTemplate" DataType="{x:Type t:ServerPresetDriverEntry}">
-        <mui:SpacingStackPanel Orientation="Horizontal" Background="Transparent" Spacing="4" PreviewMouseLeftButtonDown="OnCarClick">
+        <mui:SpacingStackPanel Orientation="Horizontal" Background="Transparent" Spacing="4" PreviewMouseLeftButtonDown="OnCarClick"
+            mui:Draggable.Data="{Binding CarObject}" c:ToolTips.Car="{Binding CarObject}" c:ContextMenus.Car="{Binding CarObject}">
           <mui:BetterImage Filename="{Binding CarObject.BrandBadge}" Width="16" Height="16" ClearOnChange="True" />
           <TextBlock Text="{Binding CarObject.DisplayName}" VerticalAlignment="Center" />
         </mui:SpacingStackPanel>
@@ -60,7 +61,7 @@
 
       <DataTemplate x:Key="Detailed.BallastDataTemplate" DataType="{x:Type t:ServerPresetDriverEntry}">
         <DockPanel>
-          <TextBlock DockPanel.Dock="Right" Text=" kg" />
+          <TextBlock DockPanel.Dock="Right" Text="{x:Static t:ToolsStrings.Common_KilogramsPostfix}" />
           <mui:BetterTextBox x:Name="TextBox" Text="{Binding Ballast, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="None" Minimum="0" Maximum="100"
               Mode="IntegerOrLabel" ModeLabel="None" Style="{StaticResource Borderless.White}" TextAlignment="Right" />
         </DockPanel>
@@ -75,6 +76,11 @@
       </DataTemplate>
 
       <Style x:Key="RowStyle" TargetType="DataGridRow" BasedOn="{StaticResource DataGridRow.DetailsAlways.RibbonLeft}">
+        <Setter Property="Padding" Value="0 4" />
+      </Style>
+
+      <Style x:Key="RowStyleWithSpacing" TargetType="DataGridRow" BasedOn="{StaticResource DataGridRow.DetailsAlways.RibbonLeft}">
+        <Setter Property="Margin" Value="0 8" />
         <Setter Property="Padding" Value="0 4" />
       </Style>
     </ResourceDictionary>
@@ -181,7 +187,7 @@
       </Grid>
     </c:ModernPopup>
 
-    <DataGrid ItemsSource="{Binding SelectedObject.DriverEntries}" Style="{StaticResource DataGrid.Lite}" RowDetailsVisibilityMode="Visible"
+    <DataGrid x:Name="EntriesGrid" ItemsSource="{Binding SelectedObject.DriverEntries}" Style="{StaticResource DataGrid.Lite}" RowDetailsVisibilityMode="Visible"
         mui:Draggable.Enabled="True" MinRowHeight="20" CanUserSortColumns="False" Drop="OnDrop" RowStyle="{StaticResource RowStyle}"
         CellStyle="{StaticResource DataGridCell.Transparent}"><!-- TODO: SelectionMode="Extended"-->
       <!--<mui:Draggable.DestinationConverter>
@@ -250,9 +256,9 @@
             CellTemplate="{StaticResource Detailed.NameDataTemplate}" />
         <DataGridTemplateColumn x:Name="TeamColumn" Width="100*" Header="Team" SortMemberPath="Nationality"
             CellTemplate="{StaticResource Detailed.NationalityDataTemplate}" />
-        <DataGridTemplateColumn x:Name="BallastColumn" Width="100" Header="Ballast" SortMemberPath="Ballast"
+        <DataGridTemplateColumn x:Name="BallastColumn" Width="100" Header="{x:Static t:ToolsStrings.Common_Ballast}" SortMemberPath="Ballast"
             CellTemplate="{StaticResource Detailed.BallastDataTemplate}" />
-        <DataGridTemplateColumn x:Name="RestrictorColumn" Width="100" Header="Restrictor" SortMemberPath="Restrictor"
+        <DataGridTemplateColumn x:Name="RestrictorColumn" Width="100" Header="{x:Static t:ToolsStrings.Common_Restrictor}" SortMemberPath="Restrictor"
             CellTemplate="{StaticResource Detailed.RestrictorDataTemplate}" />
       </DataGrid.Columns>
     </DataGrid>

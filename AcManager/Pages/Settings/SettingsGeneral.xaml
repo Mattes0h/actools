@@ -15,13 +15,14 @@
         <DockPanel>
           <Label Content="{x:Static g:AppStrings.Settings_General_AcFolderLabel}" />
           <Button Command="{Binding ChangeAcRootCommand}" Content="{x:Static c:ControlsStrings.Common_Change}" />
-          <Button Command="{Binding OpenAcRootCommand}" Content="Open" />
+          <Button Command="{Binding OpenAcRootCommand}" Content="{x:Static g:AppStrings.Settings_General_Open}" />
           <mui:PathTrimmingTextBlock Text="{Binding AcRootDirectoryValue, Mode=OneTime}" />
         </DockPanel>
 
-        <DockPanel ToolTip="Used for online">
-          <Label Content="Steam profile:" />
-          <Button Command="{Binding ChangeSteamIdCommand}" Content="{x:Static c:ControlsStrings.Common_Change}" />
+        <DockPanel ToolTip="{x:Static g:AppStrings.Settings_General_SteamProfile_Tooltip}">
+          <Label Content="{x:Static g:AppStrings.Settings_General_SteamProfile}" />
+          <Button Command="{Binding ChangeSteamIdCommand}" Content="{x:Static c:ControlsStrings.Common_Change}"
+              Visibility="{Binding ChangeSteamIdCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
           <mui:BetterTextBox Style="{StaticResource Borderless}" IsReadOnly="True">
             <TextBox.Text>
               <MultiBinding StringFormat="{}{0} ({1})" Mode="OneWay">
@@ -32,21 +33,29 @@
           </mui:BetterTextBox>
         </DockPanel>
 
+        <CheckBox IsChecked="{Binding Common.LaunchSteamAtStart}" mui:NewMarkService.New="True"
+            Visibility="{Binding ChangeSteamIdCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" >
+          <Label Content="{x:Static g:AppStrings.Settings_General_LaunchSteamAutomatically}" />
+        </CheckBox>
+
         <CheckBox IsChecked="{Binding Common.DeveloperMode}"
             Visibility="{Binding DeveloperMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}">
           <Label Content="{x:Static g:AppStrings.Common_DevMode}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Enabled, Source={x:Static mui:FancyHintsService.Instance}}" mui:NewMarkService.New="True">
-          <Label Content="Show occasional hints" />
-        </CheckBox>
-
         <DockPanel>
-          <Label Content="“Don’t show again” in dialogs:" />
-          <Button Command="{Binding ResetDoNotAskAgainsCommand}" Content="Reset “Do not show again” checkboxes" />
+          <Button DockPanel.Dock="Right" Command="{Binding ResetOccasionalHintsCommand}" Content="{x:Static g:AppStrings.Settings_General_ResetOccasionalHits}" />
+          <CheckBox IsChecked="{Binding Enabled, Source={x:Static mui:FancyHintsService.Instance}}" VerticalAlignment="Center">
+            <Label Content="{x:Static g:AppStrings.Settings_General_ShowOccasionalHints}" />
+          </CheckBox>
         </DockPanel>
 
-        <!--app key and shortcut-->
+        <DockPanel>
+          <Label Content="{x:Static g:AppStrings.Settings_General_DontShowAgainInDialogs}" />
+          <Button Command="{Binding ResetDoNotAskAgainsCommand}" Content="{x:Static g:AppStrings.Settings_General_ResetDoNotShowAgainCheckboxes}" />
+        </DockPanel>
+
+        <!-- App key and shortcut -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_General_AppHeader}" />
 
         <DockPanel>
@@ -60,7 +69,7 @@
         </CheckBox>
 
         <DockPanel>
-          <Label Content="Windows Registry:" />
+          <Label Content="{x:Static g:AppStrings.Settings_General_WindowsRegistry}" />
           <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Common.RegistryModes}" SelectedItem="{Binding Common.RegistryMode}"
               DisplayMemberPath="DisplayName" />
         </DockPanel>
@@ -68,7 +77,7 @@
       </StackPanel>
       <StackPanel set:Search.Category="{x:Static g:AppStrings.Settings_General}" Style="{StaticResource SettingsPanel}">
 
-        <!--versions-->
+        <!-- Versions -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static g:AppStrings.Settings_General_AutoUpdatesHeader}" />
 
         <DockPanel>
@@ -77,7 +86,7 @@
               DisplayMemberPath="DisplayName" />
         </DockPanel>
 
-        <!--app version-->
+        <!-- App version -->
         <DockPanel>
           <Label Content="{x:Static g:AppStrings.Settings_General_AppVersionLabel}" />
           <Button Command="{Binding AppUpdater.CheckAndUpdateIfNeededCommand}" IsEnabled="{Binding AppUpdater.IsSupported}"
@@ -89,11 +98,11 @@
         <TextBlock Text="{Binding AppUpdater.LatestError}" Style="{StaticResource SettingsPanel.Warning}"
             Visibility="{Binding AppUpdater.LatestError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
 
-        <CheckBox IsChecked="{Binding Common.ShowDetailedChangelog}" ToolTip="Show notification with recent changes after update">
-          <Label Content="Recent changes notification" />
+        <CheckBox IsChecked="{Binding Common.ShowDetailedChangelog}" ToolTip="{x:Static g:AppStrings.Settings_General_ShowRecentChangesNotification_Tooltip}">
+          <Label Content="{x:Static g:AppStrings.Settings_General_RecentChangesNotification}" />
         </CheckBox>
 
-        <!--content version-->
+        <!-- Content version -->
         <DockPanel>
           <Label Content="{x:Static g:AppStrings.Settings_General_ContentVersionLabel}" />
           <Button Command="{Binding DataUpdater.CheckAndUpdateIfNeededCommand}" Content="{x:Static g:AppStrings.Settings_General_CheckForUpdates}" />
@@ -102,7 +111,7 @@
         <TextBlock Text="{Binding DataUpdater.LatestError}" Margin="136 0 0 8" FontWeight="Bold" Foreground="{DynamicResource Error}"
             Visibility="{Binding DataUpdater.LatestError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
 
-        <!--values storage-->
+        <!-- Values storage -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_General_ValuesHeader}" />
 
         <DockPanel>
@@ -116,11 +125,16 @@
         <DockPanel>
           <Label Content="{x:Static g:AppStrings.Settings_General_ValuesSavingTimeLabel}" />
           <mui:PlaceholderTextBlock Placeholder="?"
-              Text="{Binding PreviosSaveTime.Value.TotalMilliseconds, Source={x:Static mui:ValuesStorage.Storage},
+              Text="{Binding PreviousSaveTime.Value.TotalMilliseconds, Source={x:Static mui:ValuesStorage.Storage},
                   StringFormat={x:Static g:AppStrings.Common_MillisecondsFormat}, Mode=OneWay}" />
         </DockPanel>
 
-        <!--beta access-->
+        <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="8">
+          <Button Command="{Binding ShowContentManagerDataCommand}" Content="{x:Static g:AppStrings.Settings_General_OpenAppsDataFolder}" />
+          <Button Command="{Binding ShowContentManagerLogsCommand}" Content="{x:Static g:AppStrings.Settings_General_OpenLogsFolder}" />
+        </mui:SpacingUniformGrid>
+
+        <!-- Beta access -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_General_TestingAccessHeader}" />
         <CheckBox IsChecked="{Binding Common.UpdateToNontestedVersions}" mui:LimitedService.Limited="True" HorizontalAlignment="Left" ClipToBounds="False"
             Padding="0 0 24 0">

@@ -182,8 +182,8 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
 
                         // parse uri value for optional parameter and/or target, eg [url=cmd://foo|parameter|target]
                         if (NavigationHelper.TryParseUriWithParameters(context.NavigateUri, out var parsedUri, out var parsedParameter,
-                                out var parsedTargetName)) {
-                            var link = new Hyperlink { ToolTip = context.NavigateUri };
+                                out var parsedTargetName, out var parsedToolTip)) {
+                            var link = new Hyperlink { ToolTip = parsedToolTip ?? context.NavigateUri };
 
                             if (context.IconGeometry != null) {
                                 link.TextDecorations.Clear();
@@ -263,7 +263,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                         } else {
                             toolTip = true;
 
-                            if (NavigationHelper.TryParseUriWithParameters(context.ImageUri, out var temporary, out var parameter, out _)) {
+                            if (NavigationHelper.TryParseUriWithParameters(context.ImageUri, out var temporary, out var parameter, out _, out _)) {
                                 try {
                                     url = new Uri(temporary.OriginalString);
                                     if (double.TryParse(parameter, out maxSize)) {

@@ -132,7 +132,6 @@ namespace AcManager.Pages.Drive {
                 new InputBinding(Model.RandomTimeCommand, new KeyGesture(Key.D3, ModifierKeys.Control | ModifierKeys.Alt)),
                 new InputBinding(Model.RandomWeatherCommand, new KeyGesture(Key.D4, ModifierKeys.Control | ModifierKeys.Alt)),
                 new InputBinding(Model.RandomTemperatureCommand, new KeyGesture(Key.D5, ModifierKeys.Control | ModifierKeys.Alt)),
-
 #if DEBUG
                 new InputBinding(new DelegateCommand(() => {
                     var selectedCar = Model.SelectedCar;
@@ -235,7 +234,7 @@ namespace AcManager.Pages.Drive {
             // Obsolete
             [JsonProperty(@"TrackPropertiesPreset")]
 #pragma warning disable 649
-                    public string ObsTrackPropertiesPreset;
+            public string ObsTrackPropertiesPreset;
 #pragma warning restore 649
 
             [JsonProperty(@"rcTimezones")]
@@ -439,7 +438,7 @@ namespace AcManager.Pages.Drive {
                     _presence?.Car(value);
 
                     if (value != null && value.Author != AcCommonObject.AuthorKunos) {
-                        SelectedCarRepairSuggestions = CarRepair.GetRepairSuggestions(value, false, true).ToList();
+                        SelectedCarRepairSuggestions = CarRepair.GetRepairSuggestions(value, true, true, true).ToList();
                         if (value.AcdData != null) {
                             WeakEventManager<DataWrapper, DataChangedEventArgs>.AddHandler(value.AcdData, nameof(DataWrapper.DataChanged),
                                     OnCarDataChanged);
@@ -453,7 +452,7 @@ namespace AcManager.Pages.Drive {
             private void OnCarDataChanged(object sender, DataChangedEventArgs dataChangedEventArgs) {
                 var car = SelectedCar;
                 SelectedCarRepairSuggestions = car != null && car.Author != AcCommonObject.AuthorKunos ?
-                        CarRepair.GetRepairSuggestions(car, false, true).ToList() : null;
+                        CarRepair.GetRepairSuggestions(car, true, true, true).ToList() : null;
             }
 
             private List<ContentRepairSuggestion> _selectedCarRepairSuggestions;
@@ -561,6 +560,8 @@ namespace AcManager.Pages.Drive {
                 return SettingsHolder.Drive.LoadAssistsWithQuickDrivePreset ^ (Keyboard.Modifiers == ModifierKeys.Control);
             }
 
+            public bool CustomDateSupported { get; }
+
             internal ViewModel(string serializedPreset, bool uiMode, CarObject carObject = null, string carSkinId = null, string carSetupId = null,
                     TrackObjectBase track = null, TrackSkinObject trackSkin = null, string weatherId = null, int? time = null, bool savePreset = false,
                     Uri mode = null, string serializedRaceGrid = null, DiscordRichPresence presence = null, bool forceAssistsLoading = false) {
@@ -569,6 +570,8 @@ namespace AcManager.Pages.Drive {
                     CarsManager.Instance.WrappersList.WrappedValueChanged += OnListWrappedValueChanged;
                     CarsManager.Instance.EnsureLoadedAsync().Forget();
                 }
+
+                CustomDateSupported = PatchHelper.IsFeatureSupported(PatchHelper.FeatureSpecificDate);
 
                 _uiMode = uiMode;
                 _carSkinId = carSkinId;
@@ -726,7 +729,7 @@ namespace AcManager.Pages.Drive {
                     SelectedTrack = TracksManager.Instance.GetDefault();
                     SelectedWeather = WeatherManager.Instance.GetDefault();
 
-                    UserPresetsControl.LoadBuiltInPreset(TrackState.PresetableKey, TrackStateViewModelBase.PresetableCategory, "Green");
+                    UserPresetsControl.LoadBuiltInPreset(TrackState.PresetableKey, TrackStateViewModelBase.PresetableCategory, @"Green");
 
                     if (forceAssistsLoading || IsToLoadAssists()) {
                         UserPresetsControl.LoadBuiltInPreset(AssistsViewModel.PresetableKey, AssistsViewModel.PresetableCategory,
@@ -781,7 +784,7 @@ namespace AcManager.Pages.Drive {
                 }
 
                 if (serializedRaceGrid != null) {
-                    (SelectedModeViewModel as IRaceGridModeViewModel).SetRaceGridData(serializedRaceGrid);
+                    (SelectedModeViewModel as IRaceGridModeViewModel)?.SetRaceGridData(serializedRaceGrid);
                 }
 
                 UpdateConditions();
@@ -794,12 +797,12 @@ namespace AcManager.Pages.Drive {
 
                 var stored = Stored.Get("windDirectionInDegrees");
                 if (stored.Value != null) {
-                    FancyHints.DegressWind.MaskAsUnnecessary();
+                    FancyHints.DegreesWind.MaskAsUnnecessary();
                 } else {
-                    FancyHints.DegressWind.Trigger(TimeSpan.FromSeconds(1.5d));
+                    FancyHints.DegreesWind.Trigger(TimeSpan.FromSeconds(1.5d));
                     stored.SubscribeWeak((o, e) => {
                         if (e.PropertyName == nameof(StoredValue.Value)) {
-                            FancyHints.DegressWind.MaskAsUnnecessary();
+                            FancyHints.DegreesWind.MaskAsUnnecessary();
                         }
                     });
                 }
@@ -894,7 +897,7 @@ namespace AcManager.Pages.Drive {
 
                 dlg.Buttons = new[] {
                     dlg.YesButton,
-                    dlg.CreateCloseDialogButton("Yes, and fix it", false, false, MessageBoxResult.OK),
+                    dlg.CreateCloseDialogButton(AppStrings.Drive_Quick_YesAndFixIt, false, false, MessageBoxResult.OK),
                     dlg.NoButton
                 };
 
@@ -1124,11 +1127,11 @@ namespace AcManager.Pages.Drive {
             var model = new ViewModel(serializedPreset, false, car, carSkinId, carSetupId, track, trackSkin, weatherId, time,
                     mode: mode, serializedRaceGrid: serializedRaceGrid, forceAssistsLoading: forceAssistsLoading);
             if (!model.GoCommand.CanExecute(null)) {
-                Logging.Warning("Can’t start the race");
+                Logging.Warning(AppStrings.Drive_Quick_CantStartTheRace);
                 return false;
             }
 
-            Logging.Write("Starting the race…");
+            Logging.Write(AppStrings.Drive_Quick_StartingTheRace);
             await model.Go();
             return true;
         }
@@ -1164,10 +1167,10 @@ namespace AcManager.Pages.Drive {
             if (selectedCar == null) return;
 
             var menu = new ContextMenu()
-                    .AddItem("Change car", Model.ChangeCarCommand)
-                    .AddItem("Change car to random", Model.RandomCarCommand, @"Ctrl+Alt+1")
-                    .AddItem("Change skin to random", Model.RandomCarSkinCommand, @"Ctrl+Alt+R")
-                    .AddItem("Randomize everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"))
+                    .AddItem(AppStrings.QuickDrive_ChangeCar_Tooltip, Model.ChangeCarCommand)
+                    .AddItem(AppStrings.Drive_Quick_ChangeCarToRandom, Model.RandomCarCommand, @"Ctrl+Alt+1")
+                    .AddItem(AppStrings.Drive_Quick_ChangeSkinToRandom, Model.RandomCarSkinCommand, @"Ctrl+Alt+R")
+                    .AddItem(AppStrings.Drive_Quick_RandomizeEverything, Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"))
                     .AddSeparator();
             ContextMenus.ContextMenusProvider.SetCarObjectMenu(menu, selectedCar, null);
             e.Menu = menu;
@@ -1176,9 +1179,9 @@ namespace AcManager.Pages.Drive {
         private void OnTrackContextMenu(object sender, ContextMenuButtonEventArgs e) {
             if (Model.SelectedTrack == null) return;
             var menu = new ContextMenu()
-                    .AddItem("Change track", Model.ChangeTrackCommand)
-                    .AddItem("Change track to random", Model.RandomTrackCommand, @"Ctrl+Alt+2")
-                    .AddItem("Randomize everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"))
+                    .AddItem(AppStrings.QuickDrive_ChangeTrack_Tooltip, Model.ChangeTrackCommand)
+                    .AddItem(AppStrings.Drive_Quick_ChangeTrackToRandom, Model.RandomTrackCommand, @"Ctrl+Alt+2")
+                    .AddItem(AppStrings.Drive_Quick_RandomizeEverything, Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"))
                     .AddSeparator();
             ContextMenus.ContextMenusProvider.SetTrackObjectMenu(menu, Model.SelectedTrack);
             e.Menu = menu;
@@ -1198,14 +1201,14 @@ namespace AcManager.Pages.Drive {
             if (Model.RealConditions) {
                 e.Menu = (TryFindResource(@"RealConditionsContextMenu") as ContextMenu)?
                         .AddSeparator()
-                        .AddItem("Set random time", Model.RandomTimeCommand, @"Ctrl+Alt+3")
-                        .AddItem("Randomize everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"));
+                        .AddItem(AppStrings.Drive_Quick_SetRandomTime, Model.RandomTimeCommand, @"Ctrl+Alt+3")
+                        .AddItem(AppStrings.Drive_Quick_RandomizeEverything, Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"));
             } else {
                 e.Menu = new ContextMenu()
-                        .AddItem("Set random time", Model.RandomTimeCommand, @"Ctrl+Alt+3")
-                        .AddItem("Set random weather", Model.RandomWeatherCommand, @"Ctrl+Alt+4")
-                        .AddItem("Set random temperature", Model.RandomTemperatureCommand, @"Ctrl+Alt+5")
-                        .AddItem("Randomize everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"));
+                        .AddItem(AppStrings.Drive_Quick_SetRandomTime, Model.RandomTimeCommand, @"Ctrl+Alt+3")
+                        .AddItem(AppStrings.Drive_Quick_SetRandomWeather, Model.RandomWeatherCommand, @"Ctrl+Alt+4")
+                        .AddItem(AppStrings.Drive_Quick_SetRandomTemperature, Model.RandomTemperatureCommand, @"Ctrl+Alt+5")
+                        .AddItem(AppStrings.Drive_Quick_RandomizeEverything, Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"));
             }
         }
 

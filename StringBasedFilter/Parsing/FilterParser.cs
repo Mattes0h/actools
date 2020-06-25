@@ -74,6 +74,9 @@ namespace StringBasedFilter.Parsing {
     public delegate ITestEntry BooleanTestFactory(bool value);
 
     [CanBeNull]
+    public delegate ITestEntry CustomTestEntryFactory(string value);
+
+    [CanBeNull]
     public delegate ITestEntry ExtraTestEntryFactory([CanBeNull] string key);
 
     [NotNull]
@@ -121,10 +124,13 @@ namespace StringBasedFilter.Parsing {
         /// </summary>
         [NotNull]
         public ExtraTestEntryFactory ExtraTestEntryFactory { get; set; } = key => null;*/
+
+        [CanBeNull]
+        public CustomTestEntryFactory CustomTestEntryFactory { get; set; }
     }
 
     internal static class DefaultValueSplitFunc {
-        private static readonly Regex ParsingRegex = new Regex(@"^([a-zA-Z]+)(\.[a-zA-Z]+)?\s*(>=|<=|=>|=<|[:<>≥≤=+\-−])\s*", RegexOptions.Compiled);
+        private static readonly Regex ParsingRegex = new Regex(@"^([a-zA-Z]+)(\.[a-zA-Z]+)?\s*((?:>=|<=|=>|=<|[:<>≥≤=])\s*|[+\-−]\s*$)", RegexOptions.Compiled);
         public static readonly char[] Separators = { ':', '<', '>', '≥', '≤', '=', '+', '-', '−' };
 
         public static FilterPropertyValue Default(string s) {
@@ -132,7 +138,7 @@ namespace StringBasedFilter.Parsing {
             if (!match.Success) return null;
 
             var key = match.Groups[1].Value.ToLower();
-            var operation = FilterComparingOperations.Parse(match.Groups[3].Value);
+            var operation = FilterComparingOperations.Parse(match.Groups[3].Value.TrimEnd());
             var value = s.Substring(match.Length).TrimStart();
 
             if (match.Groups[2].Success) {

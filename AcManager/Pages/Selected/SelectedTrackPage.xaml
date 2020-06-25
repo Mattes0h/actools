@@ -46,10 +46,10 @@
       <ToolBar Band="1" BandIndex="1">
         <Button Content="{x:Static g:AppStrings.Toolbar_Disable}" Command="{Binding SelectedObject.ToggleCommand}"
             ToolTip="{x:Static g:AppStrings.Toolbar_Disable_Tooltip}"
-            Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}" PreviewMouseLeftButtonUp="OnToggleClick" />
         <Button Content="{x:Static g:AppStrings.Toolbar_Enable}" Command="{Binding SelectedObject.ToggleCommand}"
             ToolTip="{x:Static g:AppStrings.Toolbar_Enable_Tooltip}"
-            Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+            Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" PreviewMouseLeftButtonUp="OnToggleClick" />
         <Button Content="{x:Static g:AppStrings.Toolbar_Save}" Command="{Binding SelectedObject.SaveCommand}"
             ToolTip="{x:Static g:AppStrings.Toolbar_Save_JsonTooltip}" />
         <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"
@@ -75,6 +75,7 @@
           <MenuItem Header="Update map from surfaces" ToolTip="Re-create map.png using surfaces instead" Command="{Binding UpdateMapCommand}"
               CommandParameter="False" />
         </mui:ButtonWithComboBox>
+        <!--<Button Content="Bake shaders" Command="{Binding BakeShadersCommand}" />-->
       </ToolBar>
     </c:AcObjectBase.ToolBars>
 
@@ -135,7 +136,7 @@
 
         <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="20">
           <mui:SpacingStackPanel Spacing="20">
-            <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0">
+            <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0" LabelWidth="100">
               <mui:BetterComboBox c:PropertiesGrid.Label="{x:Static c:ControlsStrings.AcObject_ContryLabel}"
                   Text="{Binding SelectedTrackConfiguration.Country, UpdateSourceTrigger=LostFocus}"
                   ItemsSource="{x:Static t:SuggestionLists.CountriesListView}" Style="{StaticResource BetterComboBox.Borderless}"
@@ -264,6 +265,13 @@
                 <mui:BetterTextBox Text="{Binding SelectedTrackConfiguration.SpecsPitboxes}" Style="{StaticResource Borderless}" Mode="Integer"
                     Placeholder="{x:Static g:AppStrings.TrackSpecs_Pitboxes_FormatTooltip}" />
               </Border>
+
+              <!-- Layout priority -->
+              <Border c:PropertiesGrid.Label="Layout priority:"
+                  Visibility="{Binding SelectedObject.MultiLayoutMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <mui:BetterTextBox Text="{Binding SelectedTrackConfiguration.LayoutPriority}" Style="{StaticResource Borderless}" Mode="Integer"
+                    Placeholder="Affects order in which layouts are arranged (positive for first, negative for last)" />
+              </Border>
             </c:PropertiesGrid>
 
             <!-- Description -->
@@ -273,11 +281,25 @@
 
           <StackPanel>
             <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0">
+              <c:NotesBlock c:PropertiesGrid.Label="Notes:" AcObject="{Binding SelectedObject}">
+                <FrameworkElement.ContextMenu>
+                  <ContextMenu>
+                    <MenuItem Header="Filter by having notes" Command="{Binding Path=FilterCommand}" CommandParameter="notes" />
+                    <Separator />
+                    <MenuItem Header="Clear notes" Command="{Binding Path=ClearNotesCommand}" />
+                  </ContextMenu>
+                </FrameworkElement.ContextMenu>
+              </c:NotesBlock>
+
               <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Total driven:" Placeholder="…"
                   Text="{Binding SelectedTrackConfiguration.TotalDrivenDistance, Converter={StaticResource MultiplyConverter}, ConverterParameter=1e-3, StringFormat='{}{0:F1} km'}">
                 <FrameworkElement.ContextMenu>
                   <ContextMenu>
                     <MenuItem Header="Filter by similar driven distance" Command="{Binding Path=FilterCommand}" CommandParameter="driven" />
+                    <Separator />
+                    <MenuItem Header="Clear stats from this track" Command="{Binding Path=ClearStatsCommand}" />
+                    <MenuItem Header="Clear stats from this track (all layouts)" Command="{Binding Path=ClearStatsAllCommand}"
+                        Visibility="{Binding SelectedObject.MultiLayoutMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
                   </ContextMenu>
                 </FrameworkElement.ContextMenu>
               </mui:PlaceholderTextBlock>

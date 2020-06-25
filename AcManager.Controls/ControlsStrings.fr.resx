@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Theme_Nordschleife" xml:space="preserve">
-    <value>Nordschleife</value>
-  </data>
   <data name="Common_Clear" xml:space="preserve">
     <value>Clair</value>
   </data>
@@ -181,8 +178,8 @@
     <value>Mise à jour des ombres...</value>
   </data>
   <data name="CustomShowroom_AmbientShadows_Reloading" xml:space="preserve">
-    <value>Rechargement les textures...</value>
-  </data>
+    <value>Recharger les textures...</value>
+  <alternative>Rechargement les textures...</alternative></data>
   <data name="CustomShowroom_AmbientShadowsSize_EncryptedData" xml:space="preserve">
     <value>Les données sont cryptées</value>
   </data>
@@ -210,9 +207,6 @@
   <data name="AcObject_TyresLabel" xml:space="preserve">
     <value>Pneus :</value>
   </data>
-  <data name="Common_PsiPostfix" xml:space="preserve">
-    <value> psi</value>
-  </data>
   <data name="AcObject_FuelLabel" xml:space="preserve">
     <value>Essence :</value>
   <alternative>Fuel :</alternative></data>
@@ -233,9 +227,6 @@
   </data>
   <data name="Common_LapsPostfix" xml:space="preserve">
     <value> tour</value>
-  </data>
-  <data name="Common_MinutePostfix" xml:space="preserve">
-    <value> minute</value>
   </data>
   <data name="Common_Downloading" xml:space="preserve">
     <value>Téléchargement...</value>
@@ -258,17 +249,11 @@
   <data name="AcObject_CannotUpdatePreview" xml:space="preserve">
     <value>Impossible de mettre à jour l'aperçu</value>
   <alternative>Ne peut mettre à jour la prévisualisation</alternative></data>
-  <data name="Common_PointsPostfix" xml:space="preserve">
-    <value> point</value>
-  </data>
   <data name="AcObject_YearLabel_CarTooltip" xml:space="preserve">
     <value>Année de départ de la production</value>
   </data>
   <data name="Controls_MinimumForce" xml:space="preserve">
     <value>Force minimum</value>
-  </data>
-  <data name="Controls_Gain" xml:space="preserve">
-    <value>Gain</value>
   </data>
   <data name="Controls_EffectsHeader" xml:space="preserve">
     <value>Effets :</value>
@@ -287,9 +272,6 @@
   </data>
   <data name="Common_ExposureLabel" xml:space="preserve">
     <value>Exposition :</value>
-  </data>
-  <data name="Common_FpsPostfix" xml:space="preserve">
-    <value> FPS</value>
   </data>
   <data name="Plugins_DownloadAndInstall" xml:space="preserve">
     <value>Télécharger et installer ({0})</value>
@@ -313,20 +295,17 @@
     <value>Masque le pilote virtuel</value>
   <alternative>Ne pas afficher le pilote virtuel</alternative></data>
   <data name="Common_CelsiusPostfix" xml:space="preserve">
-    <value> °C</value>
-  </data>
-  <data name="Common_CelsiusFormat" xml:space="preserve">
-    <value>{0:F0} °C</value>
-  </data>
+    <value> °C</value>
+  <alternative> °C</alternative></data>
   <data name="Common_OpponentsFormat" xml:space="preserve">
-    <value>{0} adversaire</value>
-  </data>
+    <value>{0}  adversaire</value>
+  <alternative>{0} adversaire</alternative></data>
   <data name="KunosCareer_Error" xml:space="preserve">
     <value>{0} erreur</value>
   </data>
   <data name="Share_Shared" xml:space="preserve">
-    <value>{0} partagé</value>
-  </data>
+    <value>{0} Partagé</value>
+  <alternative>{0} partagé</alternative></data>
   <data name="AcObject_ErrorsHeader" xml:space="preserve">
     <value>{Erreur} :</value>
   </data>
@@ -352,11 +331,11 @@
     <value>Année :</value>
   </data>
   <data name="QuickSwitches_DevApps" xml:space="preserve">
-    <value>Apps dév.</value>
-  </data>
+    <value>Apps dev.</value>
+  <alternative>Apps dév.</alternative></data>
   <data name="Assists_Header" xml:space="preserve">
-    <value>Assistances :</value>
-  </data>
+    <value>Aides au pilotage :</value>
+  <alternative>Assistances :</alternative></data>
   <data name="AcObject_AuthorLabel" xml:space="preserve">
     <value>Auteur :</value>
   </data>
@@ -379,8 +358,8 @@
     <value>Caméra libre</value>
   </data>
   <data name="Common_ChangeSkin" xml:space="preserve">
-    <value>Changer la skin</value>
-  </data>
+    <value>Changer le skin</value>
+  <alternative>Changer la skin</alternative></data>
   <data name="Common_Loading" xml:space="preserve">
     <value>Chargement...</value>
   </data>
@@ -388,8 +367,8 @@
     <value>Clair</value>
   </data>
   <data name="AcObject_CarClassLabel" xml:space="preserve">
-    <value>Classe :</value>
-  </data>
+    <value>Catégorie :</value>
+  <alternative>Classe :</alternative></data>
   <data name="QuickSwitches_Leaderboard" xml:space="preserve">
     <value>Classement</value>
   </data>
@@ -456,20 +435,11 @@
   <data name="CustomShowroom_TextureFormatLabel" xml:space="preserve">
     <value>Format :</value>
   </data>
-  <data name="QuickSwitches_Fov" xml:space="preserve">
-    <value>FOV</value>
-  </data>
   <data name="Showroom_FovLabel" xml:space="preserve">
     <value>FOV :</value>
   </data>
-  <data name="Controls_GammaAxis" xml:space="preserve">
-    <value>Gamma</value>
-  </data>
   <data name="Animation_Up" xml:space="preserve">
     <value>Haut</value>
-  </data>
-  <data name="ImageViewer_DefaultName" xml:space="preserve">
-    <value>Image</value>
   </data>
   <data name="Showroom_CannotStart" xml:space="preserve">
     <value>Impossible de démarrer le showroom</value>
@@ -543,9 +513,6 @@
   <data name="QuickSwitches_Names" xml:space="preserve">
     <value>Noms</value>
   </data>
-  <data name="Common_Options" xml:space="preserve">
-    <value>Options</value>
-  </data>
   <data name="Car_OpenInShowroom" xml:space="preserve">
     <value>Ouvrir dans le showroom</value>
   </data>
@@ -582,20 +549,11 @@
   <data name="Common_Preparing" xml:space="preserve">
     <value>Préparation...</value>
   </data>
-  <data name="AssistsPreset_Pro" xml:space="preserve">
-    <value>Pro</value>
-  </data>
   <data name="Common_TryAgain" xml:space="preserve">
     <value>Réessayer</value>
   </data>
   <data name="CarParent_MakeIndependent" xml:space="preserve">
     <value>Rendre indépendant</value>
-  </data>
-  <data name="CustomShowroom_AmbientShadowsSize_Reset" xml:space="preserve">
-    <value>Reset</value>
-  </data>
-  <data name="Common_Reset" xml:space="preserve">
-    <value>Reset</value>
   </data>
   <data name="ImageViewer_Save_Title" xml:space="preserve">
     <value>Sauvegarder l'image comme</value>
@@ -606,14 +564,8 @@
   <data name="Presets_Save_Tooltip" xml:space="preserve">
     <value>Sauvegarde les paramètres actuels comme préréglage</value>
   </data>
-  <data name="Showroom_DialogHeader" xml:space="preserve">
-    <value>Showroom</value>
-  </data>
   <data name="Showroom_ShowroomLabel" xml:space="preserve">
     <value>Showroom :</value>
-  </data>
-  <data name="CustomShowroom_SkinHeader" xml:space="preserve">
-    <value>Skin</value>
   </data>
   <data name="CustomShowroom_TextureSizeLabel" xml:space="preserve">
     <value>Taille :</value>
@@ -649,11 +601,11 @@
     <value>Masque le volant virtuel</value>
   </data>
   <data name="QuickSwitches_LockWheel" xml:space="preserve">
-    <value>Fixer volant</value>
-  </data>
+    <value>Bloquer les roues</value>
+  <alternative>Fixer volant</alternative></data>
   <data name="QuickSwitches_LockCamera" xml:space="preserve">
-    <value>Fixer horizon</value>
-  </data>
+    <value>Fixe la caméra sur l'horizon</value>
+  <alternative>Fixer horizon</alternative></data>
   <data name="QuickSwitches_DamageUi" xml:space="preserve">
     <value>Dégât (UI)</value>
   </data>
@@ -661,8 +613,8 @@
     <value>Plus proche</value>
   </data>
   <data name="QuickSwitches_LockWheel_Tooltip" xml:space="preserve">
-    <value>Fixe le volant virtuel</value>
-  </data>
+    <value>Bloquer le volant</value>
+  <alternative>Fixe le volant virtuel</alternative></data>
   <data name="QuickSwitches_LockCamera_Tooltip" xml:space="preserve">
     <value>Fixe la caméra embarquée vers l'horizon</value>
   </data>
@@ -733,8 +685,8 @@
     <value>ID personnalisée</value>
   </data>
   <data name="Share_VerifyMessageHeader" xml:space="preserve">
-    <value>Est-ce que tout est ok ?</value>
-  </data>
+    <value>Est-ce que tout est OK ?</value>
+  <alternative>Est-ce que tout est ok ?</alternative></data>
   <data name="Showroom_DisableSweetFx_Tooltip" xml:space="preserve">
     <value>Visiblement SweetFx n'affecte pas le résultat, mais peut diminuer le temps de chargement</value>
   </data>
@@ -742,16 +694,13 @@
     <value>Assurez-vous que l'extension VLC soit installé correctement</value>
   </data>
   <data name="CustomShowroom_CannotStart" xml:space="preserve">
-    <value>Impossible de démarrer le showroom personnalisé</value>
-  </data>
+    <value>Impossible de démarrer le showroom personnalisé (Custom Showroom)</value>
+  <alternative>Impossible de démarrer le showroom personnalisé</alternative></data>
   <data name="CustomShowroom_EditingMode_Tooltip" xml:space="preserve">
-    <value>Utilise PSD, XCF, etc. à la place si disponible (l'extension Magick.NET est requise)</value>
-  </data>
+    <value>Utilise les formats (PSD, XCF, etc..) à la place si disponible (l'extension Magick.NET est requise - Ce rendre dans "Paramètres/Content Manager/Plugins" pour l'installation de l'extension)</value>
+  <alternative>Utilise PSD, XCF, etc. à la place si disponible (l'extension Magick.NET est requise)</alternative></data>
   <data name="CustomShowroom_AmbientShadowsHeader" xml:space="preserve">
     <value>Illumination globale</value>
-  </data>
-  <data name="CustomShowroom_AmbientShadows_Diffusion" xml:space="preserve">
-    <value>Diffusion</value>
   </data>
   <data name="CustomShowroom_AmbientShadows_Brightness" xml:space="preserve">
     <value>Luminosité</value>
@@ -769,11 +718,11 @@
     <value>Sensibilité de la vitesse</value>
   </data>
   <data name="Replay_CrMessage" xml:space="preserve">
-    <value>Le replay sera écrasé après la prochaine course. Renommez-le pour le conserver.</value>
-  </data>
+    <value>Le ralenti sera écrasé après la prochaine course. Renommez-le pour le conserver.</value>
+  <alternative>Le replay sera écrasé après la prochaine course. Renommez-le pour le conserver.</alternative></data>
   <data name="Replay_CrMessage_Commentary" xml:space="preserve">
-    <value>Vous pouvez vous rendre dans les réglages et activer l'option "Sauvegarder automatiquement les replays" pour éviter de perdre quelque chose d'important.</value>
-  </data>
+    <value>Vous pouvez vous rendre dans les réglages et activer l'option "Sauvegarder automatiquement les ralentis" pour éviter de perdre quelque chose d'important.</value>
+  <alternative>Vous pouvez vous rendre dans les réglages et activer l'option "Sauvegarder automatiquement les replays" pour éviter de perdre quelque chose d'important.</alternative></data>
   <data name="Common_RecommendedPercentageFormat" xml:space="preserve">
     <value>Valeur recommandée : {0}%</value>
   </data>
@@ -782,5 +731,194 @@
   </data>
   <data name="Common_RoundPostfix" xml:space="preserve">
     <value>Tour</value>
+  </data>
+  <data name="WebBrowser_Prompt" xml:space="preserve">
+    <value>La page Web dit :</value>
+  </data>
+  <data name="AcObject_SpecsLabel" xml:space="preserve">
+    <value>Spécifications :</value>
+  </data>
+  <data name="KunosCareer_RequiredSeries" xml:space="preserve">
+    <value>Série(s) requise(s) : {0}</value>
+  </data>
+  <data name="KunosCareer_RequiredSeriesAreNotFinishedYet" xml:space="preserve">
+    <value>Les séries requises ne sont pas encore finies</value>
+  </data>
+  <data name="Controls_LoadPresetWarning" xml:space="preserve">
+    <value>Charger “{0}”? Les valeurs actuelles seront remplacées (mais plus tard, elles pourront être restaurées à partir de la corbeille).</value>
+  </data>
+  <data name="Controls_Preview_InputMethod" xml:space="preserve">
+    <value>Méthode d'entrée : [b]{0}[/b]</value>
+  </data>
+  <data name="Controls_Preview_Devices" xml:space="preserve">
+    <value>Périphériques : [b]{0}[/b]</value>
+  </data>
+  <data name="Controls_Preview_Device" xml:space="preserve">
+    <value>Périphérique : [b]{0}[/b]</value>
+  </data>
+  <data name="Share_VerifyMessage" xml:space="preserve">
+    <value>Nom de l'auteur : [b]{0}[/b]
+Nom d'entrée : [b]{1}[/b]
+Type d'entrée : [b]{2}[/b]</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping" xml:space="preserve">
+    <value>Voir le mapping (cartographie de l'occlusion ambiante)</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_ParsingFailed" xml:space="preserve">
+    <value>Impossible de comprendre les valeurs de dimensions</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_ParsingFailed_Commentary" xml:space="preserve">
+    <value>S'il vous plaît, utilisez un format valide pour ceux-ci.</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_Export" xml:space="preserve">
+    <value>Exporter la texture mapping (cartographie de l'occlusion ambiante)</value>
+  </data>
+  <data name="CustomShowroom_Selected_MaterialLabel" xml:space="preserve">
+    <value>Matériel :</value>
+  </data>
+  <data name="CustomShowroom_ControlHeader" xml:space="preserve">
+    <value>Contrôle de l'en-tête</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Update" xml:space="preserve">
+    <value>Mettre à jour les ombres ambiantes</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Reset" xml:space="preserve">
+    <value>Réinitialiser aux valeurs recommandées</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_FadeToEdges" xml:space="preserve">
+    <value>Fondu des bords</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Highlight" xml:space="preserve">
+    <value>Taille de la surbrillance</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_EncryptedDataMessage" xml:space="preserve">
+    <value>La taille de l'ombre sera sauvegardée dans "data/ambient_shadows.ini", mais les données sont cryptées, donc elles n'auront aucun effet. Continuer?</value>
+  </data>
+  <data name="CustomShowroom_ObjectInformation" xml:space="preserve">
+    <value>Object name (Nom de l'objet) : [b]{0}[/b]
+Class (Classe) : [b]{1}[/b]
+
+Active (Actif) : [b]{2}[/b]
+Renderable (Rendu) : [b]{3}[/b]
+Visible : [b]{4}[/b]
+
+Transparent : [b]{5}[/b]
+Casting shadows (Ombres de portée) : [b]{6}[/b]
+
+Layer (Couche/Calque) : [b]{7}[/b]
+LOD in (LOD "Niveau de développement" dans) : [b]{8}[/b]
+LOD in (LOD "Niveau de développement" dans) : [b]{9}[/b]
+
+Material (Matériel) : [b]{10}[/b]</value>
+  </data>
+  <data name="CustomShowroom_MaterialInformation" xml:space="preserve">
+    <value>Material name (Nom du matériau) : [b]{0}[/b]
+Shader (Ombrages) : [b]{1}[/b]
+
+Blend mode (Mode de fusion) : [b]{2}[/b]
+Alpha test (Test de transparence Alpha) : [b]{3}[/b]
+Depth mode (Mode de profondeur) : [b]{4}[/b]</value>
+  </data>
+  <data name="CustomShowroom_ShaderProperties" xml:space="preserve">
+    <value>Propriétés des ombres (shader) :</value>
+  </data>
+  <data name="Controls_DegressLabel" xml:space="preserve">
+    <value>Degrés</value>
+  </data>
+  <data name="Controls_ClearWheelBinding" xml:space="preserve">
+    <value>Effacer la liaison du volant</value>
+  </data>
+  <data name="Controls_ClearKeyboardBinding" xml:space="preserve">
+    <value>Effacer la liaison du clavier</value>
+  </data>
+  <data name="Controls_SteeringWheelButton" xml:space="preserve">
+    <value>Bouton du volant</value>
+  </data>
+  <data name="Controls_KeyboardButton" xml:space="preserve">
+    <value>Bouton du clavier</value>
+  </data>
+  <data name="Online_JoinUsing" xml:space="preserve">
+    <value>Rejoindre en utilisant {0}</value>
+  </data>
+  <data name="AssistsPreset_Intermediate" xml:space="preserve">
+    <value>Intermédiaire</value>
+  </data>
+  <data name="AcObject_CarParentLabel_Tooltip" xml:space="preserve">
+    <value>Voiture parent (si définie, cette voiture sera attachée à celle sélectionnée; à utiliser pour les version Tuning/Drift ou Race)</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_CannotUpdate" xml:space="preserve">
+    <value>Impossible de mettre à jour les ombres ambiantes (ambient shadows)</value>
+  </data>
+  <data name="Common_ResetToRecommendedValue" xml:space="preserve">
+    <value>Réinitialiser aux valeurs recommandées</value>
+  </data>
+  <data name="FindInformation_Description" xml:space="preserve">
+    <value>Sélectionnez l'année ou la description et appuyez sur OK. (maintenez Ctrl pour étendre la description au lieu de la remplacer)</value>
+  </data>
+  <data name="Controls_EnhancedUndersteer" xml:space="preserve">
+    <value>Effet de sous-virage amélioré</value>
+  </data>
+  <data name="Controls_SoftLock" xml:space="preserve">
+    <value>Verrouillage doux</value>
+  </data>
+  <data name="Controls_SkipFfbSteps" xml:space="preserve">
+    <value>Passer les étapes du FFB (force feedback/retour de force)</value>
+  </data>
+  <data name="Controls_UnlockExperimental" xml:space="preserve">
+    <value>Déverrouillez les options expérimentales ([b]Soyez Prudent![/b])</value>
+  </data>
+  <data name="Controls_GyroscopicEffect" xml:space="preserve">
+    <value>Effet gyroscopique</value>
+  </data>
+  <data name="Controls_DamperGain" xml:space="preserve">
+    <value>Gain d'amortisseur (damper)</value>
+  </data>
+  <data name="Controls_MinumumDamperLevel" xml:space="preserve">
+    <value>Niveau d'amortisseur (damper) minimum</value>
+  </data>
+  <data name="Controls_DamperGain_Tooltip" xml:space="preserve">
+    <value>Mettre à 0 pour le Logitech G920, conserver à 1 pour tous les autres volants</value>
+  </data>
+  <data name="Controls_SkipFfbSteps_Tooltip" xml:space="preserve">
+    <value>Étapes du moteur de physique à ignorer afin d'accommoder les roues avec un tampon mémoire d'entrée FF inférieur. (Si vous rencontrez des problèmes avec le processeur, augmentez-le à 2-4, cela peut aider)</value>
+  </data>
+  <data name="Common_FahrenheitPostfix" xml:space="preserve">
+    <value> °F</value>
+  </data>
+  <data name="TableHeader_Name" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="TableHeader_Car" xml:space="preserve">
+    <value>Véhicule</value>
+  </data>
+  <data name="TableHeader_Track" xml:space="preserve">
+    <value>Circuit</value>
+  </data>
+  <data name="TableHeader_BestLap" xml:space="preserve">
+    <value>Meilleur tour</value>
+  </data>
+  <data name="TableHeader_CarSkin" xml:space="preserve">
+    <value>Livrée (Skin)</value>
+  </data>
+  <data name="TableHeader_Nationality" xml:space="preserve">
+    <value>Nationalité</value>
+  </data>
+  <data name="TableHeader_Ai" xml:space="preserve">
+    <value>IA</value>
+  </data>
+  <data name="TableHeader_Locked" xml:space="preserve">
+    <value>Verrouiller</value>
+  </data>
+  <data name="Controls_DegreesLabel" xml:space="preserve">
+    <value>Degrés</value>
+  </data>
+  <data name="Common_ScrollToSelected" xml:space="preserve">
+    <value>Faites défiler pour sélectionner (Ctrl+Shift+V)</value>
+  </data>
+  <data name="Common_WhatIsIt" xml:space="preserve">
+    <value>Qu'est-ce ?</value>
+  </data>
+  <data name="Common_Rating" xml:space="preserve">
+    <value>Évaluation:</value>
   </data>
 </root>

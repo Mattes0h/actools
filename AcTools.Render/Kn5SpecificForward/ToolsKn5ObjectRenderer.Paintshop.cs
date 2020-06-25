@@ -285,34 +285,39 @@ namespace AcTools.Render.Kn5SpecificForward {
         private byte[] GetBytes([CanBeNull] PaintShopSource source) {
             if (source == null) return null;
 
-            if (!source.UseInput) {
-                if (source.Data != null) {
-                    return source.Data;
-                }
+            try {
+                if (!source.UseInput) {
+                    if (source.Data != null) {
+                        return source.Data;
+                    }
 
-                if (source.Name != null && MainSlot.Kn5?.TexturesData.ContainsKey(source.Name) == true) {
-                    return MainSlot.Kn5.TexturesData[source.Name];
-                }
+                    if (source.Name != null && MainSlot.Kn5?.TexturesData.ContainsKey(source.Name) == true) {
+                        return MainSlot.Kn5.TexturesData[source.Name];
+                    }
 
-                if (source.Color != null) {
-                    using (var texture = DeviceContextHolder.CreateTexture(4, 4, (x, y) => source.Color.Value))
-                    using (var stream = new MemoryStream()) {
-                        Texture2D.ToStream(DeviceContext, texture, ImageFileFormat.Png, stream);
-                        return stream.ToArray();
+                    if (source.Color != null) {
+                        using (var texture = DeviceContextHolder.CreateTexture(4, 4, (x, y) => source.Color.Value))
+                        using (var stream = new MemoryStream()) {
+                            Texture2D.ToStream(DeviceContext, texture, ImageFileFormat.Png, stream);
+                            return stream.ToArray();
+                        }
+                    }
+
+                    if (source.ColorRef != null) {
+                        using (var texture = DeviceContextHolder.CreateTexture(4, 4, (x, y) => source.ColorRef.GetValue() ?? Color.Black))
+                        using (var stream = new MemoryStream()) {
+                            Texture2D.ToStream(DeviceContext, texture, ImageFileFormat.Png, stream);
+                            return stream.ToArray();
+                        }
                     }
                 }
 
-                if (source.ColorRef != null) {
-                    using (var texture = DeviceContextHolder.CreateTexture(4, 4, (x, y) => source.ColorRef.GetValue() ?? Color.Black))
-                    using (var stream = new MemoryStream()) {
-                        Texture2D.ToStream(DeviceContext, texture, ImageFileFormat.Png, stream);
-                        return stream.ToArray();
-                    }
-                }
+                AcToolsLogging.Write("Can’t get bytes: " + source);
+                return null;
+            } catch (Exception e) {
+                AcToolsLogging.Write("Error: " + e);
+                return null;
             }
-
-            AcToolsLogging.Write("Can’t get bytes: " + source);
-            return null;
         }
 
         private Dictionary<string, Tuple<ShaderResourceView, Size>> _paintShopCache;
@@ -407,7 +412,6 @@ namespace AcTools.Render.Kn5SpecificForward {
             return original;
         }
 
-        // prepare texture using DirectX
         [CanBeNull]
         private static ShaderResourceView Prepare([CanBeNull] ShaderResourceView original, [CanBeNull] Func<ShaderResourceView, ShaderResourceView> preparation,
                 ref bool originalCached) {
@@ -466,6 +470,8 @@ namespace AcTools.Render.Kn5SpecificForward {
                     baseSize.Value.Width * baseSize.Value.Height ? additionalSize.Value : baseSize;
         }
 
+        private object _licensePlatesFix = new Object();
+
         [CanBeNull]
         private SourceReady GetOriginal([NotNull] PaintShopSource source, int maxSize,
                 Func<ShaderResourceView, ShaderResourceView> preparation = null) {
@@ -504,7 +510,11 @@ namespace AcTools.Render.Kn5SpecificForward {
 
                     cached = false;
                 } else {
-                    original = GetShaderResourceView(source, maxSize, out size, out cached);
+                    lock (_licensePlatesFix) {
+                        // If you would to have any idea as to why LicensePlate.cs doesn’t sync with main thread properly,
+                        // please let me know
+                        original = GetShaderResourceView(source, maxSize, out size, out cached);
+                    }
                 }
 
                 if (source.DesaturateMax) {
@@ -829,8 +839,8 @@ namespace AcTools.Render.Kn5SpecificForward {
 
                                 var colors = p.Colors;
                                 if (colors?.Length > 0) {
-                                    var vColors = new Vector4[3];
-                                    for (var i = 0; i < colors.Length; i++) {
+                                    var vColors = new Vector4[10];
+                                    for (int i = 0, m = Math.Min(colors.Length, 10); i < m; i++) {
                                         vColors[i] = colors[i].ToVector4();
                                     }
 
@@ -886,15 +896,15 @@ namespace AcTools.Render.Kn5SpecificForward {
                                 if (mask != null) {
                                     mask.Set(e.FxMaskMap, e.FxMaskParams);
 
-                                    var vColors = new Vector4[3];
+                                    var vColors = new Vector4[10];
                                     var i = 0;
                                     if (colors != null) {
-                                        for (; i < colors.Length - 1; i++) {
+                                        for (var m = Math.Min(colors.Length - 1, 10); i < m; i++) {
                                             vColors[i] = colors[i + 1].ToVector4();
                                         }
                                     }
 
-                                    for (; i < 3; i++) {
+                                    for (; i < 10; i++) {
                                         vColors[i] = new Vector4(1f);
                                     }
 

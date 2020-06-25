@@ -22,7 +22,7 @@ namespace AcManager.Tools.Managers {
         public static AcRootDirectory Instance { get; private set; }
 
         public static AcRootDirectory Initialize(string directory = null) {
-            if (Instance != null) throw new Exception("Already initialized");
+            if (Instance != null) throw new Exception(@"Already initialized");
             return Instance = new AcRootDirectory(directory);
         }
 
@@ -72,7 +72,12 @@ namespace AcManager.Tools.Managers {
 
             FileUtils.EnsureDirectoryExists(AcPaths.GetReplaysDirectory());
             ReplaysDirectories = ReplaysDirectories ?? new MultiDirectories(AcPaths.GetReplaysDirectory(), null);
-            UserChampionshipsDirectories = UserChampionshipsDirectories ?? new AcDirectories(Path.Combine(AcPaths.GetDocumentsDirectory(), "champs"));
+
+            var champsDirectory = Path.Combine(AcPaths.GetDocumentsDirectory(), "champs");
+            if (!Directory.Exists(champsDirectory) && File.Exists(champsDirectory)) {
+                champsDirectory = Path.Combine(AcPaths.GetDocumentsDirectory(), "champs_cm");
+            }
+            UserChampionshipsDirectories = UserChampionshipsDirectories ?? new AcDirectories(champsDirectory);
 
             CarsDirectories?.CreateIfMissing();
             TracksDirectories?.CreateIfMissing();
@@ -154,7 +159,11 @@ namespace AcManager.Tools.Managers {
                     return false;
                 }
 
-                if (!Directory.Exists(Path.Combine(directory, @"apps"))) {
+                var appsDirectory = Path.Combine(directory, @"apps");
+                if (!Directory.Exists(appsDirectory)) {
+                    Logging.Warning("Apps folder not found: " + appsDirectory);
+                    Logging.Warning("All directories found: " + Directory.GetDirectories(directory).JoinToString(@", "));
+                    Logging.Warning("All files found: " + Directory.GetFiles(directory).JoinToString(@", "));
                     reason = string.Format(ToolsStrings.AcRootDirectory_MissingDirectory, @"apps");
                     return false;
                 }

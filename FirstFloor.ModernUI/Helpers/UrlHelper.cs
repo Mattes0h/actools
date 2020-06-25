@@ -17,6 +17,7 @@ namespace FirstFloor.ModernUI.Helpers {
 
         [ContractAnnotation(@"s: null => false")]
         public static bool IsAnyUrl(this string s) {
+            if (s == null) return false;
             var i = s.IndexOf(@"://", StringComparison.Ordinal);
             if (i == -1) return false;
             for (; i > 0; i--) {
@@ -27,14 +28,14 @@ namespace FirstFloor.ModernUI.Helpers {
 
         [ContractAnnotation(@"s: null => false")]
         public static bool IsWebUrl(this string s) {
-            return s.StartsWith(@"http://", StringComparison.OrdinalIgnoreCase) ||
-                    s.StartsWith(@"https://", StringComparison.OrdinalIgnoreCase);
+            return s != null && (s.StartsWith(@"http://", StringComparison.OrdinalIgnoreCase) ||
+                    s.StartsWith(@"https://", StringComparison.OrdinalIgnoreCase));
         }
 
         [ContractAnnotation(@"s: null => null; s: notnull => notnull")]
         public static string Urlify([CanBeNull] this string s) {
             if (s == null) return null;
-            return s.IsAnyUrl() ? s : s.IndexOf('@') != -1 ? @"mailto:" + s : @"http://" + s;
+            return s.StartsWith(@"/") || s.IsAnyUrl() ? s : s.IndexOf('@') != -1 ? @"mailto:" + s : @"http://" + s;
         }
 
         public static IEnumerable<string> GetUrls([CanBeNull] this string s) {
@@ -288,6 +289,10 @@ console.log(result);
 
         internal static bool IsWebUrl(string s, int index, bool bbCodeMode, out int urlLength) {
             int start = index, length = s.Length;
+            if (start >= length) {
+                urlLength = 0;
+                return false;
+            }
 
             if (start > 0) {
                 var previous = s[start - 1];
@@ -330,6 +335,10 @@ console.log(result);
             if (lastDot <= 0 || index - start <= 3 || !IsDomainZone(s, lastDot + 1, index - lastDot - 1)) {
                 urlLength = 0;
                 return false;
+            }
+
+            if (index < length - 3 && s[index] == ':' && char.IsDigit(s[index + 1])) {
+                for (index++; char.IsDigit(s[index]); index++) { }
             }
 
             if (index >= length || s[index] != '/') {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -48,8 +47,9 @@ namespace AcManager.Tools.Objects {
                             information.AdditionalLayouts.Select(x => {
                                 var c = new TrackExtraLayoutObject(manager, this, enabled, x);
                                 c.PropertyChanged += Configuration_PropertyChanged;
+                                c.LayoutPriority = GetLayoutData(x)?.GetDoubleValueOnly("priority") ?? 0;
                                 return c;
-                            }).Prepend((TrackObjectBase)this));
+                            }).OrderByDescending(x => x.LayoutPriority).ThenBy(x => x.IdWithLayout).Prepend((TrackObjectBase)this));
 
                     SkinsManager = InitializeSkins();
                     return;
@@ -184,53 +184,40 @@ namespace AcManager.Tools.Objects {
                 RegexOptions.Compiled);
 
         private static int GetWeight(Match m) {
-            if (m.Value == "full" || m.Value == "drift" || m.Value == "pursuit") return 10;
+            if (m.Value == "full" || m.Value == "drift" || m.Value == "normal" || m.Value == "pursuit") return 10;
             if (m.Value == "international" || m.Value == "circuit") return 2;
             return m.Length;
         }
 
-        private static double _layoutElapsedMilliseconds;
-        private static int _layoutIterations;
-
         [CanBeNull]
         private static string GetPreferredMainLayout(string trackId, IEnumerable<string> uiDirectories) {
-            var s = Stopwatch.StartNew();
-            // var b = new StringBuilder(trackId);
+            string preferredLayout = null;
+            var preferredLayoutPriority = double.MinValue;
 
-            try {
-                string preferredLayout = null;
-                var preferredLayoutPriority = double.MinValue;
+            trackId = trackId.ToLowerInvariant();
+            foreach (var layout in uiDirectories) {
+                var layoutId = Path.GetFileName(layout)?.ToLowerInvariant();
+                if (layoutId == null) continue;
 
-                trackId = trackId.ToLowerInvariant();
-                foreach (var layout in uiDirectories) {
-                    var layoutId = Path.GetFileName(layout)?.ToLowerInvariant();
-                    if (layoutId == null) continue;
+                var data = GetLayoutData(layout);
+                var name = (data?.GetStringValueOnly("name") ?? layoutId).ToLowerInvariant();
+                var distance = name.ComputeLevenshteinDistance(trackId);
 
-                    var data = GetLayoutData(layout);
-                    var name = (data?.GetStringValueOnly("name") ?? layoutId).ToLowerInvariant();
-                    var distance = name.ComputeLevenshteinDistance(trackId);
+                double priority = (100 - distance * 10).Clamp(0, 100) - name.Length;
+                priority -= NonDefaultLayout.Matches(layoutId).Cast<Match>().Sum(GetWeight) * 10;
+                priority += PreferredLayout.Matches(layoutId).Cast<Match>().Sum(GetWeight) * 10;
+                priority -= NonDefaultLayout.Matches(name).Cast<Match>().Sum(GetWeight) * 100;
+                priority += PreferredLayout.Matches(name).Cast<Match>().Sum(GetWeight) * 100;
+                priority += data?.GetDoubleValueOnly("priority") * 1e8 ?? 0;
 
-                    double priority = (100 - distance * 10).Clamp(0, 100) - name.Length;
-                    priority -= NonDefaultLayout.Matches(layoutId).Cast<Match>().Sum(GetWeight) * 10;
-                    priority += PreferredLayout.Matches(layoutId).Cast<Match>().Sum(GetWeight) * 10;
-                    priority -= NonDefaultLayout.Matches(name).Cast<Match>().Sum(GetWeight) * 100;
-                    priority += PreferredLayout.Matches(name).Cast<Match>().Sum(GetWeight) * 100;
-
-                    // b.Append($"\n{layoutId}: {name}, distance={distance}, priority={priority}");
-                    if (preferredLayoutPriority < priority) {
-                        preferredLayoutPriority = priority;
-                        preferredLayout = layout;
-                    }
-                }
-
-                // Logging.Debug(b.ToString());
-                return preferredLayout;
-            } finally {
-                _layoutElapsedMilliseconds += s.Elapsed.TotalMilliseconds;
-                if (++_layoutIterations % 20 == 0) {
-                    Logging.Debug($"Avg. time: {_layoutElapsedMilliseconds / _layoutIterations:F2} ms");
+                // b.Append($"\n{layoutId}: {name}, distance={distance}, priority={priority}");
+                if (preferredLayoutPriority < priority) {
+                    preferredLayoutPriority = priority;
+                    preferredLayout = layout;
                 }
             }
+
+            return preferredLayout;
         }
 
         [NotNull]

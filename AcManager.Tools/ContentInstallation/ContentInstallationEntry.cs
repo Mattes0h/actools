@@ -33,7 +33,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.ContentInstallation {
-    public partial class ContentInstallationEntry : NotifyPropertyErrorsChanged, IProgress<AsyncProgressEntry>, ICopyCallback, IDisposable {
+    public partial class ContentInstallationEntry : NotifyPropertyErrorsChanged, IProgress<AsyncProgressEntry>, ICopyCallback {
         public DateTime AddedDateTime { get; private set; }
 
         [NotNull]
@@ -50,8 +50,8 @@ namespace AcManager.Tools.ContentInstallation {
         [NotNull]
         public ContentInstallationParams InstallationParams { get; }
 
-        internal ContentInstallationEntry([NotNull] string source, [CanBeNull] ContentInstallationParams installationParams) {
-            InstallationParams = installationParams ?? ContentInstallationParams.Default;
+        internal ContentInstallationEntry([NotNull] string source, [NotNull] ContentInstallationParams installationParams) {
+            InstallationParams = installationParams;
             Source = source;
             AddedDateTime = DateTime.Now;
             DisplayName = InstallationParams.DisplayName ?? Source.Split(new[] { '?', '&' }, 2)[0].Split('/', '\\').Last();
@@ -71,7 +71,8 @@ namespace AcManager.Tools.ContentInstallation {
 
         public static ContentInstallationEntry Deserialize([NotNull] string data) {
             var j = JObject.Parse(data);
-            return new ContentInstallationEntry(j.GetStringValueOnly("source"), j["params"]?.ToObject<ContentInstallationParams>()) {
+            return new ContentInstallationEntry(j.GetStringValueOnly("source"),
+                    j["params"]?.ToObject<ContentInstallationParams>() ?? ContentInstallationParams.DefaultWithoutExecutables) {
                 AddedDateTime = j["added"]?.ToObject<DateTime>() ?? DateTime.Now,
                 DisplayName = j.GetStringValueOnly("name"),
                 InformationUrl = j.GetStringValueOnly("informationUrl"),
@@ -103,11 +104,11 @@ namespace AcManager.Tools.ContentInstallation {
                 ["cancelled"] = IsCancelling || Cancelled,
                 ["failedMessage"] = FailedMessage,
                 ["failedCommentary"] = FailedCommentary,
-                ["params"] = InstallationParams == ContentInstallationParams.Default ? null : JObject.FromObject(InstallationParams)
+                ["params"] = JObject.FromObject(InstallationParams)
             }.ToString(Formatting.None);
         }
 
-        internal static ContentInstallationEntry ReadyExample => new ContentInstallationEntry("input.bin", null) {
+        internal static ContentInstallationEntry ReadyExample => new ContentInstallationEntry("input.bin", ContentInstallationParams.DefaultWithoutExecutables) {
             FileName = "input.bin",
             LocalFilename = @"U:\dump.bin",
             Progress = AsyncProgressEntry.Ready
@@ -508,10 +509,10 @@ namespace AcManager.Tools.ContentInstallation {
 
         private static string GetFileNameFromUrl(string url) {
             var fileName = FileUtils.EnsureFileNameIsValid(
-                    url.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries).Last().Split('?')[0]).Trim();
+                    url.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries).Last().Split('?')[0], true).Trim();
 
             if (string.IsNullOrWhiteSpace(fileName)) {
-                fileName = FileUtils.EnsureFileNameIsValid(url).Trim();
+                fileName = FileUtils.EnsureFileNameIsValid(url, true).Trim();
                 if (string.IsNullOrWhiteSpace(fileName)) {
                     fileName = "download";
                 }
@@ -617,8 +618,12 @@ namespace AcManager.Tools.ContentInstallation {
                             return false;
                         } catch (InformativeException e) {
                             Logging.Warning(e);
-                            FailedMessage = e.Message;
-                            FailedCommentary = e.SolutionCommentary;
+                            if (e.Message == ToolsStrings.Common_CannotDownloadFile) {
+                                FailedMessage = $"Can’t download file: {e.SolutionCommentary.ToSentenceMember()}";
+                            } else {
+                                FailedMessage = e.Message;
+                                FailedCommentary = e.SolutionCommentary;
+                            }
                             return false;
                         } catch (Exception e) {
                             Logging.Warning(e);
@@ -856,7 +861,7 @@ Are you sure to continue?",
             return _toInstall?.Select(x => x.CopyCallback.Directory(info)).FirstOrDefault(x => x != null);
         }
 
-        private async Task InstallAsync(IAdditionalContentInstallator installator, List<InstallationDetails> toInstall, IProgress<AsyncProgressEntry> progress,
+        private async Task InstallAsync(IAdditionalContentInstallator installator, [NotNull] List<InstallationDetails> toInstall, IProgress<AsyncProgressEntry> progress,
                 CancellationTokenSource cancellation) {
             _modsPreviousLogs = new Dictionary<string, string[]>();
             _modsToInstall = new Dictionary<string, Tuple<string, List<string>>>();
@@ -865,6 +870,7 @@ Are you sure to continue?",
                 _toInstall = toInstall;
                 await installator.InstallAsync(this, progress, cancellation.Token);
             } finally {
+                _toInstall.ForEach(x => x.CopyCallback.Dispose());
                 _toInstall = null;
                 await FinishSettingMods();
             }
@@ -1004,7 +1010,7 @@ Are you sure to continue?",
         }
 
         #region Creating installator
-        private static Task<IAdditionalContentInstallator> FromFile(string filename, ContentInstallationParams installationParams,
+        private static Task<IAdditionalContentInstallator> FromFile([NotNull] string filename, [NotNull] ContentInstallationParams installationParams,
                 CancellationToken cancellation) {
             Logging.Write(filename);
 

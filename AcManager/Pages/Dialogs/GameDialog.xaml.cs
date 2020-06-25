@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -147,8 +148,10 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        public void OnProgress(string progress) {
-            Model.WaitingStatus = progress;
+        public void OnProgress(string message, AsyncProgressEntry? subProgress = null, Action subCancellationCallback = null) {
+            Model.WaitingStatus = message;
+            Model.WaitingProgress = subProgress ?? AsyncProgressEntry.Ready;
+            Model.SubCancellationCallback = subCancellationCallback;
         }
 
         public void OnProgress(Game.ProgressState progress) {
@@ -157,6 +160,26 @@ namespace AcManager.Pages.Dialogs {
                     Model.WaitingStatus = AppStrings.Race_Preparing;
                     break;
                 case Game.ProgressState.Launching:
+                    if (AcRootDirectory.CheckDirectory(MainExecutingFile.Directory)
+                            && MainExecutingFile.Name != "AssettoCorsa.exe"
+                            && new IniFile(AcPaths.GetCfgVideoFilename())["CAMERA"].GetNonEmpty("MODE") == "OCULUS"
+                            && MessageDialog.Show(
+                                    "Oculus Rift might not work properly with Content Manager is in AC root folder. It’s better to move it to avoid potential issues.",
+                                    "Important note", new MessageDialogButton {
+                                        [MessageBoxResult.Yes] = "Move it now",
+                                        [MessageBoxResult.No] = "Ignore"
+                                    }, "oculusRiftWarningMessage") == MessageBoxResult.Yes) {
+                        try {
+                            var newLocation = FilesStorage.Instance.GetFilename(MainExecutingFile.Name);
+                            File.Copy(MainExecutingFile.Location, newLocation, true);
+                            WindowsHelper.ViewFile(newLocation);
+                            ProcessExtension.Start(newLocation, new[] { @"--restart", @"--move-app=" + MainExecutingFile.Location });
+                            Environment.Exit(0);
+                        } catch (Exception e) {
+                            NonfatalError.Notify("Failed to move Content Manager executable", "I’m afraid you’ll have to do it manually.", e);
+                        }
+                    }
+
                     if (SettingsHolder.Drive.SelectedStarterType == SettingsHolder.DriveSettings.DeveloperStarterType) {
                         Model.WaitingStatus = "Now, run AC…";
                     } else {
@@ -272,7 +295,7 @@ namespace AcManager.Pages.Dialogs {
                 data.PlayerEntries = (
                         from player in result.Players
                         let car = CarsManager.Instance.GetById(player.CarId ?? "")
-                        let carSkin = car.GetSkinById(player.CarSkinId ?? "")
+                        let carSkin = car?.GetSkinById(player.CarSkinId ?? "")
                         select new { Player = player, Car = car, CarSkin = carSkin }
                         ).Select((entry, i) => {
                             var bestLapTime = session.BestLaps?.Where(x => x.CarNumber == i).MinEntryOrDefault(x => x.Time)?.Time;
@@ -335,25 +358,25 @@ namespace AcManager.Pages.Dialogs {
                 }
 
                 var bestProgress = (from player in data.PlayerEntries
-                                    where player.LapTimeProgress > 0.03
-                                    orderby player.LapTimeProgress descending
-                                    select player).FirstOrDefault();
+                    where player.LapTimeProgress > 0.03
+                    orderby player.LapTimeProgress descending
+                    select player).FirstOrDefault();
                 var bestConsistent = (from player in data.PlayerEntries
-                                      where player.LapTimeSpread < 0.02
-                                      orderby player.LapTimeSpread descending
-                                      select player).FirstOrDefault();
+                    where player.LapTimeSpread < 0.02
+                    orderby player.LapTimeSpread descending
+                    select player).FirstOrDefault();
 
                 data.RemarkableNotes = new[] {
                     sessionBestLap == null ? null :
                             new SessionFinishedData.RemarkableNote("[b]Best lap[/b] made by ", data.PlayerEntries.GetByIdOrDefault(sessionBestLap.CarNumber),
                                     null),
                     new SessionFinishedData.RemarkableNote("[b]The Best Off-roader Award[/b] goes to ", (from player in data.PlayerEntries
-                                                                                                         let cuts =
-                                                                                                                 (double)player.Laps.Sum(x => x.Cuts)
-                                                                                                                         / player.Laps.Length
-                                                                                                         where cuts > 1.5
-                                                                                                         orderby cuts descending
-                                                                                                         select player).FirstOrDefault(), null),
+                        let cuts =
+                                (double)player.Laps.Sum(x => x.Cuts)
+                                        / player.Laps.Length
+                        where cuts > 1.5
+                        orderby cuts descending
+                        select player).FirstOrDefault(), null),
                     new SessionFinishedData.RemarkableNote("[b]Remarkable progress[/b] shown by ", bestProgress, null),
                     new SessionFinishedData.RemarkableNote("[b]The most consistent[/b] is ", bestConsistent, null),
                 }.Where(x => x?.Player != null).ToList();
@@ -425,7 +448,7 @@ namespace AcManager.Pages.Dialogs {
                         items[0] = lap.LapNumber;
 
                         var tyresName = car?.AcdData?.GetIniFile("tyres.ini").GetSections("FRONT", -1)
-                                            .FirstOrDefault(x => x.GetNonEmpty("SHORT_NAME") == lap.TyresShortName)?.GetNonEmpty("NAME");
+                                .FirstOrDefault(x => x.GetNonEmpty("SHORT_NAME") == lap.TyresShortName)?.GetNonEmpty("NAME");
                         items[1] = tyresName == null ? lap.TyresShortName : $"{tyresName} ({lap.TyresShortName})";
 
                         items[items.Length - 3] = lap.Total.ToMillisecondsString();
@@ -568,7 +591,7 @@ namespace AcManager.Pages.Dialogs {
                     Application.Current?.MainWindow?.Activate();
                 } else {
                     Model.CurrentState = ViewModel.State.Error;
-                    Model.ErrorMessage = "Nothing to display";
+                    Model.ErrorMessage = AppStrings.Online_NothingToDisplay;
                     Buttons = new[] { CloseButton };
                 }
                 return;
@@ -657,6 +680,7 @@ namespace AcManager.Pages.Dialogs {
 
             if (result == null || !result.IsNotCancelled) {
                 Model.CurrentState = ViewModel.State.Cancelled;
+                DelayedBeep().Ignore();
 
                 var whatsGoingOn = _properties?.PullAdditional<WhatsGoingOn>();
                 var solution = whatsGoingOn?.Solution;
@@ -690,6 +714,13 @@ namespace AcManager.Pages.Dialogs {
                 _properties != null ? tryAgainButton : null,
                 CloseButton
             };
+        }
+
+        private async Task DelayedBeep() {
+            await Task.Delay(200);
+            if (!IsClosed()) {
+                BeepingNoise.Play(SettingsHolder.Drive.CrashBeepingNoise).Ignore();
+            }
         }
 
         public void OnError(Exception exception) {
@@ -747,6 +778,27 @@ namespace AcManager.Pages.Dialogs {
                 set => Apply(value, ref _waitingStatus);
             }
 
+            private AsyncProgressEntry _waitingProgress;
+
+            public AsyncProgressEntry WaitingProgress {
+                get => _waitingProgress;
+                set => Apply(value, ref _waitingProgress);
+            }
+
+            private Action _subCancellationCallback;
+
+            public Action SubCancellationCallback {
+                get => _subCancellationCallback;
+                set => Apply(value, ref _subCancellationCallback, () => _subCancelCommand?.RaiseCanExecuteChanged());
+            }
+
+            private DelegateCommand _subCancelCommand;
+
+            public DelegateCommand SubCancelCommand => _subCancelCommand ?? (_subCancelCommand = new DelegateCommand(() => {
+                SubCancellationCallback?.InvokeInMainThreadAsync();
+                SubCancellationCallback = null;
+            }, () => SubCancellationCallback != null));
+
             private string _errorMessage;
 
             [CanBeNull]
@@ -802,16 +854,16 @@ namespace AcManager.Pages.Dialogs {
         private void OnPlayersTableLoaded(object sender, RoutedEventArgs e) {
             var columns = ((DataGrid)sender).Columns.TakeLast(3).ToList();
             this.AddWidthCondition(1000).Add(columns[1]).Add(columns[2])
-                .Add(x => {
-                    columns[0].Width = x ? 100 : 140;
-                    columns[0].HeaderStyle = (Style)FindResource(x ?
-                            "DataGridColumnHeader.RightAlignment" : "DataGridColumnHeader.RightAlignment.FarRight");
-                    ((DataGridTemplateColumn)columns[0]).CellTemplate = (DataTemplate)FindResource(x ?
-                            "TotalTimeDeltaTemplate" : "TotalTimeDeltaTemplate.FarRight");
-                    if (x) {
-                        FancyHints.GameDialogTableSize.MaskAsUnnecessary();
-                    }
-                });
+                    .Add(x => {
+                        columns[0].Width = x ? 100 : 140;
+                        columns[0].HeaderStyle = (Style)FindResource(x ?
+                                "DataGridColumnHeader.RightAlignment" : "DataGridColumnHeader.RightAlignment.FarRight");
+                        ((DataGridTemplateColumn)columns[0]).CellTemplate = (DataTemplate)FindResource(x ?
+                                "TotalTimeDeltaTemplate" : "TotalTimeDeltaTemplate.FarRight");
+                        if (x) {
+                            FancyHints.GameDialogTableSize.MaskAsUnnecessary();
+                        }
+                    });
 
             if (ActualWidth < 1000d) {
                 FancyHints.GameDialogTableSize.Trigger();

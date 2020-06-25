@@ -12,37 +12,40 @@
 
   <ToolTip x:Key="CarPreviewTooltip" d:DataContext="{d:DesignInstance t:CarObject}" x:Shared="False">
     <StackPanel TextBlock.Foreground="{DynamicResource WindowText}" Margin="4">
-      <TextBlock Style="{StaticResource Heading2}" Text="{Binding DisplayName}" Margin="0 0 0 4" />
+      <mui:BbCodeBlock Mode="WithoutBbCodes" Style="{StaticResource Heading2}" Text="{Binding DisplayName}" Margin="0 0 0 4" />
+      <mui:BooleanSwitch Value="{Binding ShowCarPreviewInToolTips, Source={x:Static t:SettingsHolder.Content}}" CollapseOnFalse="True">
+        <mui:BetterImage Filename="{Binding SelectedSkin.PreviewImage}" Width="480" Height="270" Stretch="UniformToFill" />
+      </mui:BooleanSwitch>
       <c:CarBlock Car="{Binding}" ShowSkinsAndPreview="False" SelectSkin="False" Width="480" MaxHeight="320" ShowDescription="False" />
     </StackPanel>
   </ToolTip>
 
   <ToolTip x:Key="CarSkinPreviewTooltip" d:DataContext="{d:DesignInstance t:CarSkinObject}" x:Shared="False">
     <c:PropertiesGrid Columns="1" Width="240" LabelWidth="80">
-      <!--<mui:PlaceholderTextBlock c:PropertiesGrid.Label="ID:" Text="{Binding Id}" Placeholder="None" />-->
-      <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Name:" Text="{Binding DisplayName}" Placeholder="None" />
-      <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Driver:" Text="{Binding DriverName}" Placeholder="None" />
-      <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Team:" Text="{Binding Team}" Placeholder="None" />
+      <!--<mui:PlaceholderTextBlock c:PropertiesGrid.Label="ID:" Text="{Binding Id}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />-->
+      <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Name:" Text="{Binding DisplayName}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+      <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Driver:" Text="{Binding DriverName}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+      <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Team:" Text="{Binding Team}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
       <mui:Switch Value="{Binding SkinNumber}" c:PropertiesGrid.Label="Number:">
-        <mui:PlaceholderTextBlock mui:Switch.When="0" Placeholder="None" />
-        <mui:PlaceholderTextBlock Text="{Binding SkinNumber}" Placeholder="None" />
+        <mui:PlaceholderTextBlock mui:Switch.When="0" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+        <mui:PlaceholderTextBlock Text="{Binding SkinNumber}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
       </mui:Switch>
     </c:PropertiesGrid>
   </ToolTip>
 
   <ToolTip x:Key="TrackPreviewTooltip" d:DataContext="{d:DesignInstance t:TrackObjectBase}" x:Shared="False">
     <StackPanel TextBlock.Foreground="{DynamicResource WindowText}" Margin="4">
-      <TextBlock Style="{StaticResource Heading2}" Text="{Binding Name}" Margin="0 0 0 4" />
+      <mui:BbCodeBlock Mode="WithoutBbCodes" Style="{StaticResource Heading2}" Text="{Binding Name}" Margin="0 0 0 4" />
       <c:TrackBlock ShowPreview="False" Track="{Binding}" Width="480" MaxHeight="320" />
     </StackPanel>
   </ToolTip>
 
   <ToolTip x:Key="WeatherPreviewTooltip" d:DataContext="{d:DesignInstance t:WeatherObject}" x:Shared="False">
     <StackPanel TextBlock.Foreground="{DynamicResource WindowText}" Margin="4">
-      <TextBlock Style="{StaticResource Heading2}" Text="{Binding DisplayName}" Margin="0 0 0 4" />
+      <mui:BbCodeBlock Mode="WithoutBbCodes" Style="{StaticResource Heading2}" Text="{Binding DisplayName}" Margin="0 0 0 4" />
       <mui:BetterImage Filename="{Binding PreviewImage}" MaxWidth="480" />
       <c:PropertiesGrid Columns="2" Width="480" LabelWidth="80" Margin="0 6 0 0">
-        <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Type:" Text="{Binding Type}" Placeholder="None" />
+        <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Type:" Text="{Binding Type}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
         <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Time:" Text="{Binding DisplayTimeDiapason}" Placeholder="Any" />
         <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Coefficient:" Text="{Binding TemperatureCoefficient, StringFormat='{}{0:F2}'}" Placeholder="1" />
         <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Temperature:" Text="{Binding DisplayTemperatureDiapason}" Placeholder="Any" />
@@ -66,7 +69,36 @@
               </mui:BooleanSwitch.False>
             </mui:BooleanSwitch>
             <mui:PlaceholderTextBlock c:PropertiesGrid.Label="New version:" Text="{Binding CupUpdateInformation.Version}" Placeholder="Not set" />
-            <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Installed version:" Text="{Binding InstalledVersion}" Placeholder="Not set" />
+            <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Installed version:" Text="{Binding Version}" Placeholder="Not set" />
+          </c:PropertiesGrid>
+          <DockPanel Margin="0 4 0 0">
+            <Label Content="Recent changes:" Margin="0 1 0 0" Width="160" VerticalAlignment="Top" />
+            <mui:PlaceholderTextBlock Text="{Binding CupUpdateInformation.Changelog}" Placeholder="Not set" MaxHeight="60" />
+          </DockPanel>
+        </StackPanel>
+      </mui:BooleanSwitch.True>
+      <mui:BooleanSwitch.False>
+        <TextBlock Text="No update found" Style="{StaticResource Heading1}" />
+      </mui:BooleanSwitch.False>
+    </mui:BooleanSwitch>
+  </ToolTip>
+
+  <ToolTip x:Key="CupInformationTooltip" d:DataContext="{d:DesignInstance t:ICupSupportedObject}" x:Shared="False">
+    <mui:BooleanSwitch Value="{Binding IsCupUpdateAvailable}">
+      <mui:BooleanSwitch.True>
+        <StackPanel Margin="20 8">
+          <TextBlock Text="New version:" Style="{StaticResource Heading2}" />
+          <c:PropertiesGrid Columns="1" HorizontalSpacing="4" VerticalSpacing="4" Margin="0 8 0 0" LabelPadding="0 1 0 0" LabelWidth="160">
+            <mui:BooleanSwitch c:PropertiesGrid.Label="Install in one click:" Value="{Binding CupUpdateInformation.IsToUpdateManually}">
+              <mui:BooleanSwitch.True>
+                <TextBlock Foreground="{DynamicResource Error}" Text="No" FontWeight="Bold" />
+              </mui:BooleanSwitch.True>
+              <mui:BooleanSwitch.False>
+                <TextBlock Foreground="{DynamicResource Go}" Text="Yes" FontWeight="Bold" />
+              </mui:BooleanSwitch.False>
+            </mui:BooleanSwitch>
+            <mui:PlaceholderTextBlock c:PropertiesGrid.Label="New version:" Text="{Binding CupUpdateInformation.Version}" Placeholder="Not set" />
+            <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Installed version:" Text="{Binding Version}" Placeholder="Not set" />
           </c:PropertiesGrid>
           <DockPanel Margin="0 4 0 0">
             <Label Content="Recent changes:" Margin="0 1 0 0" Width="160" VerticalAlignment="Top" />

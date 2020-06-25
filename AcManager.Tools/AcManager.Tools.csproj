@@ -55,7 +55,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AcTools.CookerHood">
-      <HintPath>..\Libraries\AcTools.CookerHood\AcTools.CookerHood.dll</HintPath>
+      <HintPath>..\Libraries\AcTools\AcTools.CookerHood.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.7.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a">
@@ -87,6 +87,11 @@
     <Reference Include="Steamworks.NET">
       <HintPath>..\Libraries\Steamworks.NET\Steamworks.NET.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="xxHashSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\xxHashSharp.1.0.0\lib\net45\xxHashSharp.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -175,6 +180,50 @@
     <Compile Include="AcManagersNew\AcManagerNew.cs" />
     <Compile Include="AcObjectsNew\AcCommonObject.Errors.cs" />
     <Compile Include="AcObjectsNew\AcObjectNew.cs" />
+    <Compile Include="AcPlugins\AcServerPlugin.cs" />
+    <Compile Include="AcPlugins\AcServerPluginManager.cs" />
+    <Compile Include="AcPlugins\AcServerPluginManagerSettings.cs" />
+    <Compile Include="AcPlugins\ExternalPluginInfo.cs" />
+    <Compile Include="AcPlugins\Extras\AcDriverDetails.cs" />
+    <Compile Include="AcPlugins\Extras\AcDriverLeaderboardDetails.cs" />
+    <Compile Include="AcPlugins\Extras\AcDriverLocation.cs" />
+    <Compile Include="AcPlugins\Extras\AcLeaderboard.cs" />
+    <Compile Include="AcPlugins\Helpers\AcMessageParser.cs" />
+    <Compile Include="AcPlugins\Helpers\DuplexUdpClient.cs" />
+    <Compile Include="AcPlugins\Helpers\ISessionReportHandler.cs" />
+    <Compile Include="AcPlugins\Helpers\TimestampedBytes.cs" />
+    <Compile Include="AcPlugins\Helpers\Vector3F.cs" />
+    <Compile Include="AcPlugins\Info\DriverInfo.cs" />
+    <Compile Include="AcPlugins\Info\IncidentInfo.cs" />
+    <Compile Include="AcPlugins\Info\LapInfo.cs" />
+    <Compile Include="AcPlugins\Info\SessionInfo.cs" />
+    <Compile Include="AcPlugins\Kunos\ACSProtocol.cs" />
+    <Compile Include="AcPlugins\Messages\MsgCarInfo.cs" />
+    <Compile Include="AcPlugins\Messages\MsgCarUpdate.cs" />
+    <Compile Include="AcPlugins\Messages\MsgChat.cs" />
+    <Compile Include="AcPlugins\Messages\MsgClientEvent.cs" />
+    <Compile Include="AcPlugins\Messages\MsgClientLoaded.cs" />
+    <Compile Include="AcPlugins\Messages\MsgConnectionClosed.cs" />
+    <Compile Include="AcPlugins\Messages\MsgError.cs" />
+    <Compile Include="AcPlugins\Messages\MsgLapCompleted.cs" />
+    <Compile Include="AcPlugins\Messages\MsgLapCompletedLeaderboardEnty.cs" />
+    <Compile Include="AcPlugins\Messages\MsgNewConnection.cs" />
+    <Compile Include="AcPlugins\Messages\MsgNewSession.cs" />
+    <Compile Include="AcPlugins\Messages\MsgSessionEnded.cs" />
+    <Compile Include="AcPlugins\Messages\MsgSessionInfo.cs" />
+    <Compile Include="AcPlugins\Messages\MsgVersionInfo.cs" />
+    <Compile Include="AcPlugins\Messages\RequestAdminCommand.cs" />
+    <Compile Include="AcPlugins\Messages\RequestBroadcastChat.cs" />
+    <Compile Include="AcPlugins\Messages\RequestCarInfo.cs" />
+    <Compile Include="AcPlugins\Messages\RequestKickUser.cs" />
+    <Compile Include="AcPlugins\Messages\RequestNextSession.cs" />
+    <Compile Include="AcPlugins\Messages\RequestRealtimeInfo.cs" />
+    <Compile Include="AcPlugins\Messages\RequestRestartSession.cs" />
+    <Compile Include="AcPlugins\Messages\RequestSendChat.cs" />
+    <Compile Include="AcPlugins\Messages\RequestSessionInfo.cs" />
+    <Compile Include="AcPlugins\Messages\RequestSetSession.cs" />
+    <Compile Include="AcPlugins\PluginMessage.cs" />
+    <Compile Include="AcTelemetryListener\TelemetryListener.cs" />
     <Compile Include="BinaryResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -187,10 +236,30 @@
     <Compile Include="ContentInstallation\ContentInstallationEntry.Extra.cs" />
     <Compile Include="ContentInstallation\ContentInstallationParams.cs" />
     <Compile Include="ContentInstallation\ContentScanner.cs" />
-    <Compile Include="ContentInstallation\Entries\AcContentEntries.cs" />
-    <Compile Include="ContentInstallation\Entries\ContentEntries.cs" />
-    <Compile Include="ContentInstallation\Entries\ExtraEntries.cs" />
+    <Compile Include="ContentInstallation\Entries\DriverModelContentEntry.cs" />
+    <Compile Include="ContentInstallation\Entries\CarContentEntry.cs" />
+    <Compile Include="ContentInstallation\Entries\CarSkinContentEntry.cs" />
+    <Compile Include="ContentInstallation\Entries\CmThemeEntry.cs" />
+    <Compile Include="ContentInstallation\Entries\ContentEntryBase.cs" />
+    <Compile Include="ContentInstallation\Entries\CrewBrandEntry.cs" />
+    <Compile Include="ContentInstallation\Entries\CrewHelmetEntry.cs" />
+    <Compile Include="ContentInstallation\Entries\CustomFolderEntry.cs" />
+    <Compile Include="ContentInstallation\Entries\FontContentEntry.cs" />
+    <Compile Include="ContentInstallation\Entries\PpFilterContentEntry.cs" />
+    <Compile Include="ContentInstallation\Entries\PythonAppContentEntry.cs" />
+    <Compile Include="ContentInstallation\Entries\ShowroomContentEntry.cs" />
+    <Compile Include="ContentInstallation\Entries\SystemConfigEntry.cs" />
     <Compile Include="ContentInstallation\Entries\GenericModConfigEntry.cs" />
+    <Compile Include="ContentInstallation\Entries\OriginalLauncherModuleEntry.cs" />
+    <Compile Include="ContentInstallation\Entries\PatchPluginEntry.cs" />
+    <Compile Include="ContentInstallation\Entries\ReshadeSetupEntry.cs" />
+    <Compile Include="ContentInstallation\Entries\ShadersPatchEntry.cs" />
+    <Compile Include="ContentInstallation\Entries\TexturesConfigEntry.cs" />
+    <Compile Include="ContentInstallation\Entries\TrackContentEntry.cs" />
+    <Compile Include="ContentInstallation\Entries\TrackContentLayoutEntry.cs" />
+    <Compile Include="ContentInstallation\Entries\TrackSkinContentEntry.cs" />
+    <Compile Include="ContentInstallation\Entries\TrueTypeFontContentEntry.cs" />
+    <Compile Include="ContentInstallation\Entries\WeatherContentEntry.cs" />
     <Compile Include="ContentInstallation\Implementations\DirectoryContentInstallator.cs" />
     <Compile Include="ContentInstallation\Implementations\SevenZipContentInstallator.cs" />
     <Compile Include="ContentInstallation\Implementations\SharpCompressContentInstallator.cs" />
@@ -217,6 +286,16 @@
     <Compile Include="Data\KunosLauncherDataWatcher.cs" />
     <Compile Include="Data\AuthenticationStorage.cs" />
     <Compile Include="Data\NameNationality.cs" />
+    <Compile Include="Data\PatchBackgroundsDataUpdater.cs" />
+    <Compile Include="Data\PatchBaseDataUpdater.cs" />
+    <Compile Include="Data\PatchCarsDataUpdater.cs" />
+    <Compile Include="Data\PatchCarsTexturesDataUpdater.cs" />
+    <Compile Include="Data\PatchCarsVaoDataUpdater.cs" />
+    <Compile Include="Data\PatchHelper.cs" />
+    <Compile Include="Data\PatchTracksDataUpdater.cs" />
+    <Compile Include="Data\PatchTracksVaoDataUpdater.cs" />
+    <Compile Include="Data\PatchUpdater.cs" />
+    <Compile Include="Data\PatchVersionInfo.cs" />
     <Compile Include="Data\UserChampionshipProgressEntry.cs" />
     <Compile Include="Data\UserChampionshipsProgress.cs" />
     <Compile Include="Data\WeatherDescription.cs" />
@@ -255,6 +334,7 @@
     <Compile Include="GameProperties\CarCustomDataHelper.cs" />
     <Compile Include="GameProperties\CarRaceTextures.cs" />
     <Compile Include="GameProperties\CarSpecificControlsPresetHelper.cs" />
+    <Compile Include="GameProperties\CarSpecificFanatecSettingsHelper.cs" />
     <Compile Include="GameProperties\CarSpecificHelperBase.cs" />
     <Compile Include="GameProperties\ContinueRaceHelper.cs" />
     <Compile Include="GameProperties\CustomTrackState.cs" />
@@ -293,14 +373,19 @@
     <Compile Include="Helpers\AbstractSubdirectoryWatcherProvider.cs" />
     <Compile Include="Helpers\AcSettingsControls\ControllerButtonCombined.cs" />
     <Compile Include="Helpers\AcSettingsControls\ControllerButtonEntry.cs" />
+    <Compile Include="Helpers\AcSettingsControls\CustomButtonEntry.cs" />
+    <Compile Include="Helpers\AcSettingsControls\CustomButtonEntryCombined.cs" />
     <Compile Include="Helpers\AcSettingsControls\SystemButtonEntry.cs" />
     <Compile Include="Helpers\AcSettingsControls\SystemButtonEntryCombined.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelButtonAltEntry.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelButtonCombined.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelButtonCombinedAlt.cs" />
     <Compile Include="Helpers\AcSettings\CameraChaseSettings.cs" />
+    <Compile Include="Helpers\AcSettings\CameraOrbitSettings.cs" />
     <Compile Include="Helpers\AcSettings\DamageDisplayerSettings.cs" />
+    <Compile Include="Helpers\AcSettings\FanatecSettings.cs" />
     <Compile Include="Helpers\AcSettings\MessagesSettings.cs" />
+    <Compile Include="Helpers\AcSettings\PitMenuSettings.cs" />
     <Compile Include="Helpers\Api\ApiCacheThing.cs" />
     <Compile Include="Helpers\Api\HttpClientHolder.cs" />
     <Compile Include="Helpers\Api\Kunos\InvertConverter.cs" />
@@ -314,16 +399,22 @@
     <Compile Include="Helpers\Api\TheSetupMarket\TheSetupMarketApiProvider.cs" />
     <Compile Include="Helpers\AudioDevice.cs" />
     <Compile Include="Helpers\AudioDevices.cs" />
+    <Compile Include="Helpers\BatchAction.cs" />
+    <Compile Include="Helpers\BeepingNoise.cs" />
     <Compile Include="Helpers\CamberExtravaganzaHelper.cs" />
+    <Compile Include="Helpers\CommonBatchActions.cs" />
     <Compile Include="Helpers\ContentCategory.cs" />
     <Compile Include="Helpers\DirectInput\DirectInputDeviceUtils.cs" />
+    <Compile Include="Helpers\DirectInput\KeyHelper.cs" />
     <Compile Include="Helpers\FaviconProvider.cs" />
     <Compile Include="Helpers\LazierCached.cs" />
     <Compile Include="Helpers\Loaders\ICmRequestHandler.cs" />
     <Compile Include="Helpers\Loaders\ILoaderFactory.cs" />
     <Compile Include="Helpers\Loaders\LongenerLoader.cs" />
+    <Compile Include="Helpers\Loaders\ShareModsLoader.cs" />
     <Compile Include="Helpers\Loaders\YouTubeDescriptionLoader.cs" />
     <Compile Include="Helpers\ExtraDataProvider.cs" />
+    <Compile Include="Helpers\PackedDescription.cs" />
     <Compile Include="Helpers\SettingsHolder.Common.cs" />
     <Compile Include="Helpers\SettingsHolder.Content.cs" />
     <Compile Include="Helpers\ContentUtils.cs" />
@@ -491,6 +582,7 @@
     <Compile Include="Miscellaneous\ICupSupportedObject.cs" />
     <Compile Include="Miscellaneous\ILocalKeyBindingInput.cs" />
     <Compile Include="Miscellaneous\OAuth.cs" />
+    <Compile Include="Miscellaneous\PatchSettingsModel.cs" />
     <Compile Include="Miscellaneous\ReplayReader.cs" />
     <Compile Include="Objects\CarObject.Controls.cs" />
     <Compile Include="Objects\CarObject.CustomData.cs" />
@@ -503,6 +595,7 @@
     <Compile Include="Objects\CarSkinComparer.cs" />
     <Compile Include="Objects\FontObjectBitmap.cs" />
     <Compile Include="Objects\ICarSetupObject.cs" />
+    <Compile Include="Objects\IPythonAppConfigValue.cs" />
     <Compile Include="Objects\IPythonAppConfigValueProvider.cs" />
     <Compile Include="Objects\PythonAppConfig.cs" />
     <Compile Include="Objects\PythonAppConfigBoolValue.cs" />
@@ -510,10 +603,15 @@
     <Compile Include="Objects\PythonAppConfigKeyValue.cs" />
     <Compile Include="Objects\PythonAppConfigNumberValue.cs" />
     <Compile Include="Objects\PythonAppConfigOptionsValue.cs" />
+    <Compile Include="Objects\PythonAppConfigParams.cs" />
+    <Compile Include="Objects\PythonAppConfigPluginInfo.cs" />
+    <Compile Include="Objects\PythonAppConfigPluginValue.cs" />
+    <Compile Include="Objects\PythonAppConfigProvider.cs" />
     <Compile Include="Objects\PythonAppConfigRangeValue.cs" />
     <Compile Include="Objects\PythonAppConfigs.cs" />
     <Compile Include="Objects\PythonAppConfigSection.cs" />
     <Compile Include="Objects\PythonAppConfigValue.cs" />
+    <Compile Include="Objects\PythonAppReferencedValue.cs" />
     <Compile Include="Objects\PythonAppWindow.cs" />
     <Compile Include="Objects\RemoteCarSetupObject.cs" />
     <Compile Include="Objects\ServerPresetDetailsMode.cs" />

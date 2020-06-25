@@ -122,9 +122,9 @@
           <mui:BooleanSwitch.False>
             <StackPanel>
               <DockPanel Margin="0 0 0 4">
-                <mui:ValueLabel Value="{Binding DegressOfRotation}" mui:BetterTextBox.Mode="Positive" Postfix="°" VerticalAlignment="Center" Padding="0"
-                    Width="120" DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_DegressLabel}" />
-                <Slider Minimum="40" Maximum="1180" Value="{Binding DegressOfRotation}" TickFrequency="20" TickPlacement="None" IsSnapToTickEnabled="True" />
+                <mui:ValueLabel Value="{Binding DegreesOfRotation}" mui:BetterTextBox.Mode="Positive" Postfix="°" VerticalAlignment="Center" Padding="0"
+                    Width="120" DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_DegreesLabel}" />
+                <Slider Minimum="40" Maximum="1180" Value="{Binding DegreesOfRotation}" TickFrequency="20" TickPlacement="None" IsSnapToTickEnabled="True" />
               </DockPanel>
               <DockPanel Visibility="{Binding GammaMode, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 0 4">
                 <mui:ValueLabel Value="{Binding Gamma, StringFormat='{}{0:F2}'}" mui:BetterTextBox.Mode="Number" VerticalAlignment="Center" Padding="0"
@@ -256,8 +256,8 @@
         <ColumnDefinition Width="1*" />
       </Grid.ColumnDefinitions>
 
-      <TextBlock Text="{Binding ControllerButton.DisplayName, StringFormat={x:Static mui:ColonConverter.FormatNoSpaceAfterwards}}" Style="{StaticResource Label}"
-          Grid.Column="0" Margin="20 0 0 0" />
+      <TextBlock Text="{Binding ControllerButton.DisplayName, StringFormat={x:Static mui:ColonConverter.FormatNoSpaceAfterwards}}"
+          Style="{StaticResource Label}" Grid.Column="0" Margin="20 0 0 0" />
 
       <Button Grid.Column="1" ToolTip="Controller button" DataContext="{Binding ControllerButton}"
           Command="{Binding ToggleWaitingCommand, Source={x:Static acset:AcSettingsHolder.Controls}}" CommandParameter="{Binding}"
@@ -523,7 +523,7 @@
     <Setter Property="DockPanel.Dock" Value="Left" />
   </Style>
 
-  <DataTemplate x:Key="PythonAppConfig.ItemTemplate" DataType="t:PythonAppConfigValue">
+  <DataTemplate x:Key="PythonAppConfig.ItemTemplate" DataType="t:IPythonAppConfigValue">
     <DataTemplate.Triggers>
       <DataTrigger Binding="{Binding IsNonDefault}" Value="True">
         <Setter Property="TextBlock.Foreground" Value="{DynamicResource Accent}" />
@@ -536,10 +536,17 @@
         </ContextMenu>
       </FrameworkElement.ContextMenu>
 
-      <ContentControl Content="{Binding}" ToolTip="{Binding ToolTip}" IsEnabled="{Binding IsEnabled}">
+      <ContentControl Content="{Binding}" IsEnabled="{Binding IsEnabled}">
+        <ContentControl.ToolTip>
+          <ToolTip Visibility="{Binding ToolTip.Length, Converter={StaticResource MoreToVisibilityConverter}, FallbackValue={x:Static Visibility.Collapsed}}">
+            <ToolTip.Content>
+              <TextBlock MaxWidth="400" TextWrapping="Wrap" Text="{Binding ToolTip}" />
+            </ToolTip.Content>
+          </ToolTip>
+        </ContentControl.ToolTip>
         <ContentControl.Resources>
           <DataTemplate DataType="{x:Type t:PythonAppConfigBoolValue}">
-            <CheckBox IsChecked="{Binding Value}" Height="23" VerticalAlignment="Top">
+            <CheckBox IsChecked="{Binding Value}" Height="23" VerticalAlignment="Top" mui:NewMarkService.New="{Binding IsNew}">
               <Label x:Name="Label" Content="{Binding DisplayName}" />
             </CheckBox>
             <DataTemplate.Triggers>
@@ -554,7 +561,7 @@
               <mui:ValueLabel Content="{Binding DisplayName}" Value="{Binding DisplayValue}" mui:BetterTextBox.Mode="Number" Postfix="{Binding DisplayPostix}"
                   Style="{StaticResource PythonAppConfig.ValueLabel}" />
               <Slider Minimum="{Binding Minimum.Value}" Maximum="{Binding Maximum.Value}" Value="{Binding Value}" TickFrequency="{Binding Tick}"
-                  TickPlacement="BottomRight" />
+                  TickPlacement="BottomRight" mui:NewMarkService.New="{Binding IsNew}" />
             </DockPanel>
           </DataTemplate>
 
@@ -570,7 +577,7 @@
                   DockPanel.Dock="Left" Margin="0 0 8 0" Width="120" TextAlignment="Left" />
               <Button CommandParameter="{Binding}" Style="{StaticResource WaitingButton}" Margin="0 0 8 0"
                   Command="{Binding KeyBindingsController.ToggleWaitingCommand, RelativeSource={RelativeSource AncestorType=helpers:ILocalKeyBindings}}"
-                  Height="23" VerticalAlignment="Top">
+                  Height="23" VerticalAlignment="Top" mui:NewMarkService.New="{Binding IsNew}">
                 <mui:Cell>
                   <mui:Cell Visibility="{Binding IsWaiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
                     <TextBlock Text="{Binding DisplayValue}" FontWeight="Bold" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis" />
@@ -591,7 +598,8 @@
             <DockPanel>
               <Label Content="{Binding DisplayName}" ContentStringFormat="{x:Static mui:ColonConverter.FormatNoSpaceAfterwards}"
                   Style="{StaticResource PythonAppConfig.PropertyLabel}" />
-              <mui:BetterTextBox Text="{Binding Value}" Mode="Number" Placeholder="?" Height="23" VerticalAlignment="Top" />
+              <mui:BetterTextBox Text="{Binding Value}" Mode="Number" Placeholder="?" Height="23" VerticalAlignment="Top"
+                  mui:NewMarkService.New="{Binding IsNew}" />
             </DockPanel>
           </DataTemplate>
 
@@ -600,7 +608,36 @@
               <Label Content="{Binding DisplayName}" ContentStringFormat="{x:Static mui:ColonConverter.FormatNoSpaceAfterwards}"
                   Style="{StaticResource PythonAppConfig.PropertyLabel}" />
               <mui:BetterComboBox ItemsSource="{Binding Values}" DisplayMemberPath="DisplayName" SelectedItem="{Binding Value, Mode=TwoWay}" IsEditable="False"
-                  Height="23" VerticalAlignment="Top" />
+                  Height="23" VerticalAlignment="Top" mui:NewMarkService.New="{Binding IsNew}" />
+            </DockPanel>
+          </DataTemplate>
+
+          <DataTemplate DataType="{x:Type t:PythonAppConfigPluginValue}">
+            <DockPanel>
+              <Label Content="{Binding DisplayName}" ContentStringFormat="{x:Static mui:ColonConverter.FormatNoSpaceAfterwards}"
+                  Style="{StaticResource PythonAppConfig.PropertyLabel}" />
+              <mui:BetterComboBox ItemsSource="{Binding Plugins}" SelectedItem="{Binding SelectedPlugin, Mode=TwoWay}" IsEditable="False" Height="23"
+                  VerticalAlignment="Top" mui:NewMarkService.New="{Binding IsNew}">
+                <mui:BetterComboBox.ItemTemplate>
+                  <DataTemplate>
+                    <DockPanel Background="Transparent">
+                      <DockPanel.ContextMenu>
+                        <ContextMenu>
+                          <MenuItem Header="View in Explorer" Command="{Binding ViewInExplorerCommand}" />
+                          <MenuItem Header="Pack" Command="{Binding PackCommand}" />
+                        </ContextMenu>
+                      </DockPanel.ContextMenu>
+                      <mui:BbCodeBlock Mode="WithoutBbCodes" Text="{Binding DisplayName}" DockPanel.Dock="Top" />
+                      <DockPanel x:Name="PART_Details">
+                        <mui:BbCodeBlock Mode="WithoutBbCodes" Text="{Binding Description}" Style="{StaticResource Small}" DockPanel.Dock="Bottom"
+                            Visibility="{Binding Description, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+                        <mui:BbCodeBlock Mode="WithoutBbCodes" Text="{Binding AuthorVersionLine}" Style="{StaticResource Small}"
+                            Visibility="{Binding AuthorVersionLine, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+                      </DockPanel>
+                    </DockPanel>
+                  </DataTemplate>
+                </mui:BetterComboBox.ItemTemplate>
+              </mui:BetterComboBox>
             </DockPanel>
           </DataTemplate>
 
@@ -609,7 +646,7 @@
               <Label Content="{Binding DisplayName}" ContentStringFormat="{x:Static mui:ColonConverter.FormatNoSpaceAfterwards}"
                   Style="{StaticResource PythonAppConfig.PropertyLabel}" />
               <Button DockPanel.Dock="Right" Padding="4 2" Margin="2 0 0 0" Content="…" Command="{Binding ChangeFileCommand}" />
-              <mui:BetterTextBox Text="{Binding Value}" Placeholder="?" />
+              <mui:BetterTextBox Text="{Binding Value}" Placeholder="?" mui:NewMarkService.New="{Binding IsNew}" />
             </DockPanel>
           </DataTemplate>
 
@@ -617,7 +654,7 @@
             <DockPanel>
               <Label Content="{Binding DisplayName}" ContentStringFormat="{x:Static mui:ColonConverter.FormatNoSpaceAfterwards}"
                   Style="{StaticResource PythonAppConfig.PropertyLabel}" />
-              <mui:BetterTextBox Text="{Binding Value}" Placeholder="?" Height="23" VerticalAlignment="Top" />
+              <mui:BetterTextBox Text="{Binding Value}" Placeholder="?" Height="23" VerticalAlignment="Top" mui:NewMarkService.New="{Binding IsNew}" />
             </DockPanel>
           </DataTemplate>
         </ContentControl.Resources>
@@ -665,10 +702,20 @@
         <mui:BbCodeBlock Text="{Binding Url}" DockPanel.Dock="Top" Margin="0 8 0 0" TextWrapping="Wrap"
             Visibility="{Binding Url, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
       </DockPanel>
-      <DockPanel>
+      <DockPanel Margin="0 0 0 20">
         <TextBlock Text="{Binding DisplayName, StringFormat={x:Static mui:ColonConverter.FormatNoSpaceAfterwards}}" DockPanel.Dock="Top" Margin="0 0 0 8"
             TextWrapping="Wrap" Style="{StaticResource Label}" ToolTip="{Binding ToolTip}" />
-        <ItemsControl x:Name="Items" ItemsSource="{Binding}" Margin="20 0 0 20" ItemTemplate="{StaticResource PythonAppConfig.ItemTemplate}"
+        <c:MessageBlock DockPanel.Dock="Top" Margin="20 0 20 8"
+            Visibility="{Binding HintTop, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse'}">
+          <mui:BbCodeBlock Text="{Binding HintTop}" Style="{StaticResource Small}" />
+        </c:MessageBlock>
+        <c:MessageBlock DockPanel.Dock="Bottom" Margin="20 8 20 0"
+            Visibility="{Binding HintBottom, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse'}">
+          <mui:BbCodeBlock Text="{Binding HintBottom}" Style="{StaticResource Small}" />
+        </c:MessageBlock>
+        <!--<mui:BbCodeBlock DockPanel.Dock="Bottom" Text="{Binding HintBottom}" Style="{StaticResource Small}" Margin="20 8 0 0"
+            Visibility="{Binding HintBottom, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse'}" />-->
+        <ItemsControl x:Name="Items" ItemsSource="{Binding}" Margin="20 0 0 0" ItemTemplate="{StaticResource PythonAppConfig.ItemTemplate}"
             ItemsPanel="{StaticResource PythonAppConfig.SectionItemsPanel}"
             Tag="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MoreConverter}, ConverterParameter=800}" />
       </DockPanel>
